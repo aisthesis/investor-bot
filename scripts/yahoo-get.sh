@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# Usage:
+# > ./yahoo-get.sh f
+# Retrieves OHLC and volume for ticker symbol 'f' from 1974-01-01 to 2014-03-09
+# and stores the data in the file '../data/f.csv' 
+# 
 # The following command downloads historical data from yahoo! into a csv in the data directory
 # curl "http://ichart.finance.yahoo.com/table.csv?s=f&a=0&b=1&c=2013&d=5&e=27&f=2013" > ../data/$1.csv
 # Stock is Ford (s=f)
