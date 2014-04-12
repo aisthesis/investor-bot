@@ -8,10 +8,6 @@ function [theta] = getThetaAll(featureSetFile, featuresInterval, labelsFile, lab
 % 
 
 [X, y] = getTrainingSetAll(featureSetFile, featuresInterval, labelsFile, labelsInterval);
-n = size(X, 2);
-initial_theta = zeros(n, 1);
-options = optimset('GradObj', 'on', 'MaxIter', 50);
-
-theta = fmincg(@(t)(lrCostFunction(t, X, y)), initial_theta, options);
+theta = getTheta(X, y);
 
 end
