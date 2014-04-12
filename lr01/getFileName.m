@@ -1,4 +1,4 @@
-function [fileName] = featureFileName(ticker, intervalStr, firstIndex, lastIndex)
+function [fileName] = getFileName(ticker, otherIdentifier, firstIndex, lastIndex)
 
 % Given a ticker, an interval string, the first index to use
 % and the last index to use, generates the name to 
@@ -25,6 +25,6 @@ len = length(dates);
 startDate = datestr(dates(len - firstIndex + 1), "yyyymmdd");
 endDate = datestr(dates(len - lastIndex + 1), "yyyymmdd");
 
-fileName = [ticker "-" intervalStr "-" startDate "-" endDate ".mat"];
+fileName = [ticker "-" otherIdentifier "-" startDate "-" endDate ".mat"];
 
 end

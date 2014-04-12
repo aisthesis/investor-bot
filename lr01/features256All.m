@@ -16,7 +16,7 @@ SAVE_PATH = "./features/";
 closes = getYahooCol(ticker);
 featureSets = getFeatureSets(closes, 256);
 
-fileName = featureFileName(ticker, "256", 1, length(closes));
+fileName = getFileName(ticker, "256", 1, length(closes));
 fileName = [SAVE_PATH fileName];
 
 save("-mat-binary", fileName, "featureSets");
