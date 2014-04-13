@@ -29,6 +29,11 @@ Files types:
     price behavior except in the case of JPM, where the splits corresponded to those
     shown in the yahoo! chart but not to the splits shown on http://www.stocksplithistory.com/
 
+- <code>&lt;ticker&gt;-splitadj.mat</code>
+
+    Chronologically sorted matlab binary files adjusted to account for splits. These files are based on the data
+    from <code>&lt;ticker&gt;.mat</code> and differ from them only in that they are adjusted for splits.
+
 - <code>&lt;ticker&gt;-splitadjcloses.mat</code>
 
     matlab binary files with chronologically sorted closes that have been adjusted to account
