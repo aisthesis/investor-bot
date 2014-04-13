@@ -1,7 +1,7 @@
-function [labels] = bullLabAll(ticker, interval, minRatio)
+function bullLabAll(interval, minRatio)
 
-% Given a ticker, an interval, and a minimum ratio, return and save
-% labels for all available data.
+% Given a an interval, and a minimum ratio, save (in a separate file for each equity)
+% labels for all available data on all equities.
 %
 % The file will be saved in the ./bullish-labels/ subdirectory
 % with a name like 'ge-64-400pct-19620101-20140409.mat'
@@ -10,18 +10,12 @@ function [labels] = bullLabAll(ticker, interval, minRatio)
 % ratio required for success, and the date range.
 %
 % Author: Marshall Farrier
-% Since: 2014-04-11
+% Since: 2014-04-13
 % 
 
-SAVE_PATH = "./bullish-labels/";
-closes = getYahooCol(ticker);
-labels = getBullishLabels(closes, interval, minRatio);
-
-ratioPct = floor(minRatio * 100);
-otherIdentifier = [sprintf("%d-%d", interval, ratioPct) "pct"];
-fileName = getFileName(ticker, otherIdentifier, 1, length(closes));
-fileName = [SAVE_PATH fileName];
-
-save("-mat-binary", fileName, "labels");
+equities = { "cat", "dd", "f", "ge", "ibm", "jnj", "jpm", "xom" };
+for i = 1:length(equities)
+    bullLabEquity(equities{i}, interval, minRatio);
+endfor
 
 end

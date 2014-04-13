@@ -1,4 +1,4 @@
-function [fileName] = getFileName(ticker, otherIdentifier, firstIndex, lastIndex)
+function [fileName] = getFileName(ticker, otherIdentifier, firstIndex, lastIndex, suffix = "mat")
 
 % Given a ticker, an interval string, the first index to use
 % and the last index to use, generates the name to 
@@ -13,18 +13,12 @@ function [fileName] = getFileName(ticker, otherIdentifier, firstIndex, lastIndex
 
 PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
 
-% load each line as a string
-lines = textread([PATH_TO_DATA ticker ".csv"], "%s");
+inFileName = [PATH_TO_DATA ticker ".mat"];
+load(inFileName);
 
-% ignore header rows and capture first 10 characters as datestr
-% Note that whitespace in 'Adj Close' makes header wrap to 2 lines
-dates = strtrunc(lines(3:end), 10);
-len = length(dates);
+startDate = datestr(sessionDates(firstIndex), "yyyymmdd");
+endDate = datestr(sessionDates(lastIndex), "yyyymmdd");
 
-% extract desired dates and compose file name
-startDate = datestr(dates(len - firstIndex + 1), "yyyymmdd");
-endDate = datestr(dates(len - lastIndex + 1), "yyyymmdd");
-
-fileName = [ticker "-" otherIdentifier "-" startDate "-" endDate ".mat"];
+fileName = [ticker "-" otherIdentifier "-" startDate "-" endDate "." suffix];
 
 end
