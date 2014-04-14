@@ -1,4 +1,4 @@
-function makeClosesTrainingSets(featureInterval, labelType, labelInterval, labelVal)
+function makeTrainingSets(featureType, featureInterval, labelType, labelInterval, labelVal)
 
 % Using the given parameters (assuming feature sets and labels already exist),
 % create complete training sets for all equities.
@@ -9,7 +9,7 @@ function makeClosesTrainingSets(featureInterval, labelType, labelInterval, label
 
 equities = { "cat", "dd", "f", "ge", "ibm", "jnj", "jpm", "xom" };
 for i = 1:length(equities)
-    makeClosesTrainingSetEq(equities{i}, featureInterval, labelType, labelInterval, labelVal);
+    makeClosesTrainingSetEq(equities{i}, featureType, featureInterval, labelType, labelInterval, labelVal);
 endfor
 
 end

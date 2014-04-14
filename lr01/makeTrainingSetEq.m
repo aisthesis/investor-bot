@@ -1,4 +1,4 @@
-function [X, y] = makeClosesTrainingSetEq(ticker, featureInterval, labelType, labelInterval, labelVal)
+function [X, y] = makeTrainingSetEq(ticker, featureType, featureInterval, labelType, labelInterval, labelVal)
 
 % Using the inputs, retrieve feature sets and labels for the given ticker,
 % generate the corresponding training sets, return them and save them to file.
@@ -6,8 +6,6 @@ function [X, y] = makeClosesTrainingSetEq(ticker, featureInterval, labelType, la
 % Author: Marshall Farrier
 % Since: 2014-04-14
 % 
-
-featureType = "splitadj-closes";
 
 % get relevant dates
 PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
