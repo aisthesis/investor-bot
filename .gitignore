@@ -5,3 +5,7 @@
 */.settings/
 */bin/
 *.swp
+
+# other files
+# too large for Github, so needs to be built locally
+lr01/training-sets/splitadj-closes/256/bullish/64/400pct/combined.mat
