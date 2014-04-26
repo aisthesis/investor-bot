@@ -1,14 +1,17 @@
-function [predictions] = lrPredict(X, theta)
+## Copyright (C) 2014 Marshall Farrier
 
-% Given a matrix X whose rows are features (including
-% the constant feature) and a vector theta resulting from 
-% logistic regression, return a vector of predictions for
-% each row in X.
-%
-% Author: Marshall Farrier
-% Since: 2014-04-11
-% 
+## -*- texinfo -*-
+## @deftypefn  {Function File} {} createDir (@var{path}, @var{root})
+## Return a prediction vector having the value 1 in each position
+## i where the i-th row of X times the vector theta is great
+## than or equal to the given threshold.
+## @end deftypefn
 
-predictions = round(sigmoid(X * theta));
+## Author mdf
+## Since 2014-04-11
+
+function [predictions] = lrPredict(X, theta, threshold = 0.5)
+
+predictions = (sigmoid(X * theta) >= threshold);
 
 end
