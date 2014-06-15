@@ -5,3 +5,11 @@
 */.settings/
 */bin/
 *.swp
+
+# Mac artifacts
+*__MACOSX*
+*.DS_STORE
+*.DS_Store
+
+# TrueCrypt artifacts
+*._*
