@@ -1,4 +1,4 @@
-function [index] = findDate(ticker, formattedDate)
+function [index] = dateToIndex(ticker, formattedDate)
 
 % Return the index for data on the given ticker
 % for the given formatted date
@@ -7,7 +7,7 @@ function [index] = findDate(ticker, formattedDate)
 % Since: 2014-04-12
 % 
 
-PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
+PATH_TO_DATA = getenv("DATA_ROOT");
 suffix = ".mat";
 fileName = [PATH_TO_DATA ticker suffix];
 

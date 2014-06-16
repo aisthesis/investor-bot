@@ -23,7 +23,7 @@ function csvToMatBin(ticker)
 % Since: 2014-04-11
 % 
 
-PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
+PATH_TO_DATA = getenv("DATA_ROOT");
 suffix = ".mat";
 fileName = [PATH_TO_DATA ticker suffix];
 

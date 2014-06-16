@@ -1,4 +1,4 @@
-function [ohlc] = getOhlc(ticker)
+function [ohlc, sessionDates] = getOhlc(ticker)
 
 % Return a matrix of the unadjusted OHLC values for the given
 % ticker. Retrieves whatever is present in <ticker>.mat
@@ -7,7 +7,7 @@ function [ohlc] = getOhlc(ticker)
 % Since: 2014-04-12
 % 
 
-PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
+PATH_TO_DATA = getenv("DATA_ROOT");
 suffix = ".mat";
 fileName = [PATH_TO_DATA ticker suffix];
 
