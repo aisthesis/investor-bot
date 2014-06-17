@@ -18,7 +18,7 @@ function [closes] = getYahooCol(equity, col = 5)
 % Since: 2014-04-10
 % 
 
-PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
+PATH_TO_DATA = getenv("DATA_ROOT");
 
 % load the file 
 all_data = csvread([PATH_TO_DATA equity ".csv"]);

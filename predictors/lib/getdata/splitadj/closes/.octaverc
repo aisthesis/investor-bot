@@ -1,0 +1,6 @@
+## Commands that will be run whenever Octave is started
+## from the current directory
+setenv("DATA_ROOT", "../../../../../data/")
+setenv("PREDICTOR_DATA_ROOT", "../../../../data/splitadj/closes/")
+addpath("../../")
+addpath("../../../../../lib/utils/")

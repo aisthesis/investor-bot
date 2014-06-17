@@ -1,3 +1,3 @@
 ## Commands that will be run whenever Octave is started
 ## from the current directory
-setenv("INVESTOR_BOT_DATA_PATH", "../data/")
+setenv("DATA_ROOT", "../../data/")

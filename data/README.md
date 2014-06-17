@@ -23,7 +23,7 @@ Files types:
     Note that this data has not been adjusted for splits unless yahoo has already made this
     adjustment (as in the adjusted close column, which also adjusts for dividends).
 
-- <code>&lt;&gt;.png</code>
+- <code>docs</code>
 
     Informational files, such as information on split dates. This data was consistent with
     price behavior except in the case of JPM, where the splits corresponded to those

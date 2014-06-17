@@ -1,4 +1,4 @@
-function saveSplitAdjAll(splitAdjOhlc, ticker)
+function saveSplitAdj(splitAdjOhlc, ticker)
 
 % Given split adjusted ohlc data for the given
 % ticker, save it to a matlab binary file 
@@ -12,7 +12,7 @@ function saveSplitAdjAll(splitAdjOhlc, ticker)
 % Since: 2014-04-12
 % 
 
-PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
+PATH_TO_DATA = getenv("DATA_ROOT");
 inFileSuffix = ".mat";
 outFileSuffix = "-splitadj.mat";
 inFileName = [PATH_TO_DATA ticker inFileSuffix];

@@ -13,19 +13,21 @@ function [labels] = bearLabEquity(ticker, interval, maxRatio)
 % Since: 2014-04-11
 % 
 
-PATH_TO_DATA = getenv("INVESTOR_BOT_DATA_PATH");
+INFILE_ROOT = getenv("DATA_ROOT");
 INFILE_SUFFIX = "-splitadj.mat";
-SAVE_PATH = "./bearish-labels/";
+OUTFILE_ROOT = getenv("PREDICTOR_DATA_ROOT");
+path = {"labels" sprintf("%d", interval) "bearish" sprintf("%dpct", floor(maxRatio * 100))}; 
+pathTxt = createDir(path, OUTFILE_ROOT);
+source('.octaverc');
+OUTFILE_SUFFIX = ".mat";
 
-inFile = [PATH_TO_DATA ticker INFILE_SUFFIX];
+inFile = [INFILE_ROOT ticker INFILE_SUFFIX];
 load(inFile);
 labels = getBearishLabels(closes, interval, maxRatio);
+sessionDates = sessionDates(1:end - interval);
 
-ratioPct = floor(maxRatio * 100);
-otherIdentifier = [sprintf("%d-%d", interval, ratioPct) "pct"];
-outFile = getFileName(ticker, otherIdentifier, 1, length(closes) - interval);
-outFile = [SAVE_PATH outFile];
 
-save("-mat-binary", outFile, "labels");
+outFile = [OUTFILE_ROOT pathTxt ticker OUTFILE_SUFFIX];
+save("-mat-binary", outFile, "labels", "sessionDates");
 
 end
