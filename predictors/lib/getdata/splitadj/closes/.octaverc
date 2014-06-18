@@ -4,3 +4,6 @@ setenv("DATA_ROOT", "../../../../../data/")
 setenv("PREDICTOR_DATA_ROOT", "../../../../data/splitadj/closes/")
 addpath("../../")
 addpath("../../../../../lib/utils/")
+
+## Turn off matlab incompatibility warnings
+warning("off", "Octave:matlab-incompatible")

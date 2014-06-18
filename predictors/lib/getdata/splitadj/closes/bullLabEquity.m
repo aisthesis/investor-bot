@@ -1,4 +1,4 @@
-function [y] = bearLabEquity(ticker, interval, maxRatio)
+function [y] = bullLabEquity(ticker, interval, minRatio)
 
 % Given a ticker, an interval, and a maximum ratio, return and save
 % labels for all available data.
@@ -10,14 +10,14 @@ function [y] = bearLabEquity(ticker, interval, maxRatio)
 INFILE_ROOT = getenv("DATA_ROOT");
 INFILE_SUFFIX = "-splitadj.mat";
 OUTFILE_ROOT = getenv("PREDICTOR_DATA_ROOT");
-path = {"labels" sprintf("%d", interval) "bearish" sprintf("%dpct", floor(maxRatio * 100))}; 
+path = {"labels" sprintf("%d", interval) "bullish" sprintf("%dpct", floor(minRatio * 100))}; 
 pathTxt = createDir(path, OUTFILE_ROOT);
 source('.octaverc');
 OUTFILE_SUFFIX = ".mat";
 
 inFile = sprintf("%s%s%s", INFILE_ROOT, ticker, INFILE_SUFFIX);
 load(inFile);
-y = getBearishLabels(closes, interval, maxRatio);
+y = getBullishLabels(closes, interval, minRatio);
 currDate = sessionDates(1:end - interval);
 
 

@@ -1,0 +1,65 @@
+## Copyright (C) 2014 Marshall Farrier, Robert Rodrigues
+##
+## Distribution and use of this software without prior written permission
+## of the authors is strictly prohibitied and will be prosecuted to
+## the full extent of the law.
+
+## -*- texinfo -*-
+## @deftypefn  {Function File} {@var{days} =} datenum (@var{datevec})
+## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day})
+## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour})
+## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute})
+## @deftypefnx {Function File} {@var{days} =} datenum (@var{year}, @var{month}, @var{day}, @var{hour}, @var{minute}, @var{second})
+## @deftypefnx {Function File} {@var{days} =} datenum ("datestr")
+## @deftypefnx {Function File} {@var{days} =} datenum ("datestr", @var{p})
+## @deftypefnx {Function File} {[@var{days}, @var{secs}] =} datenum (@dots{})
+## Return the date/time input as a serial day number, with Jan 1, 0000
+## defined as day 1.
+##
+## The integer part, @code{floor (@var{days})} counts the number of
+## complete days in the date input.
+##
+## The fractional part, @code{rem (@var{days}, 1)} corresponds to the time
+## on the given day.
+##
+## The input may be a date vector (see @code{datevec}), 
+## datestr (see @code{datestr}), or directly specified as input.
+##
+## When processing input datestrings, @var{p} is the year at the start of the
+## century to which two-digit years will be referenced.  If not specified, it
+## defaults to the current year minus 50.
+##
+## The optional output @var{secs} holds the time on the specified day with
+## greater precision than @var{days}.
+##
+## Notes:
+##
+## @itemize
+## @item
+## Years can be negative and/or fractional.
+##
+## @item
+## Months below 1 are considered to be January.
+##
+## @item
+## Days of the month start at 1.
+##
+## @item
+## Days beyond the end of the month go into subsequent months.
+##
+## @item
+## Days before the beginning of the month go to the previous month.
+##
+## @item
+## Days can be fractional.
+## @end itemize
+##
+## @strong{Caution:} this function does not attempt to handle Julian
+## calendars so dates before October 15, 1582 are wrong by as much
+## @end deftypefn
+
+## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
+## Author: pkienzle <pkienzle@users.sf.net>
+
+function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 0, second = 0)
+end

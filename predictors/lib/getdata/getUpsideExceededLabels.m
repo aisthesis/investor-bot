@@ -1,4 +1,4 @@
-function [labels] = getBearishLabels(prices, interval, maxRatio)
+function [labels] = getUpsideExceededLabels(prices, interval, minRatio)
 
 % Given a price matrix, an interval over which to measure
 % the ratio of upside to downside, and a maximum allowed ratio, return a vector
@@ -41,9 +41,8 @@ currVal = 0;
 upToDownRatio = 0;
 
 for i = 1:rows
-    [maxVal, minVal, currVal] = futureExtrema(prices, i, interval);
-    [~, ~, upToDownRatio] = upsideDownside(maxVal, minVal, currVal);
-    if (upToDownRatio <= maxRatio)
+    [maxVal, ~, currVal] = futureExtrema(prices, i, interval);
+    if (maxVal >= minRatio * currVal)
         labels(i) = 1;
     endif
 endfor
