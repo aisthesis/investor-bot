@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "Building required data files for predictors."
+octave -q ./predictors/lib/getdata/makeBigFiles
+echo "Predictor data files built."
+
+# Build other required files
+
+echo "Done!"
