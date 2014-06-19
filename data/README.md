@@ -35,10 +35,3 @@ Files types:
     from <code>&lt;ticker&gt;.mat</code> and differ from them only in that they are adjusted for splits.
     Due to the disparity of sources for split information, the adjustment was done manually. No adjustment
     has been made for dividends, only for splits.
-
-- <code>&lt;ticker&gt;-splitadjcloses.mat</code>
-
-    matlab binary files with chronologically sorted (ascending) closes that have been adjusted to account
-    for splits by dividing prior values by the split factor. In other words, if the value sequence unadjusted is 
-    something like 100.00, 101.00, 49.50, 51.05 before a 2:1 split, then all values up to and including
-    the 101.00 would be divided by 2, so that the adjusted sequence would be 50.00, 50.50, 49.50, 51.05
