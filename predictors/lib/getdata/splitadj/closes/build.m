@@ -76,5 +76,21 @@ displayNow("Upside exceeded labels created!\n");
 displayNow("================================================================");
 displayNow("FEATURES");
 displayNow("Creating features");
+for i = 1:n
+    printfNow("Creating features for equity '%s'\n", equities{i});
+    featuresEquity(equities{i}, featureInterval);
+endfor
+displayNow("Features created!\n");
+
+displayNow("================================================================");
+displayNow("TRAINING, CROSS-VALIDATION, TEST DATA");
+displayNow("Creating training, cross-validation and test datasets");
+for i = 1:n
+    printfNow("Creating datasets for equity '%s'\n", equities{i});
+    trainCvTestEquity(equities{i}, featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
+endfor
+displayNow("Training, cross-validation and test datasets created!\n");
+
+displayNow("Done!");
 
 end

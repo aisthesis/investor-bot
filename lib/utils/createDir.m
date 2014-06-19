@@ -37,4 +37,6 @@ catch
     return
 end_try_catch
 cd(currentDir);
+source('.octaverc');
+
 end
