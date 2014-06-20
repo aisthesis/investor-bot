@@ -12,8 +12,6 @@
 function printfNow(varargin)
 
 printf(varargin{:});
-if exist('OCTAVE_VERSION')
-    fflush(stdout);
-endif
+fflush(stdout);
 
 end

@@ -12,8 +12,6 @@
 function displayNow(msg)
 
 disp(msg);
-if exist('OCTAVE_VERSION')
-    fflush(stdout);
-endif
+fflush(stdout);
 
 end
