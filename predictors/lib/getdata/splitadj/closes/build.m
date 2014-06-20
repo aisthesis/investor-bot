@@ -89,6 +89,9 @@ for i = 1:n
     printfNow("Creating datasets for equity '%s'\n", equities{i});
     trainCvTestEquity(equities{i}, featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
 endfor
+
+displayNow("Combining datasets for all equities.");
+trainCvTestCombine(equities, featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
 displayNow("Training, cross-validation and test datasets created!\n");
 
 displayNow("Done!");
