@@ -38,7 +38,7 @@ startRow = 1;
 % get permutation for equity
 permutationsFile = sprintf("%s%s", PREDICTOR_DATA_ROOT, "eqDataDivisions.mat");
 load(permutationsFile);
-permutation = getPermutation(ticker, permutations);
+permutation = permutations.(ticker);
 
 % create directories
 for i = 1:N_NAMES
