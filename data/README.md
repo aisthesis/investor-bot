@@ -35,3 +35,13 @@ Files types:
     from <code>&lt;ticker&gt;.mat</code> and differ from them only in that they are adjusted for splits.
     Due to the disparity of sources for split information, the adjustment was done manually. No adjustment
     has been made for dividends, only for splits.
+
+    Methodology:
+
+    1 Load the data file for each equity
+    1 Find the earliest unhandled split from http://www.stocksplithistory.com/ for the given equity.
+    1 Make sure the split makes sense. If not compare with yahoo split information and determine what happened.
+    1 Find the record where the split occurred.
+    1 Plug the split ratio and the price list into the function `splitAdj(...)` in `./lib/getdata/`. This function divides
+        all values prior to the given index by the split factor.
+    1 Repeat until all splits are handled.
