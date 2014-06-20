@@ -28,10 +28,11 @@ outFile = "eqDataDivisions.mat";
 
 equities = textread([PREDICTOR_DATA_ROOT inFile], "%s");
 n = size(equities, 1);
+permutations = struct();
 for i = 1:n
     permutations.(equities{i}) = randperm(3);
 endfor
 
-save("-mat-binary", [PREDICTOR_DATA_ROOT outFile], "permutations");
+#save("-mat-binary", [PREDICTOR_DATA_ROOT outFile], "permutations");
 
 end
