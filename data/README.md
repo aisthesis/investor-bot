@@ -38,10 +38,10 @@ Files types:
 
     Methodology:
 
-    1 Load the data file for each equity
-    1 Find the earliest unhandled split from http://www.stocksplithistory.com/ for the given equity.
-    1 Make sure the split makes sense. If not compare with yahoo split information and determine what happened.
-    1 Find the record where the split occurred.
-    1 Plug the split ratio and the price list into the function `splitAdj(...)` in `./lib/getdata/`. This function divides
+    1. Load the data file for each equity
+    1. Find the earliest unhandled split from http://www.stocksplithistory.com/ for the given equity.
+    1. Make sure the split makes sense. If not compare with yahoo split information and determine what happened.
+    1. Find the record where the split occurred.
+    1. Plug the split ratio and the price list into the function `splitAdj(...)` in `./lib/getdata/`. This function divides
         all values prior to the given index by the split factor.
-    1 Repeat until all splits are handled.
+    1. Repeat until all splits are handled.
