@@ -23,7 +23,7 @@ Files types:
     Note that this data has not been adjusted for splits unless yahoo has already made this
     adjustment (as in the adjusted close column, which also adjusts for dividends).
 
-- <code>&lt;&gt;.png</code>
+- <code>docs</code>
 
     Informational files, such as information on split dates. This data was consistent with
     price behavior except in the case of JPM, where the splits corresponded to those
@@ -31,12 +31,17 @@ Files types:
 
 - <code>&lt;ticker&gt;-splitadj.mat</code>
 
-    Chronologically sorted matlab binary files adjusted to account for splits. These files are based on the data
+    Chronologically sorted (ascending order) matlab binary files adjusted to account for splits. These files are based on the data
     from <code>&lt;ticker&gt;.mat</code> and differ from them only in that they are adjusted for splits.
+    Due to the disparity of sources for split information, the adjustment was done manually. No adjustment
+    has been made for dividends, only for splits.
 
-- <code>&lt;ticker&gt;-splitadjcloses.mat</code>
+    Methodology:
 
-    matlab binary files with chronologically sorted closes that have been adjusted to account
-    for splits by dividing prior values by the split factor. In other words, if the value sequence unadjusted is 
-    something like 100.00, 101.00, 49.50, 51.05 before a 2:1 split, then all values up to and including
-    the 101.00 would be divided by 2, so that the adjusted sequence would be 50.00, 50.50, 49.50, 51.05
+    1. Load the data file for each equity
+    1. Find the earliest unhandled split from http://www.stocksplithistory.com/ for the given equity.
+    1. Make sure the split makes sense. If not compare with yahoo split information and determine what happened.
+    1. Find the record where the split occurred.
+    1. Plug the split ratio and the price list into the function `splitAdj(...)` in `./lib/getdata/`. This function divides
+        all values prior to the given index by the split factor.
+    1. Repeat until all splits are handled.
