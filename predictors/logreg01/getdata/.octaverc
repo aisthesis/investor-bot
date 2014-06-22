@@ -1,0 +1,13 @@
+## Commands that will be run whenever Octave is started
+## from the current directory
+
+PROJECT_ROOT = "../../..";
+setenv("DATA_ROOT", sprintf("%s/data/", PROJECT_ROOT))
+setenv("PREDICTOR_DATA_ROOT", sprintf("%s/predictors/data/splitadj/closes/", PROJECT_ROOT))
+addpath(sprintf("%s/predictors/lib/getdata/splitadj/closes/", PROJECT_ROOT))
+addpath(sprintf("%s/predictors/lib/getdata/", PROJECT_ROOT))
+addpath(sprintf("%s/lib/utils/", PROJECT_ROOT))
+
+## Turn off matlab incompatibility warnings
+warning("off", "Octave:matlab-incompatible")
+clear PROJECT_ROOT

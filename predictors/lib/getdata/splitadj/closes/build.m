@@ -44,6 +44,7 @@
 
 function build(featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio)
 
+source('.octaverc');
 displayNow("Loading equities to be analysed.");
 PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
 inFile = "equities.csv";

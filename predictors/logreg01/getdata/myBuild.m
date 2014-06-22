@@ -5,7 +5,7 @@
 ## the full extent of the law.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} build01 ()
+## @deftypefn  {Function File} {} myBuild ()
 ## Calls build(256, 64, 4.0, 1.25, 1.0), i.e., using the parameters
 ## featureInterval: 256
 ## labelInterval: 64
@@ -17,6 +17,6 @@
 ## Author: mdf
 ## Created: 2014-06-17
 
-function build01()
+function myBuild()
 build(256, 64, 4.0, 1.25, 1.0);
 end
