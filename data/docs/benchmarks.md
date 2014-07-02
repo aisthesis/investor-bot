@@ -1,5 +1,13 @@
 Benchmarks
 ===
+Portfolio baseline
+---
+A comparison needs to be made to the following investment strategy:
+
+Distribute funds evenly among all stocks in the portfolio, maintaining some percentage
+as cash. Sell stock evenly to expand portfolio (some stocks are not included initially
+due to lack of data). This will presumably give a baseline higher than the S&P as a whole.
+
 S&P500
 ---
 ### Closes
