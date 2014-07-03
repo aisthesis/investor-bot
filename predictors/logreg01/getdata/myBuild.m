@@ -18,5 +18,10 @@
 ## Created: 2014-06-17
 
 function myBuild()
-build(256, 64, 4.0, 1.25, 1.0);
+
+IF_PATH = "..";
+ifname = "params.mat";
+load(sprintf("%s/%s", IF_PATH, ifname);
+build(featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
+
 end
