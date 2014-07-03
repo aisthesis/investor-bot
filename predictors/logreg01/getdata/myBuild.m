@@ -21,7 +21,7 @@ function myBuild()
 
 IF_PATH = "..";
 ifname = "params.mat";
-load(sprintf("%s/%s", IF_PATH, ifname);
+load(sprintf("%s/%s", IF_PATH, ifname));
 build(featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
 
 end
