@@ -19,13 +19,11 @@
 function setParams()
     ofname = "params.mat";
     maxIter = 5;
+    labelMakerFcn = "bullLabEquity";
     featureInterval = 256;
     labelInterval = 64;
-    bullMinRatio = 4.0;
-    upsideMinRatio = 1.25;
-    bearMaxRatio = 1.0;
+    ratio = 1.0;
 
-    save("-mat-binary", ofname, "maxIter", "featureInterval", "labelInterval", ...
-        "bullMinRatio", "upsideMinRatio", "bearMaxRatio");
+    save("-mat-binary", ofname, "maxIter", "labelMakerFcn", "featureInterval", "labelInterval", "ratio");
 
 end

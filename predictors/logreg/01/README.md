@@ -1,0 +1,30 @@
+predictors/logreg/01
+===
+Logistic regression using split-adjusted closes and the following parameters:
+
+<table>
+    <tr>
+        <th>Parameter</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>maxIter</td>
+        <td>128</td>
+    </tr>
+    <tr>
+        <td>labelMakerFcn</td>
+        <td>"bullLabEquity"</td>
+    </tr>
+    <tr>
+        <td>featureInterval</td>
+        <td>256</td>
+    </tr>
+    <tr>
+        <td>labelInterval</td>
+        <td>64</td>
+    </tr>
+    <tr>
+        <td>ratio</td>
+        <td>1.0</td>
+    </tr>
+</table>

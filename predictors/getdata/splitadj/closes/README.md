@@ -1,4 +1,4 @@
-predictors/lib/getdata/splitadj/closes
+predictors/getdata/splitadj/closes
 ===
 Code for building datasets to be processed using
 various prediction algorithms.
