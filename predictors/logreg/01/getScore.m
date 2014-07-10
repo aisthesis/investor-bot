@@ -1,0 +1,51 @@
+## Copyright (C) 2014 Marshall Farrier, Robert Rodrigues
+##
+## Distribution and use of this software without prior written permission
+## of the authors is strictly prohibitied and will be prosecuted to
+## the full extent of the law.
+
+## -*- texinfo -*-
+## @deftypefn  {Function File} {@var{v} =} getScore ()
+## Return and save @var{F1score}, @var{precision} and @var{recall}
+## over the test dataset.
+##
+## Usage:
+## 
+## @example
+## [score, precision, recall] = getScore()
+## @end example
+##
+## @end deftypefn
+
+## Author: mdf
+## Created: 2014-07-10
+
+function [score, precision, recall] = getScore()
+    
+    ofname = "score.mat";
+    PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
+
+    % load necessary variables
+    load("params.mat");
+
+    % load learned theta
+    load("learned.mat");
+    
+    % load test data
+    load(sprintf("%stest/features/%d/labels/%d/%s/%dpct/combined.mat", PREDICTOR_DATA_ROOT, ...
+        featureInterval, labelInterval, labelType, floor(ratio * 100)));
+
+    % add constant feature
+    m = size(X, 1);
+    X = [ones(m, 1), X];
+
+    % get predicted values
+    predicted = lrPredict(X, theta);
+
+    % get scores
+    [score, precision, recall] = fscore(predicted, y);
+
+    % save
+    save("-mat-binary", ofname, "score", "precision", "recall");
+
+endfunction
