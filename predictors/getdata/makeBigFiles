@@ -19,5 +19,6 @@ inFile = "equities.csv";
 equities = textread(sprintf("%s%s", PREDICTOR_DATA_ROOT, inFile), "%s");
 
 displayNow("Combining training, cross-validation and test datasets for all equities.");
-%trainCvTestCombine(equities, 256, 64, 4.0, 1.25, 1.0);
+% logreg/01
+trainCvTestCombine("bullish", equities, 256, 64, 1.0);
 displayNow("Training, cross-validation and test datasets created!\n");
