@@ -12,6 +12,10 @@ Logistic regression using split-adjusted closes and the following parameters:
         <td>128</td>
     </tr>
     <tr>
+        <td>labelType</td>
+        <td>"bullish"</td>
+    </tr>
+    <tr>
         <td>labelMakerFcn</td>
         <td>"bullLabEquity"</td>
     </tr>

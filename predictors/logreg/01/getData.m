@@ -24,6 +24,6 @@
 
 function getData()
     load('params.mat');
-    build(str2func(labelMakerFcn), featureInterval, labelInterval, ratio);
+    build(labelType, str2func(labelMakerFcn), featureInterval, labelInterval, ratio);
 
 end

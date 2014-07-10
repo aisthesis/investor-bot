@@ -18,13 +18,18 @@
 ## validation (2).
 ##
 ## Example usage:
+##
+## @example
 ## trainCvTestEquity("cat", 256, 64, 4.0, 1.25, 1.0);
+## @end example
 ## @end deftypefn
 
 ## Author: mdf
 ## Created: 2014-06-18
 
-function trainCvTestEquity(ticker, featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
+function trainCvTestEquity(labelType, ticker, featureInterval, labelInterval, ratio);
+
+displayNow("trainCvTestEquity() called");
 
 PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
 SIZES = [0.6 0.2 0.2];
@@ -34,6 +39,7 @@ path = cell(1, 1);
 nRows = 0;
 nRelevantFeatureRows = 0;
 startRow = 1;
+ofile = "";
 
 % get permutation for equity
 permutationsFile = sprintf("%s%s", PREDICTOR_DATA_ROOT, "eqDataDivisions.mat");
@@ -43,13 +49,7 @@ permutation = permutations.(ticker);
 % create directories
 for i = 1:N_NAMES
     path = {NAMES{i} "features" sprintf("%d", featureInterval) "labels" sprintf("%d", labelInterval) ...
-        "bullish" sprintf("%dpct", floor(bullMinRatio * 100))};
-    createDir(path, PREDICTOR_DATA_ROOT);
-    path = {NAMES{i} "features" sprintf("%d", featureInterval) "labels" sprintf("%d", labelInterval) ...
-        "bearish" sprintf("%dpct", floor(bearMaxRatio * 100))};
-    createDir(path, PREDICTOR_DATA_ROOT);
-    path = {NAMES{i} "features" sprintf("%d", featureInterval) "labels" sprintf("%d", labelInterval) ...
-        "upside-exceeded" sprintf("%dpct", floor((upsideMinRatio - 1) * 100))};
+        labelType sprintf("%dpct", floor(ratio * 100))};
     createDir(path, PREDICTOR_DATA_ROOT);
 endfor
 
@@ -60,36 +60,28 @@ dateXall = currDate;
 nRelevantFeatureRows = size(Xall, 1) - 2 * featureInterval + 2 - labelInterval;
 
 % load labels
-load(sprintf("%slabels/%d/bullish/%dpct/%s.mat", PREDICTOR_DATA_ROOT, labelInterval, ...
-    floor(bullMinRatio * 100), ticker));
-bullLabAll = y;
-load(sprintf("%slabels/%d/bearish/%dpct/%s.mat", PREDICTOR_DATA_ROOT, labelInterval, ...
-    floor(bearMaxRatio * 100), ticker));
-bearLabAll = y;
-load(sprintf("%slabels/%d/upside-exceeded/%dpct/%s.mat", PREDICTOR_DATA_ROOT, labelInterval, ...
-    floor((upsideMinRatio - 1) * 100), ticker));
-upsExLabAll = y;
+load(sprintf("%slabels/%d/%s/%dpct/%s.mat", PREDICTOR_DATA_ROOT, labelInterval, labelType, ...
+    floor(ratio * 100), ticker));
+yAll = y;
 
 % separate and save data sets
 for i = 1:N_NAMES
+    ofile = sprintf("%s%s/features/%d/labels/%d/%s/%dpct/%s.mat", PREDICTOR_DATA_ROOT, ...
+        NAMES{i}, featureInterval, labelInterval, labelType, floor(ratio * 100), ticker);
+
+    if exist(ofile)
+        printfNow("Skipping file %s because it already exists.\nDelete file and rerun this function to rebuild it.\n\n", ofile);
+        continue;
+    endif
+
     nRows = floor(SIZES(i) * nRelevantFeatureRows);
     X = Xall(startRow : startRow + nRows - 1, :);
     currDate = dateXall(startRow : startRow + nRows - 1, :);
-    y = bullLabAll(startRow + featureInterval - 1 : startRow + featureInterval + nRows - 2, :);
+    y = yAll(startRow + featureInterval - 1 : startRow + featureInterval + nRows - 2, :);
     printfNow(". ");
-    save("-mat-binary", sprintf("%s%s/features/%d/labels/%d/bullish/%dpct/%s.mat", PREDICTOR_DATA_ROOT, ...
-        NAMES{i}, featureInterval, labelInterval, floor(bullMinRatio * 100), ticker), "X", "y", "currDate");
-    y = bearLabAll(startRow + featureInterval - 1 : startRow + featureInterval + nRows - 2, :);
-    printfNow(". ");
-    save("-mat-binary", sprintf("%s%s/features/%d/labels/%d/bearish/%dpct/%s.mat", PREDICTOR_DATA_ROOT, ...
-        NAMES{i}, featureInterval, labelInterval, floor(bearMaxRatio * 100), ticker), "X", "y", "currDate");
-    y = upsExLabAll(startRow + featureInterval - 1 : startRow + featureInterval + nRows - 2, :);
-    printfNow(". ");
-    save("-mat-binary", sprintf("%s%s/features/%d/labels/%d/upside-exceeded/%dpct/%s.mat", PREDICTOR_DATA_ROOT, ...
-        NAMES{i}, featureInterval, labelInterval, floor((upsideMinRatio - 1) * 100), ticker), "X", "y", "currDate");
-    startRow = startRow + nRows + featureInterval - 1;
+    save("-mat-binary", ofile, "X", "y", "currDate");
     printfNow(". ");
 endfor
 displayNow("");
 
-end
+endfunction

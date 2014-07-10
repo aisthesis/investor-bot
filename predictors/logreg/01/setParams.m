@@ -23,11 +23,12 @@
 function setParams()
     ofname = "params.mat";
     maxIter = 5;
+    labelType = "bullish";
     labelMakerFcn = "bullLabEquity";
     featureInterval = 256;
     labelInterval = 64;
     ratio = 1.0;
 
-    save("-mat-binary", ofname, "maxIter", "labelMakerFcn", "featureInterval", "labelInterval", "ratio");
+    save("-mat-binary", ofname, "maxIter", "labelType", "labelMakerFcn", "featureInterval", "labelInterval", "ratio");
 
 end

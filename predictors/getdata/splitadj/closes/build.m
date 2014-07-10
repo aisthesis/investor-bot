@@ -38,7 +38,7 @@
 ## Author: mdf
 ## Created: 2014-06-17
 
-function build(labelMakerFcn, featureInterval, labelInterval, ratio)
+function build(labelType, labelMakerFcn, featureInterval, labelInterval, ratio)
 
 source('.octaverc');
 displayNow("Loading equities to be analysed.");
@@ -71,7 +71,7 @@ displayNow("TRAINING, CROSS-VALIDATION, TEST DATA");
 displayNow("Creating training, cross-validation and test datasets");
 for i = 1:n
     printfNow("Creating datasets for equity '%s'\n", equities{i});
-    trainCvTestEquity(equities{i}, featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
+    trainCvTestEquity(labelType, equities{i}, featureInterval, labelInterval, ratio);
 endfor
 
 displayNow("Combining datasets for all equities.");
