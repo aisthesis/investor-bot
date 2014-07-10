@@ -5,10 +5,10 @@
 ## the full extent of the law.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {} trainCvTestEquity (@var{ticker}, @var{featureInterval},
-## @var{labelInterval}, @var{bullMinRatio}, @var{upsideMinRatio}, @var{bearMaxRatio})
+## @deftypefn  {Function File} {} trainCvTestEquity (@var{labelType}, @var{ticker}, @var{featureInterval},
+## @var{labelInterval}, @var{ratio})
 ## Generate and store training, cross-validation and test datasets for the given
-## equity.
+## equity and label type.
 ## 
 ## The ratio training-cv-test will be 60-20-20, and the chronological
 ## order of the chosen set will be determined by a randomly generated permutation
@@ -20,7 +20,7 @@
 ## Example usage:
 ##
 ## @example
-## trainCvTestEquity("cat", 256, 64, 4.0, 1.25, 1.0);
+## trainCvTestEquity("bullish", "cat", 256, 64, 4.0);
 ## @end example
 ## @end deftypefn
 

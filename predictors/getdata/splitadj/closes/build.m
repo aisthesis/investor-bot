@@ -75,7 +75,7 @@ for i = 1:n
 endfor
 
 displayNow("Combining datasets for all equities.");
-trainCvTestCombine(equities, featureInterval, labelInterval, bullMinRatio, upsideMinRatio, bearMaxRatio);
+trainCvTestCombine(labelType, equities, featureInterval, labelInterval, ratio);
 displayNow("Training, cross-validation and test datasets created!\n");
 
 displayNow("Done!");
