@@ -1,7 +1,13 @@
 predictors/logreg/01
 ===
-Logistic regression using split-adjusted closes and the following parameters:
+Logistic regression using split-adjusted closes
 
+Results
+---
+F1 score is around 71%
+
+Parameters
+---
 <table>
     <tr>
         <th>Parameter</th>
@@ -9,7 +15,7 @@ Logistic regression using split-adjusted closes and the following parameters:
     </tr>
     <tr>
         <td>maxIter</td>
-        <td>128</td>
+        <td>64</td>
     </tr>
     <tr>
         <td>labelType</td>

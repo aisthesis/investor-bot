@@ -24,15 +24,23 @@
 
 function learn()
     
-    % FIXME (value for debugging)
-    nLambdas = 2;
+    score = 0;
+    bestScore = 0;
+    lambda = 0;
+    bestLambda = 0;
+    ofname = "learned.mat";
+
+    % ================================================================
+    % Choices for regularization parameter
+    % FIXME use 12 after debugging
+    nLambdas = 12;
     % Starting with this increment, lambda is successively increased by a factor of 2 
     lambdaIncrement = 0.001;
-    lambdas = zeros(nLambdas, 1);
+    lambdas = zeros(1, nLambdas);
     % lambdas = [0 0.001 0.002 0.004 etc.]
     lambdas(2:end) = lambdaIncrement * (2 .^ [0:(nLambdas - 2)]');
 
-    %================================================================
+    % ================================================================
     % Get data
     load("params.mat");
     PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
@@ -53,12 +61,32 @@ function learn()
     m = size(X, 1);
     Xxval = [ones(m, 1), X];
     yxval = y;
+    predicted = zeros(size(yxval));
 
+    % ================================================================ 
     % find theta for each choice of lambda and choose the best
     initial_theta = zeros(n, 1);
+    bestTheta = zeros(n, 1);
     options = optimset('GradObj', 'on', 'MaxIter', maxIter);
-    for lambda = lambdas
-        theta = fmincg(@(t)(lrCostFunction(t, Xtrain, ytrain, lambda)), initial_theta, options);
+    for lamb = lambdas
+        theta = fmincg(@(t)(lrCostFunction(t, Xtrain, ytrain, lamb)), initial_theta, options);
+        predicted = lrPredict(Xxval, theta);
+        score = fscore(predicted, yxval);
+        printfNow("lambda: %f, F1 score: %f\n", lamb, score);
+        if score > bestScore
+            bestScore = score;
+            bestTheta = theta;
+            bestLambda = lamb;
+        endif
     endfor
 
-end
+    % ================================================================
+    % Set return values
+    theta = bestTheta;
+    lambda = bestLambda;
+
+    % ================================================================
+    % Save results
+    save("-mat-binary", ofname, "theta", "lambda");
+
+endfunction
