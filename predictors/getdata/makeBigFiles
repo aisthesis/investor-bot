@@ -1,0 +1,24 @@
+## Copyright (C) 2014 Marshall Farrier, Robert Rodrigues
+##
+## Distribution and use of this software without prior written permission
+## of the authors is strictly prohibitied and will be prosecuted to
+## the full extent of the law.
+
+## Script for building data files too big for GitHub.
+## WARNING! This script is not intended to be run directly but
+## should be called from a global build file.
+
+## Author: mdf
+## Created: 2014-06-18
+
+cd ./splitadj/closes
+source('.octaverc');
+
+PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
+inFile = "equities.csv";
+equities = textread(sprintf("%s%s", PREDICTOR_DATA_ROOT, inFile), "%s");
+
+displayNow("Combining training, cross-validation and test datasets for all equities.");
+% logreg/01
+trainCvTestCombine("bullish", equities, 256, 64, 1.0);
+displayNow("Training, cross-validation and test datasets created!\n");
