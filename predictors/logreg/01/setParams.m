@@ -9,8 +9,12 @@
 ## Set parameters to be used in the current predictor algorithm.
 ## Parameters will be saved to params.mat in the current directory.
 ##
-## Example usage:
+## Usage:
+##
+## @example
 ## setParams()
+## @end example
+##
 ## @end deftypefn
 
 ## Author: mdf
