@@ -51,7 +51,7 @@ displayNow("================================================================");
 displayNow("LABELS");
 displayNow("Creating labels");
 for i = 1:n
-    printfNow("Creating bearish labels for equity '%s'\n", equities{i});
+    printfNow("Creating labels for equity '%s'\n", equities{i});
     labelMakerFcn(equities{i}, labelInterval, ratio);
 endfor
 displayNow("Label creation complete!\n");
