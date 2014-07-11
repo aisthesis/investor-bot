@@ -1,7 +1,23 @@
 predictors/logreg/01
 ===
-Logistic regression using split-adjusted closes and the following parameters:
+Logistic regression using split-adjusted closes
 
+Results
+---
+F1 score on test data is 71.3%
+
+Noteworthy is that recall is high (99.6%) whereas
+precision is low (55.6%). So, we are catching almost everything
+but have a lot of false positives.
+
+Possible fixes:
+
+- SVMs or neural networks
+- Adding order 2 features (reducing to 128 or even 64 prior sessions to keep runtime
+bearable.
+
+Parameters
+---
 <table>
     <tr>
         <th>Parameter</th>
@@ -9,7 +25,7 @@ Logistic regression using split-adjusted closes and the following parameters:
     </tr>
     <tr>
         <td>maxIter</td>
-        <td>128</td>
+        <td>64</td>
     </tr>
     <tr>
         <td>labelType</td>
