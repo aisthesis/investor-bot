@@ -32,7 +32,6 @@ function learn()
 
     % ================================================================
     % Choices for regularization parameter
-    % FIXME use 12 after debugging
     nLambdas = 12;
     % Starting with this increment, lambda is successively increased by a factor of 2 
     lambdaIncrement = 0.001;
