@@ -1,0 +1,15 @@
+Acquire protobuf from https://code.google.com/p/protobuf/downloads/detail?name=protobuf-2.5.0.tar.gz&can=2&q=
+Or run getprotobuf here which will wget it for you.
+
+After download, untar it, cd into its new subdirectory, and at a minimum execute the following:
+
+  $ ./configure
+  $ make
+  $ make check
+  $ make install
+
+Note that make install may require sudo.
+
+This will install the C++ goodies and compiler and should unblock your build.
+
+For complete information, see the README you just untarred.
