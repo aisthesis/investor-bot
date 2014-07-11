@@ -1,0 +1,6 @@
+syntax = "proto2";
+package broker;
+
+message InvestorId {
+    required uint32 investorId = 1;
+}

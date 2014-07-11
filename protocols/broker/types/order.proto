@@ -1,0 +1,89 @@
+syntax = "proto2";
+package broker;
+
+import '../../common/date.proto';
+import 'investorId.proto';
+import 'symbol.proto';
+
+message OrderId {
+    required string orderId = 1;
+}
+
+enum OrderStatus {
+    PENDING = 0;
+    FILLED = 1;
+    CANCELED = 2;
+}
+
+message Order {
+    required InvestorId investorId = 1;
+    required common.Date orderDate = 2;
+
+    //These probably won't exist when placing an order
+    optional OrderId orderId = 3;
+    optional OrderStatus status = 4;
+
+    // For a filled order
+    optional double fillPrice = 5;
+    optional double fillAmount = 6;
+    optional common.Date fillDate = 7;
+
+    //Only supporting limit orders for now, but will use this as switch for details
+    enum OrderType {
+        BUY_LIMIT = 0;
+        SELL_LIMIT = 1;
+
+        BUY_MARKET = 2;
+        SELL_MARKET = 3;
+    }
+    required OrderType orderType = 8;
+    required OrderDetails details = 9;
+
+    //In case we decide to eventually let orders be placed other than fill-or-kill
+    optional uint32 maxAge = 10;
+}
+
+message OrderDetails {
+    //Making a union of types
+    optional LimitOrderDetails orderDetails = 9;
+    optional MarketOrderDetails orderDetails = 10;
+}
+
+message LimitOrderDetails {
+    required double price = 1;
+}
+
+message MarketOrderDetails {
+}
+
+//-----------------------------------------------------------------------------
+// Requests & Responses
+//-----------------------------------------------------------------------------
+message OpenOrderRequest {
+    required InvestorId investorId = 1;
+    required Symbol symbol = 2;
+    required Order order = 3;
+}
+message OpenOrderResponse {
+    required OrderId orderId = 1;
+
+    //In the event of an invalid order
+    optional OrderStatus status = 2;
+}
+
+message GetOrderStatusRequest {
+    required OrderId orderId = 1;
+}
+message GetOrderStatusResponse {
+    required OrderId orderId = 1;
+    //In case the id was invalid
+    optional OrderStatus status = 2;
+}
+
+message GetOrderDetailsRequest {
+    required OrderId orderId = 1;
+}
+message GetOrderDetailsResponse {
+    //In case the id was invalid
+    optional Order order = 1;
+}

@@ -1,0 +1,12 @@
+syntax = "proto2";
+package broker;
+
+import '../../common/date.proto';
+import 'symbol.proto';
+
+message Lot {
+    required Symbol symbol = 1;
+    required common.Date acquisitionDate = 2;
+    required double amount = 3;
+    required double price = 4;
+}

@@ -1,0 +1,6 @@
+syntax = "proto2";
+package broker;
+
+message Symbol {
+    required string symbol = 1;
+}

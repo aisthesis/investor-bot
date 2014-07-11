@@ -1,0 +1,24 @@
+syntax = "proto2";
+package broker;
+
+import 'holding.proto';
+import 'investorId.proto';
+
+message Portfolio {
+	required InvestorId investorId = 1;
+	repeated Holding holdings = 2;
+}
+
+//-----------------------------------------------------------------------------
+// Requests & Responses
+//-----------------------------------------------------------------------------
+message GetPortfolioRequest {
+    required InvestorId investorId = 1;
+
+    optional bool includeLots = 300 [default = false];
+}
+
+message GetPortfolioResponse {
+	required Portfolio portfolio = 1;
+}
+

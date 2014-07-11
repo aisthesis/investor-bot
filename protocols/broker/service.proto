@@ -1,0 +1,18 @@
+syntax = "proto2";
+package broker;
+
+import 'types/investorId.proto';
+import 'types/order.proto';
+import 'types/portfolio.proto';
+
+message Void {}
+
+service Broker {
+    rpc GetPortfolio (GetPortfolioRequest) returns (GetPortfolioResponse);
+
+    rpc NewInvestor (Void) returns (InvestorId);
+
+    rpc OpenOrder (OpenOrderRequest) returns (OpenOrderResponse);
+    rpc GetOrderStatus (GetOrderStatusRequest) returns (GetOrderStatusResponse);
+    rpc GetOrderDetails (GetOrderDetailsRequest) returns (GetOrderDetailsResponse);
+}
