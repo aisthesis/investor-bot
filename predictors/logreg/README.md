@@ -1,5 +1,7 @@
 predictors/logreg
 ===
+Description
+---
 Predictors using logistic regression.
 
 Overview
