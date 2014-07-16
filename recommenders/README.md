@@ -8,7 +8,14 @@ at buy and sell recommendations.
 Overview
 ---
 ### 00
+#### Objective
 Simplest viable recommender as baseline: Always recommend **buy** (1.0).
+
+#### Algorithm
+- Use the equities used in predictors/01
+
+#### Results
+- ??
 
 Output format
 ---
