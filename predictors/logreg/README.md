@@ -1,5 +1,7 @@
-A first attempt using logistic regression
+predictors/logreg
 ===
+Predictors using logistic regression.
+
 Overview
 ---
 ### 01
