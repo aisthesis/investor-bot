@@ -17,6 +17,14 @@ Simplest viable recommender as baseline: Always recommend **buy** (1.0).
 #### Results
 - ??
 
+### 01
+#### Objective
+Recommendation based entirely on predictors/logreg/01
+#### Algorithm
+-Recommendation output will be identical to predictor ouput.
+#### Results
+- ??
+
 Output format
 ---
 A recommender should have as output a set of `.csv` files
