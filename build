@@ -3,7 +3,13 @@ echo "Building required data files for predictors."
 pushd predictors/getdata > /dev/null
 octave -q makeBigFiles
 popd > /dev/null
-echo "Predictor data files built."
+echo "Predictor data files built."; echo ""
+
+echo "Building required data files for recommenders."
+pushd recommenders > /dev/null
+octave -q makeMatBin
+popd > /dev/null
+echo "Recommender binary data files built."; echo ""
 
 # Build other required files
 
