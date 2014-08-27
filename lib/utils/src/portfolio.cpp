@@ -50,7 +50,7 @@ void Portfolio::buy(const std::string &equity, const int &shares, const double &
 // always succeeds, but possibly on margin 
 void Portfolio::sell(const std::string &equity, const int &shares, const double &value) {
     cash_ += value;
-    add_shares(equity, -1 * shares);
+    add_shares(equity, -shares);
 }
 
 int Portfolio::shares(const std::string &equity) const {
