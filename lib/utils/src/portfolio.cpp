@@ -15,6 +15,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 #include "portfolio.h"
 
 Portfolio::Portfolio() : Portfolio(0.0) {}
@@ -56,6 +57,16 @@ void Portfolio::sell(const std::string &equity, const int &shares, const double 
 int Portfolio::shares(const std::string &equity) const {
     if (stocks_->count(equity) > 0) return (*stocks_)[equity];
     return 0;
+}
+
+int Portfolio::n_long_pos() const {
+    return std::count_if(stocks_->begin(), stocks_->end(), 
+        [](std::pair<std::string, int> it){ return it.second > 0; });
+}
+
+int Portfolio::n_short_pos() const {
+    return std::count_if(stocks_->begin(), stocks_->end(), 
+        [](std::pair<std::string, int> it){ return it.second < 0; });
 }
 
 void Portfolio::add_shares(const std::string &equity, const int &shares) {

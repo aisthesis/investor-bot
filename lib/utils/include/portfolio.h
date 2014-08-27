@@ -37,6 +37,8 @@ public:
     // always succeeds, but possibly on margin 
     void sell(const std::string &equity, const int &shares, const double &value);
     int shares(const std::string &) const;
+    int n_long_pos() const;
+    int n_short_pos() const;
 private:
     void add_shares(const std::string &equity, const int &shares);
 };
