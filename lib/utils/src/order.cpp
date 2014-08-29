@@ -46,13 +46,26 @@ double Order::share_price() const {
 }
 
 bool Order::fillable(const double &mkt_price) const {
-    if (mode_ == Mode::kMarket || share_price_ == mkt_price) return true;
-    if (share_price_ < mkt_price) {
+    return fillable(mkt_price, mkt_price);
+}
+
+bool Order::fillable(const double &range_begin, const double &range_end) const {
+    if (mode_ == Mode::kMarket) return true;
+    double lower_bound = range_begin,
+        upper_bound = range_end;
+
+    if (lower_bound > upper_bound) {
+        lower_bound = range_end;
+        upper_bound = range_begin;
+    }
+
+    if (lower_bound <= share_price_ && share_price_ <= upper_bound) return true;
+    if (share_price_ < lower_bound) {
         if (type_ == Type::kSell && mode_ == Mode::kLimit) return true;
         if (type_ == Type::kBuy && mode_ == Mode::kStopLoss) return true;
         return false;
     }
-    // reaching here means: mkt_price < share_price_
+    // reaching here means upper_bound < share_price_
     if (type_ == Type::kBuy && mode_ == Mode::kLimit) return true;
     if (type_ == Type::kSell && mode_ == Mode::kStopLoss) return true;
     return false;

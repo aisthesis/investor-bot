@@ -33,7 +33,9 @@ int main() {
     int shares = 5;
     double share_price = 3.14159;
     double low_mkt_price = 3.0;
+    double lower_mkt_price = 2.9;
     double high_mkt_price = 3.15;
+    double higher_mkt_price = 3.2;
 
     std::cout << "Testing order type BUY:" << std::endl;
     // Mode kLimit
@@ -48,18 +50,27 @@ int main() {
     // fillable()
     show_msg("limit buy order: mkt below limit", order->fillable(low_mkt_price), passed, failed);
     show_msg("limit buy order: mkt above limit", !order->fillable(high_mkt_price), passed, failed);
+    show_msg("limit buy order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
+    show_msg("limit buy order: range above limit", !order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
+    show_msg("limit buy order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
     delete order;
 
     // Mode kStopLoss
     order = new Order(Order::Type::kBuy, Order::Mode::kStopLoss, ticker, shares, share_price);
     show_msg("stop-loss buy order: mkt below limit", !order->fillable(low_mkt_price), passed, failed);
     show_msg("stop-loss buy order: mkt above limit", order->fillable(high_mkt_price), passed, failed);
+    show_msg("stop-loss buy order: range below limit", !order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
+    show_msg("stop-loss buy order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
+    show_msg("stop-loss buy order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
     delete order;
 
     // Mode Market
     order = new Order(Order::Type::kBuy, Order::Mode::kMarket, ticker, shares, share_price);
     show_msg("market buy order: mkt below limit", order->fillable(low_mkt_price), passed, failed);
     show_msg("market buy order: mkt above limit", order->fillable(high_mkt_price), passed, failed);
+    show_msg("market buy order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
+    show_msg("market buy order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
+    show_msg("market buy order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
     delete order;
 
     std::cout << "Testing order type SELL:" << std::endl;
@@ -67,18 +78,27 @@ int main() {
     order = new Order(Order::Type::kSell, Order::Mode::kLimit, ticker, shares, share_price);  
     show_msg("limit sell order: mkt below limit", !order->fillable(low_mkt_price), passed, failed);
     show_msg("limit sell order: mkt above limit", order->fillable(high_mkt_price), passed, failed);
+    show_msg("limit sell order: range below limit", !order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
+    show_msg("limit sell order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
+    show_msg("limit sell order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
     delete order;
 
     // Mode kStopLoss
     order = new Order(Order::Type::kSell, Order::Mode::kStopLoss, ticker, shares, share_price);
     show_msg("stop-loss sell order: mkt below limit", order->fillable(low_mkt_price), passed, failed);
     show_msg("stop-loss sell order: mkt above limit", !order->fillable(high_mkt_price), passed, failed);
+    show_msg("stop-loss sell order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
+    show_msg("stop-loss sell order: range above limit", !order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
+    show_msg("stop-loss sell order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
     delete order;
 
     // Mode Market
     order = new Order(Order::Type::kSell, Order::Mode::kMarket, ticker, shares, share_price);
     show_msg("market sell order: mkt below limit", order->fillable(low_mkt_price), passed, failed);
     show_msg("market sell order: mkt above limit", order->fillable(high_mkt_price), passed, failed);
+    show_msg("market sell order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
+    show_msg("market sell order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
+    show_msg("market sell order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
     delete order;
 
     std::cout << passed << " tests passed." << std::endl

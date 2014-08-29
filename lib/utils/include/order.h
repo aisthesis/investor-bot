@@ -43,5 +43,6 @@ public:
     double share_price() const;
 
     bool fillable(const double &) const;
+    bool fillable(const double &, const double &) const;
 };
 #endif
