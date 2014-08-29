@@ -11,6 +11,12 @@ octave -q makeMatBin
 popd > /dev/null
 echo "Recommender binary data files built."; echo ""
 
+echo "Building common C++ utils."
+pushd lib/utils > /dev/null
+make
+popd > /dev/null
+echo "C++ utils built."; echo ""
+
 # Build other required files
 
 echo "Done!"
