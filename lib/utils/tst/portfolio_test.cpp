@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include "portfolio.h"
 
 #define RESET "\033[0m"
@@ -51,9 +52,13 @@ void test(Portfolio *pf, double cash) {
         shares2 = 0,
         shares3 = 0;
     double actual_cash = pf->view_cash();
+    double pf_value = cash;
     std::string eq1 = "foo",
         eq2 = "bar",
         eq3 = "blah";
+    std::unordered_map<std::string, double> price_table;
+    price_table[eq1] = 10.0;
+    price_table[eq2] = 5.0;
 
     std::cout << "Testing initial cash." << std::endl;
     show_msg("initial cash", approx(actual_cash, cash), passed, failed);
@@ -67,23 +72,39 @@ void test(Portfolio *pf, double cash) {
     std::cout << "Testing initial short positions." << std::endl;
     show_msg("initial short positions", pf->n_short_pos() == 0, passed, failed);
 
+    std::cout << "Testing initial value." << std::endl;
+    show_msg("initial value", approx(pf->value(price_table), pf_value), passed, failed);
+
     std::cout << "Test buying shares." << std::endl;
     constexpr int shares_to_buy = 50;
     constexpr double cost = 200.0;
     pf->buy(eq1, shares_to_buy, cost);
     actual_cash -= cost;
     shares1 += shares_to_buy;
+    pf_value += 300.0;
     // cash correct
     show_msg("cash after purchase", approx(pf->view_cash(), actual_cash), passed, failed);
     // shares correct
     show_msg("shares after purchase", shares1 == pf->shares(eq1), passed, failed);
+    show_msg("value after purchase", approx(pf->value(price_table), pf_value), passed, failed);
 
     std::cout << "Test selling shares." << std::endl;
     constexpr int shares_to_sell = 23;
     constexpr double value = 193.1234890;
     pf->sell(eq1, shares_to_sell, value);
+    pf_value += value - price_table[eq1] * shares_to_sell;
     pf->sell(eq2, shares_to_sell, value);
+    pf_value += value - price_table[eq2] * shares_to_sell;
+    show_msg("value after buy and sell", approx(pf->value(price_table), pf_value), passed, failed);
     pf->sell(eq3, shares_to_sell, value);
+    try {
+        // exception expected because eq3 not in price table
+        pf->value(price_table);
+        show_msg("stock missing from price table", false, passed, failed);
+    }
+    catch (const std::invalid_argument &e) {
+        show_msg("stock missing from price table", true, passed, failed);
+    }
     actual_cash += 3.0 * value;
     shares1 -= shares_to_sell;  // 27
     shares2 -= shares_to_sell;  // -23

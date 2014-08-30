@@ -16,6 +16,7 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include <stdexcept>
 #include "portfolio.h"
 
 Portfolio::Portfolio() : Portfolio(0.0) {}
@@ -76,4 +77,18 @@ void Portfolio::add_shares(const std::string &equity, const int &shares) {
     else {
         (*stocks_)[equity] = shares;
     }
+}
+
+double Portfolio::value(const std::unordered_map<std::string, double> &price_table) const {
+    double value = cash_;
+    for (const auto &stock : *stocks_) {
+        if (stock.second != 0) {
+            // raise exception if stock not found in table
+            if (price_table.count(stock.first) == 0) {
+                throw std::invalid_argument("stock not present in price table");
+            }
+            value += price_table.at(stock.first) * stock.second;
+        }
+    }
+    return value;
 }

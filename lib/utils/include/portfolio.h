@@ -39,6 +39,8 @@ public:
     int shares(const std::string &) const;
     int n_long_pos() const;
     int n_short_pos() const;
+    // get portfolio value given share prices of stocks owned
+    double value(const std::unordered_map<std::string, double> &price_table) const;
 private:
     void add_shares(const std::string &equity, const int &shares);
 };
