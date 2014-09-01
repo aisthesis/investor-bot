@@ -28,7 +28,8 @@ bool show_msg(const char *, const bool &, int &, int &);
 
 // concrete subclass for testing
 class MyInvestor : public Investor {
-    Order order(const std::string &ticker, const double &strength) const {
+    Order order(const std::string &ticker, const double &strength,
+            const std::unordered_map<std::string, double> &price_list) const {
         Order order(Order::Type::kBuy, Order::Mode::kLimit, ticker, 0, 0.0);
         return order;
     }

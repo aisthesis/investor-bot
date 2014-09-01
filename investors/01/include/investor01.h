@@ -28,6 +28,11 @@ public:
 
     // order for 0 shares if no action
     // this is where all of the investor logic goes:
-    Order order(const std::string &ticker, const double &strength) const;
+    Order order(const std::string &ticker, const double &strength, 
+            const std::unordered_map<std::string, double> &price_table) const;
+
+private:
+    int shares_to_buy(const std::string &ticker, 
+            const std::unordered_map<std::string, double> &price_table) const;
 };
 #endif

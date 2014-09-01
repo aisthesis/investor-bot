@@ -18,6 +18,8 @@
 
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
+
 #include "portfolio.h"
 #include "order.h"
 
@@ -37,6 +39,7 @@ public:
     Portfolio *portfolio() const;
     // order for 0 shares if no action
     // this is where all of the investor logic goes:
-    virtual Order order(const std::string &ticker, const double &strength) const = 0;
+    virtual Order order(const std::string &ticker, const double &strength, 
+            const std::unordered_map<std::string, double> &price_list) const = 0;
 };
 #endif

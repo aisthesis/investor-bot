@@ -17,11 +17,18 @@ make
 popd > /dev/null
 echo "C++ utils built."; echo ""
 
-echo "Building C++ investor abstract base class."
+echo "Building C++ investor classes."
+echo "Building Investor abstract base class."
 pushd investors/common > /dev/null
 make
 popd > /dev/null
-echo "C++ investor base class built."; echo ""
+echo "Investor base class built."
+echo "Building Investor01."
+pushd investors/common > /dev/null
+make
+popd > /dev/null
+echo "Investor01 built."
+echo "C++ investor classes built."; echo ""
 
 # Build other required files
 
