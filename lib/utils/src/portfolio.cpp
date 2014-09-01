@@ -30,7 +30,7 @@ Portfolio::~Portfolio() {
     delete stocks_;
 }
 
-double Portfolio::view_cash() const {
+double Portfolio::cash() const {
     return cash_;
 }
 

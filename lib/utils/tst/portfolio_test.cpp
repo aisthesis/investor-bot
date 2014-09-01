@@ -51,7 +51,7 @@ void test(Portfolio *pf, double cash) {
         shares1 = 0,
         shares2 = 0,
         shares3 = 0;
-    double actual_cash = pf->view_cash();
+    double actual_cash = pf->cash();
     double pf_value = cash;
     std::string eq1 = "foo",
         eq2 = "bar",
@@ -83,7 +83,7 @@ void test(Portfolio *pf, double cash) {
     shares1 += shares_to_buy;
     pf_value += 300.0;
     // cash correct
-    show_msg("cash after purchase", approx(pf->view_cash(), actual_cash), passed, failed);
+    show_msg("cash after purchase", approx(pf->cash(), actual_cash), passed, failed);
     // shares correct
     show_msg("shares after purchase", shares1 == pf->shares(eq1), passed, failed);
     show_msg("value after purchase", approx(pf->value(price_table), pf_value), passed, failed);
@@ -110,7 +110,7 @@ void test(Portfolio *pf, double cash) {
     shares2 -= shares_to_sell;  // -23
     shares3 -= shares_to_sell;
     // cash correct
-    show_msg("cash after sales", approx(pf->view_cash(), actual_cash), passed, failed);
+    show_msg("cash after sales", approx(pf->cash(), actual_cash), passed, failed);
     // shares for eq1 correct
     show_msg("shares after buy and sell", shares1 == pf->shares(eq1), passed, failed);
     // shares for eq2 correct

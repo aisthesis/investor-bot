@@ -40,7 +40,7 @@ public:
     Portfolio *portfolio() const;
     // order for 0 shares if no action
     // this is where all of the investor logic goes:
-    virtual std::vector<Order> order(const std::string &ticker, const double &strength, 
-            const std::unordered_map<std::string, double> &price_list) const = 0;
+    virtual std::vector<Order> order(const std::unordered_map<std::string, double> &strengths, 
+            const std::unordered_map<std::string, double> &price_list) = 0;
 };
 #endif

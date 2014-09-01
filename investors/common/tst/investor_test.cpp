@@ -30,8 +30,8 @@ bool show_msg(const char *, const bool &, int &, int &);
 
 // concrete subclass for testing
 class MyInvestor : public Investor {
-    std::vector<Order> order(const std::string &ticker, const double &strength,
-            const std::unordered_map<std::string, double> &price_list) const {
+    std::vector<Order> order(const std::unordered_map<std::string, double> &strengths,
+            const std::unordered_map<std::string, double> &price_list) {
         return std::vector<Order>();
     }
 };
@@ -54,7 +54,7 @@ int main() {
     show_msg("watch list initially empty", investor.n_watched() == 0, passed, failed);
     show_msg("ticker1 not initially watched", !investor.watches(ticker1), passed, failed);
     show_msg("portfolio has no initial long positions", investor.portfolio()->n_long_pos() == 0, passed, failed);
-    show_msg("portfolio has no initial cash", approx(investor.portfolio()->view_cash(), cash), passed, failed);
+    show_msg("portfolio has no initial cash", approx(investor.portfolio()->cash(), cash), passed, failed);
 
     // watch list
     investor.watch(ticker1).watch(ticker2);
@@ -67,15 +67,15 @@ int main() {
     // portfolio
     investor.portfolio()->deposit(deposit_amt);
     cash += deposit_amt;
-    show_msg("deposit to portfolio successful", approx(investor.portfolio()->view_cash(), cash), passed, failed);
+    show_msg("deposit to portfolio successful", approx(investor.portfolio()->cash(), cash), passed, failed);
     investor.portfolio()->buy(ticker1, shares_bought, purchase_price);
     cash -= purchase_price;
-    show_msg("correct cash after purchase", approx(investor.portfolio()->view_cash(), cash), passed, failed);
+    show_msg("correct cash after purchase", approx(investor.portfolio()->cash(), cash), passed, failed);
     show_msg("correct long position count after purchase", investor.portfolio()->n_long_pos() == 1, passed, failed);
     show_msg("correct shares after purchase", investor.portfolio()->shares(ticker1) == shares_bought, passed, failed);
     investor.portfolio()->sell(ticker1, shares_sold, sale_price);
     cash += sale_price;
-    show_msg("correct cash after sale", approx(investor.portfolio()->view_cash(), cash), passed, failed);
+    show_msg("correct cash after sale", approx(investor.portfolio()->cash(), cash), passed, failed);
     show_msg("correct long position count after sale", investor.portfolio()->n_long_pos() == 1, passed, failed);
 
     std::cout << passed << " tests passed." << std::endl

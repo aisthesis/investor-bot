@@ -28,7 +28,7 @@ public:
     Portfolio(const double &);
     ~Portfolio();
 
-    double view_cash() const;
+    double cash() const;
     void deposit(const double &);
     // no built-in check for negative result
     void withdraw(const double &);
