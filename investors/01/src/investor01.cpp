@@ -10,7 +10,6 @@
  * investor implementation 01
  * Simply follows the recommendation.
  * Note that available cash is not checked in placing a buy order.
- * Unless the simulator contains logic to prevent it, 
  *
  * Author Marshall Farrier
  * Since 2014-08-28
@@ -18,34 +17,38 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "investor01.h"
 #include "portfolio.h"
+#include "order.h"
 #include "investor_constants.h"
 
-Order Investor01::order(const std::string &ticker, const double &strength,
+std::vector<Order> Investor01::order(const std::string &ticker, const double &strength,
         const std::unordered_map<std::string, double> &price_table) const {
-    Order do_nothing(Order::Type::kSell, Order::Mode::kLimit, ticker, 0, 0.0);
+    std::vector<Order> orders;
     // sell recommendation
     if (strength < investor::kSellHoldThreshold) {
         // we are long the given stock
         if (this->portfolio()->shares(ticker) > 0) {
-            return Order(Order::Type::kSell, Order::Mode::kLimit, ticker,
-                    this->portfolio()->shares(ticker), price_table.at(ticker));
+            orders.push_back(Order(Order::Type::kSell, Order::Mode::kLimit, ticker,
+                    this->portfolio()->shares(ticker), price_table.at(ticker)));
         }
         // no shares owned
-        return do_nothing;
+        return orders;
     }
     // hold recommendation: do nothing
     if (strength < investor::kHoldBuyThreshold) {
-        return do_nothing;
+        return orders;
     }
     // buy recommendation
-    // stock already owned: do nothing
-    if (this->portfolio()->shares(ticker) > 0) return do_nothing;
-    // no shares owned: buy
-    return Order(Order::Type::kBuy, Order::Mode::kLimit, ticker, 
-            shares_to_buy(ticker, price_table), price_table.at(ticker));
+    // no shares owned: buy them (otherwise do nothing)
+    if (this->portfolio()->shares(ticker) <= 0) {
+        orders.push_back(Order(Order::Type::kBuy, Order::Mode::kLimit, ticker,
+                shares_to_buy(ticker, price_table) - this->portfolio()->shares(ticker), 
+                price_table.at(ticker)));
+    }
+    return orders;
 }
 
 int Investor01::shares_to_buy(const std::string &ticker, 
