@@ -25,23 +25,6 @@ Investor::~Investor() {
     delete portfolio_;
 }
 
-bool Investor::watches(const std::string &ticker) const {
-    return watch_list_.count(ticker) > 0;
-}
-
-Investor &Investor::watch(const std::string &ticker) {
-    watch_list_.insert(ticker);
-    return *this;
-}
-
-void Investor::unwatch(const std::string &ticker) {
-    watch_list_.erase(ticker);
-}
-
-int Investor::n_watched() const {
-    return watch_list_.size();
-}
-
 Portfolio *Investor::portfolio() const {
     return portfolio_;
 }

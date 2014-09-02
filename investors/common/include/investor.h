@@ -26,17 +26,12 @@
 
 class Investor {
 private:
-    std::unordered_set<std::string> watch_list_;
     Portfolio *portfolio_;
 
 public:
     Investor(); 
     ~Investor();
 
-    bool watches(const std::string &) const;
-    Investor &watch(const std::string &);
-    void unwatch(const std::string &);
-    int n_watched() const;
     Portfolio *portfolio() const;
     // order for 0 shares if no action
     // this is where all of the investor logic goes:

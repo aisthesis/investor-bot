@@ -51,18 +51,8 @@ int main() {
     MyInvestor investor;
 
     // Initialization
-    show_msg("watch list initially empty", investor.n_watched() == 0, passed, failed);
-    show_msg("ticker1 not initially watched", !investor.watches(ticker1), passed, failed);
     show_msg("portfolio has no initial long positions", investor.portfolio()->n_long_pos() == 0, passed, failed);
     show_msg("portfolio has no initial cash", approx(investor.portfolio()->cash(), cash), passed, failed);
-
-    // watch list
-    investor.watch(ticker1).watch(ticker2);
-    show_msg("watch list: 2 tickers added", investor.n_watched() == 2, passed, failed);
-    show_msg("investor watches ticker2", investor.watches(ticker2), passed, failed);
-    investor.unwatch(ticker2);
-    show_msg("ticker2 removed from watch list", !investor.watches(ticker2), passed, failed);
-    show_msg("watch list: 2 tickers added then 1 removed", investor.n_watched() == 1, passed, failed);
 
     // portfolio
     investor.portfolio()->deposit(deposit_amt);

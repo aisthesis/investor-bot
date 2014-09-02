@@ -44,5 +44,7 @@ private:
             const std::unordered_map<std::string, double> &price_table) const;
     void process_recommendation(std::vector<Order> &orders, const std::string &ticker,
             const double &strength, const std::unordered_map<std::string, double> &price_table);
+    void sell_part_of_each(std::vector<Order> &orders, 
+            const std::unordered_map<std::string, double> &price_table, const double &portion) const;
 };
 #endif

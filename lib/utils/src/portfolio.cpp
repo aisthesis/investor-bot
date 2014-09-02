@@ -92,3 +92,11 @@ double Portfolio::value(const std::unordered_map<std::string, double> &price_tab
     }
     return value;
 }
+
+std::unordered_map<std::string, int>::iterator Portfolio::begin() const {
+    return stocks_->begin();
+}
+
+std::unordered_map<std::string, int>::iterator Portfolio::end() const {
+    return stocks_->end();
+}

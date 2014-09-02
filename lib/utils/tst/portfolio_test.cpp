@@ -16,6 +16,8 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
+
 #include "portfolio.h"
 
 #define RESET "\033[0m"
@@ -108,7 +110,7 @@ void test(Portfolio *pf, double cash) {
     actual_cash += 3.0 * value;
     shares1 -= shares_to_sell;  // 27
     shares2 -= shares_to_sell;  // -23
-    shares3 -= shares_to_sell;
+    shares3 -= shares_to_sell;  // -23
     // cash correct
     show_msg("cash after sales", approx(pf->cash(), actual_cash), passed, failed);
     // shares for eq1 correct
@@ -119,6 +121,15 @@ void test(Portfolio *pf, double cash) {
     show_msg("long position count after purchase and sale", pf->n_long_pos() == 1, passed, failed);
     // short position count correct
     show_msg("short position count after short sales", pf->n_short_pos() == 2, passed, failed);
+    std::unordered_map<std::string, int>::iterator it = std::find_if(pf->begin(), pf->end(),
+            [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq1; });
+    show_msg("eq1 shares determined through iterator", it->second == shares1, passed, failed);
+    it = std::find_if(pf->begin(), pf->end(), 
+            [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq2; });
+    show_msg("eq2 shares determined through iterator", it->second == shares2, passed, failed);
+    it = std::find_if(pf->begin(), pf->end(), 
+            [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq3; });
+    show_msg("eq3 shares determined through iterator", it->second == shares3, passed, failed);
 
     std::cout << passed << " tests passed." << std::endl
         << (failed > 0 ? BOLDRED : RESET) << failed << " tests failed." << RESET << std::endl << std::endl;
