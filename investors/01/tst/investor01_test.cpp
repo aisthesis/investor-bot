@@ -59,9 +59,49 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
     strengths["foo"] = 1.0;
     price_table["foo"] = 30.0;
     orders = investor.order(strengths, price_table);
-    REQUIRE(investor.portfolio()->shares("foo") == 50);
-    REQUIRE(investor.portfolio()->n_long_pos() == 1);
     // here we sell 1/2 of foo to buy bar (no order yet for bar)
     REQUIRE(orders.size() == 1);
     REQUIRE(orders[0].type() == Order::Type::kSell);
+    REQUIRE(orders[0].mode() == Order::Mode::kLimit);
+    REQUIRE(orders[0].ticker() == "foo");
+    REQUIRE(orders[0].shares() >= 24);
+    REQUIRE(orders[0].shares() <= 26);
+    REQUIRE(orders[0].share_price() > 29.99);
+    REQUIRE(orders[0].share_price() < 30.01);
+    REQUIRE(investor.pending() < 0.01);
+    REQUIRE(investor.portfolio()->cash() < 0.01);
+    REQUIRE(investor.portfolio()->cash() > -0.01);
+
+    // sell half of foo
+    investor.portfolio()->sell("foo", 25, 750.0);
+    orders = investor.order(strengths, price_table);
+    REQUIRE(orders.size() == 1);
+    REQUIRE(orders[0].type() == Order::Type::kBuy);
+    REQUIRE(orders[0].mode() == Order::Mode::kLimit);
+    REQUIRE(orders[0].ticker() == "bar");
+    REQUIRE(orders[0].shares() >= 14);
+    REQUIRE(orders[0].shares() <= 16);
+    REQUIRE(orders[0].share_price() > 49.99);
+    REQUIRE(orders[0].share_price() < 50.01);
+    REQUIRE(investor.pending() > 700.0);
+    REQUIRE(investor.portfolio()->cash() < 750.01);
+    REQUIRE(investor.portfolio()->cash() > 749.99);
+
+    // hold recommendations
+    investor.clear_pending();
+    strengths["foo"] = 0.5;
+    strengths["bar"] = 0.5;
+    orders = investor.order(strengths, price_table);
+    REQUIRE(orders.size() == 0);
+
+    // sell recommendation
+    strengths["foo"] = 0.1;
+    orders = investor.order(strengths, price_table);
+    REQUIRE(orders[0].type() == Order::Type::kSell);
+    REQUIRE(orders[0].mode() == Order::Mode::kLimit);
+    REQUIRE(orders[0].ticker() == "foo");
+    REQUIRE(orders[0].shares() == 25);
+    REQUIRE(orders[0].share_price() > 29.99);
+    REQUIRE(orders[0].share_price() < 30.01);
+    REQUIRE(investor.pending() < 0.01);
 }
