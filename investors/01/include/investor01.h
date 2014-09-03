@@ -23,11 +23,8 @@
 #include "investor.h"
 
 class Investor01 : public Investor {
-private:
-    // reserved for pending buy orders
-    double pending_purchases_;
 public:
-    Investor01(); 
+    Investor01() {}
     ~Investor01() {}
 
     // order for 0 shares if no action

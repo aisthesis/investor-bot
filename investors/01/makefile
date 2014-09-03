@@ -35,13 +35,13 @@ directories:
 $(PROG1)_test: $(ODIR)/$(PROG1)_test.o $(ODIR)/test.o $(ODIR)/$(PROG1).o $(PROG1OBJDEPS)
 	$(CC) $(CFLAGS) $(PROG1FLAGS) $^ -o $(BDIR)/$@
 
-$(ODIR)/$(PROG1).o: $(PROG1).cpp directories
+$(ODIR)/$(PROG1).o: $(PROG1).cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(PROG1FLAGS) -c $< -o $@
 
-$(ODIR)/$(PROG1)_test.o: $(PROG1)_test.cpp directories
+$(ODIR)/$(PROG1)_test.o: $(PROG1)_test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) $(PROG1FLAGS) -c $< -o $@
 
-$(ODIR)/test.o: test.cpp directories
+$(ODIR)/test.o: test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean

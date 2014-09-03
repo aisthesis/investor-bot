@@ -37,10 +37,6 @@
 #include "investor_constants.h"
 
 // public
-Investor01::Investor01() {
-    pending_purchases_ = 0.0;
-}
-
 std::vector<Order> Investor01::order(const std::unordered_map<std::string, double> &strengths,
         const std::unordered_map<std::string, double> &price_table) {
     std::vector<Order> orders;
@@ -59,7 +55,7 @@ int Investor01::shares_to_buy(const std::string &ticker,
         const std::unordered_map<std::string, double> &price_table) const {
     int shares = 0;
     double to_invest = this->portfolio()->value(price_table) / price_table.size(),
-        available = this->portfolio()->cash() - pending_purchases_;
+        available = this->portfolio()->cash() - this->pending();
     // if enough cash present, just buy
     if (to_invest <= available) { 
         shares = static_cast<int>(to_invest / price_table.at(ticker));
@@ -99,9 +95,11 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
     // no shares owned: buy them (otherwise do nothing)
     if (this->portfolio()->shares(ticker) <= 0) {
         int shares = shares_to_buy(ticker, price_table);
+        
         if (shares > 0) {
             orders.push_back(Order(Order::Type::kBuy, Order::Mode::kLimit, ticker,
                     shares, price_table.at(ticker)));
+            this->add_to_pending(price_table.at(ticker) * shares);
         }
         else {
             // sell enough for a future buy
