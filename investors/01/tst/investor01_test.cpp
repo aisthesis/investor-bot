@@ -8,6 +8,8 @@
  * investor01_test.cpp
  *
  * tests for investor implementation 01
+ * Framework is Catch:
+ * https://github.com/philsquared/Catch
  *
  * Author Marshall Farrier
  * Since 2014-08-29
