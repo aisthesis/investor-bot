@@ -54,19 +54,6 @@ std::vector<Order> Investor01::order(const std::unordered_map<std::string, doubl
     return orders;
 }
 
-double Investor01::pending() const {
-    return pending_purchases_;
-}
-
-void Investor01::clear_pending() {
-    pending_purchases_ = 0.0;
-}
-
-double Investor01::add_to_pending(const double &amount) {
-    pending_purchases_ += amount;
-    return pending_purchases_;
-}
-
 // private
 int Investor01::shares_to_buy(const std::string &ticker, 
         const std::unordered_map<std::string, double> &price_table) const {

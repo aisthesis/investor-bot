@@ -34,10 +34,6 @@ public:
     // this is where all of the investor logic goes:
     std::vector<Order> order(const std::unordered_map<std::string, double> &strengths,
             const std::unordered_map<std::string, double> &price_table);
-    double pending() const;
-    void clear_pending();
-    // return total after adding given amount
-    double add_to_pending(const double &);
 
 private:
     int shares_to_buy(const std::string &ticker, 

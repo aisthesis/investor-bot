@@ -5,19 +5,14 @@
  * of the authors is strictly prohibitied and will be prosecuted to
  * the full extent of the law.
  * 
- * investor01_test.cpp
+ * test.cpp
  *
- * tests for investor implementation 01
+ * Catch setup:
+ * https://github.com/philsquared/Catch/blob/master/docs/slow-compiles.md
  *
  * Author Marshall Farrier
- * Since 2014-08-29
+ * Since 2014-09-02
  */
 
+#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-
-#include "investor01.h"
-
-TEST_CASE("Dummy", "stupid one") {
-    int one = 1;
-    REQUIRE(one == 1);
-}

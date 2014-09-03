@@ -27,12 +27,17 @@
 class Investor {
 private:
     Portfolio *portfolio_;
+    double pending_purchases_;
 
 public:
     Investor(); 
     ~Investor();
 
     Portfolio *portfolio() const;
+    double pending() const;
+    void clear_pending();
+    // return total after adding given amount
+    double add_to_pending(const double &);
     // order for 0 shares if no action
     // this is where all of the investor logic goes:
     virtual std::vector<Order> order(const std::unordered_map<std::string, double> &strengths, 

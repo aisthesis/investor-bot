@@ -45,14 +45,23 @@ int main() {
         cash = 0.0;
     int shares_bought = 5,
         shares_sold = 3;
-    int purchase_price = 100.0,
-        sale_price = 200.0;
+    double purchase_price = 100.0,
+        sale_price = 200.0,
+        add_to_pending = 3.14;
 
     MyInvestor investor;
 
     // Initialization
     show_msg("portfolio has no initial long positions", investor.portfolio()->n_long_pos() == 0, passed, failed);
     show_msg("portfolio has no initial cash", approx(investor.portfolio()->cash(), cash), passed, failed);
+    show_msg("no initial pending purchases", approx(investor.pending(), 0.0), passed, failed);
+
+    // pending purchases
+    double pending = investor.add_to_pending(add_to_pending);
+    show_msg("correct amount added to pending", approx(investor.pending(), add_to_pending), passed, failed);
+    show_msg("correct amount returned when adding to pending", approx(pending, add_to_pending), passed, failed);
+    investor.clear_pending();
+    show_msg("pending correctly cleared", approx(investor.pending(), 0.0), passed, failed);
 
     // portfolio
     investor.portfolio()->deposit(deposit_amt);

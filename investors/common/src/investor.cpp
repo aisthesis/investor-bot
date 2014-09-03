@@ -19,6 +19,7 @@
 
 Investor::Investor() {
     portfolio_ = new Portfolio();
+    pending_purchases_ = 0.0;
 }
 
 Investor::~Investor() {
@@ -27,4 +28,17 @@ Investor::~Investor() {
 
 Portfolio *Investor::portfolio() const {
     return portfolio_;
+}
+
+double Investor::pending() const {
+    return pending_purchases_;
+}
+
+void Investor::clear_pending() {
+    pending_purchases_ = 0.0;
+}
+
+double Investor::add_to_pending(const double &amount) {
+    pending_purchases_ += amount;
+    return pending_purchases_;
 }

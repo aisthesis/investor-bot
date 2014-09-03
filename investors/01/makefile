@@ -32,7 +32,7 @@ directories:
 	mkdir -p ./$(ODIR)
 
 # Investor
-$(PROG1)_test: $(ODIR)/$(PROG1)_test.o $(ODIR)/$(PROG1).o $(PROG1OBJDEPS)
+$(PROG1)_test: $(ODIR)/$(PROG1)_test.o $(ODIR)/test.o $(ODIR)/$(PROG1).o $(PROG1OBJDEPS)
 	$(CC) $(CFLAGS) $(PROG1FLAGS) $^ -o $(BDIR)/$@
 
 $(ODIR)/$(PROG1).o: $(PROG1).cpp directories
@@ -40,6 +40,9 @@ $(ODIR)/$(PROG1).o: $(PROG1).cpp directories
 
 $(ODIR)/$(PROG1)_test.o: $(PROG1)_test.cpp directories
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) $(PROG1FLAGS) -c $< -o $@
+
+$(ODIR)/test.o: test.cpp directories
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:
