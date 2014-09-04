@@ -52,8 +52,8 @@ int main() {
     MyInvestor investor;
 
     // Initialization
-    show_msg("portfolio has no initial long positions", investor.portfolio()->n_long_pos() == 0, passed, failed);
-    show_msg("portfolio has no initial cash", approx(investor.portfolio()->cash(), cash), passed, failed);
+    show_msg("portfolio has no initial long positions", investor.n_long_pos() == 0, passed, failed);
+    show_msg("portfolio has no initial cash", approx(investor.cash(), cash), passed, failed);
     show_msg("no initial pending purchases", approx(investor.pending(), 0.0), passed, failed);
 
     // pending purchases
@@ -64,18 +64,29 @@ int main() {
     show_msg("pending correctly cleared", approx(investor.pending(), 0.0), passed, failed);
 
     // portfolio
-    investor.portfolio()->deposit(deposit_amt);
+    investor.deposit(deposit_amt);
     cash += deposit_amt;
-    show_msg("deposit to portfolio successful", approx(investor.portfolio()->cash(), cash), passed, failed);
-    investor.portfolio()->buy(ticker1, shares_bought, purchase_price);
+    show_msg("deposit to portfolio successful", approx(investor.cash(), cash), passed, failed);
+    investor.buy(ticker1, shares_bought, purchase_price);
     cash -= purchase_price;
-    show_msg("correct cash after purchase", approx(investor.portfolio()->cash(), cash), passed, failed);
-    show_msg("correct long position count after purchase", investor.portfolio()->n_long_pos() == 1, passed, failed);
-    show_msg("correct shares after purchase", investor.portfolio()->shares(ticker1) == shares_bought, passed, failed);
-    investor.portfolio()->sell(ticker1, shares_sold, sale_price);
+    show_msg("correct cash after purchase", approx(investor.cash(), cash), passed, failed);
+    show_msg("correct long position count after purchase", investor.n_long_pos() == 1, passed, failed);
+    show_msg("correct shares after purchase", investor.shares(ticker1) == shares_bought, passed, failed);
+    investor.sell(ticker1, shares_sold, sale_price);
     cash += sale_price;
-    show_msg("correct cash after sale", approx(investor.portfolio()->cash(), cash), passed, failed);
-    show_msg("correct long position count after sale", investor.portfolio()->n_long_pos() == 1, passed, failed);
+    show_msg("correct cash after sale", approx(investor.cash(), cash), passed, failed);
+    show_msg("correct long position count after sale", investor.n_long_pos() == 1, passed, failed);
+    int counter = 0,
+        tmp_shares = 0;
+    std::string tmp_ticker = "";
+    for (auto it = investor.pfbegin(); it != investor.pfend(); it++) {
+        counter++;
+        tmp_ticker = it->first;
+        tmp_shares = it->second;
+    }
+    show_msg("correct number of iterations", counter  == 1, passed, failed);
+    show_msg("iterator picks up correct ticker", tmp_ticker == ticker1, passed, failed);
+    show_msg("iterator picks up correct shares", tmp_shares == shares_bought - shares_sold, passed, failed);
 
     std::cout << passed << " tests passed." << std::endl
         << (failed > 0 ? BOLDRED : RESET) << failed << " tests failed." << RESET << std::endl << std::endl;

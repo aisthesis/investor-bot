@@ -26,8 +26,49 @@ Investor::~Investor() {
     delete portfolio_;
 }
 
-Portfolio *Investor::portfolio() const {
-    return portfolio_;
+double Investor::cash() const {
+    return portfolio_->cash();
+}
+
+void Investor::deposit(const double &amt) {
+    portfolio_->deposit(amt);
+}
+
+void Investor::withdraw(const double &amt) {
+    portfolio_->withdraw(amt);
+}
+
+void Investor::buy(const std::string &equity, const int &shares, const double &cost) {
+    portfolio_->buy(equity, shares, cost);
+}
+
+void Investor::sell(const std::string &equity, const int &shares, const double &value) {
+    portfolio_->sell(equity, shares, value);
+}
+
+int Investor::shares(const std::string &ticker) const {
+    return portfolio_->shares(ticker);
+}
+
+int Investor::n_long_pos() const {
+    return portfolio_->n_long_pos();
+}
+
+int Investor::n_short_pos() const {
+    return portfolio_->n_short_pos();
+}
+
+double Investor::value(const std::unordered_map<std::string, double> &price_table) const {
+    return portfolio_->value(price_table);
+}
+
+// iterator through stocks in portfolio
+std::unordered_map<std::string, int>::iterator Investor::pfbegin() const {
+    return portfolio_->begin();
+}
+
+std::unordered_map<std::string, int>::iterator Investor::pfend() const {
+    return portfolio_->end();
 }
 
 double Investor::pending() const {

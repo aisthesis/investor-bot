@@ -33,12 +33,26 @@ public:
     Investor(); 
     ~Investor();
 
-    Portfolio *portfolio() const;
+    // functions providing access to portfolio
+    double cash() const;
+    void deposit(const double &);
+    void withdraw(const double &);
+    void buy(const std::string &equity, const int &shares, const double &cost);
+    void sell(const std::string &equity, const int &shares, const double &value);
+    int shares(const std::string &) const;
+    int n_long_pos() const;
+    int n_short_pos() const;
+    double value(const std::unordered_map<std::string, double> &price_table) const;
+    // iterator through stocks in portfolio
+    std::unordered_map<std::string, int>::iterator pfbegin() const;
+    std::unordered_map<std::string, int>::iterator pfend() const;
+
+    // functions related to pending purchases
     double pending() const;
     void clear_pending();
     // return total after adding given amount
     double add_to_pending(const double &);
-    // order for 0 shares if no action
+
     // this is where all of the investor logic goes:
     virtual std::vector<Order> order(const std::unordered_map<std::string, double> &strengths, 
             const std::unordered_map<std::string, double> &price_list) = 0;
