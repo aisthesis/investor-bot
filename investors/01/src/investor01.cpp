@@ -34,7 +34,7 @@
 #include "investor01.h"
 #include "portfolio.h"
 #include "order.h"
-#include "investor_constants.h"
+#include "globals.h"
 
 // public
 std::vector<Order> Investor01::order(const std::unordered_map<std::string, double> &strengths,

@@ -5,16 +5,28 @@
  * of the authors is strictly prohibitied and will be prosecuted to
  * the full extent of the law.
  * 
- * investor_constants.h
+ * globals.h
  *
- * abstract base Investor class
+ * global constants and definitions
  *
  * Author Marshall Farrier
  * Since 2014-08-28
  */
 
-#ifndef INVESTOR_CONSTANTS_H
-#define INVESTOR_CONSTANTS_H
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
+#include <unordered_map>
+#include <string>
+
+#include "ohlc.h"
+
+// key is ticker
+typedef std::unordered_map<std::string, Ohlc> TickerOhlcMap;
+// key is a date string
+typedef std::unordered_map<std::string, TickerOhlcMap> DailyOhlcs;
+// key is a ticker
+typedef std::unordered_map<std::string, double> DailyRecommendations;
 
 namespace investor {
     constexpr double kSellHoldThreshold = 1.0 / 3.0;

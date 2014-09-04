@@ -22,19 +22,12 @@
 #include <vector>
 
 #include "investor.h"
-#include "ohlc.h"
-
-// key is ticker
-typedef std::unordered_map<std::string, Ohlc> TickerPriceRangeMap;
-// key is a date string
-typedef std::unordered_map<std::string, TickerPriceRangeMap> DailyPriceRanges;
-// key is a ticker
-typedef std::unordered_map<std::string, double> DailyRecommendations;
+#include "globals.h"
 
 class Simulator {
 private:
     Investor *investor_;
-    std::vector<DailyPriceRanges> price_data_;
+    std::vector<DailyOhlcs> price_data_;
     std::vector<DailyRecommendations> recommendations_;
 public:
     Simulator() {}
