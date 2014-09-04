@@ -26,7 +26,7 @@
 
 TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
     Investor01 investor;
-    investor.portfolio()->deposit(1000.0);
+    investor.deposit(1000.0);
 
     // recommend buying foo
     std::unordered_map<std::string, double> strengths({{"foo", 1.0}});
@@ -55,7 +55,7 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
 
     // recommendation with no cash
     // buy foo
-    investor.portfolio()->buy("foo", 50, 1000.0);
+    investor.buy("foo", 50, 1000.0);
     investor.clear_pending();
     // foo still a buy
     strengths["foo"] = 1.0;
@@ -71,11 +71,11 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
     REQUIRE(orders[0].share_price() > 29.99);
     REQUIRE(orders[0].share_price() < 30.01);
     REQUIRE(investor.pending() < 0.01);
-    REQUIRE(investor.portfolio()->cash() < 0.01);
-    REQUIRE(investor.portfolio()->cash() > -0.01);
+    REQUIRE(investor.cash() < 0.01);
+    REQUIRE(investor.cash() > -0.01);
 
     // sell half of foo
-    investor.portfolio()->sell("foo", 25, 750.0);
+    investor.sell("foo", 25, 750.0);
     orders = investor.order(strengths, price_table);
     REQUIRE(orders.size() == 1);
     REQUIRE(orders[0].type() == Order::Type::kBuy);
@@ -86,8 +86,8 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
     REQUIRE(orders[0].share_price() > 49.99);
     REQUIRE(orders[0].share_price() < 50.01);
     REQUIRE(investor.pending() > 700.0);
-    REQUIRE(investor.portfolio()->cash() < 750.01);
-    REQUIRE(investor.portfolio()->cash() > 749.99);
+    REQUIRE(investor.cash() < 750.01);
+    REQUIRE(investor.cash() > 749.99);
 
     // hold recommendations
     investor.clear_pending();

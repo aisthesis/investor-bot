@@ -54,8 +54,8 @@ std::vector<Order> Investor01::order(const std::unordered_map<std::string, doubl
 int Investor01::shares_to_buy(const std::string &ticker, 
         const std::unordered_map<std::string, double> &price_table) const {
     int shares = 0;
-    double to_invest = this->portfolio()->value(price_table) / price_table.size(),
-        available = this->portfolio()->cash() - this->pending();
+    double to_invest = this->value(price_table) / price_table.size(),
+        available = this->cash() - this->pending();
     // if enough cash present, just buy
     if (to_invest <= available) { 
         shares = static_cast<int>(to_invest / price_table.at(ticker));
@@ -73,7 +73,7 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
     // sell recommendation
     if (strength < investor::kSellHoldThreshold) {
         // we are long the given stock
-        if (this->portfolio()->shares(ticker) > 0) {
+        if (this->shares(ticker) > 0) {
             // if a sell order exists (e.g., to raise funds for a buy), delete it
             // because we're selling the whole position
             std::vector<Order>::iterator it = find_if(orders.begin(), orders.end(), 
@@ -82,7 +82,7 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
                 orders.erase(it);
             }
             orders.push_back(Order(Order::Type::kSell, Order::Mode::kLimit, ticker,
-                    this->portfolio()->shares(ticker), price_table.at(ticker)));
+                    this->shares(ticker), price_table.at(ticker)));
         }
         // no shares owned: do nothing
         return;
@@ -93,7 +93,7 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
     }
     // buy recommendation
     // no shares owned: buy them (otherwise do nothing)
-    if (this->portfolio()->shares(ticker) <= 0) {
+    if (this->shares(ticker) <= 0) {
         int shares = shares_to_buy(ticker, price_table);
         
         if (shares > 0) {
@@ -103,7 +103,7 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
         }
         else {
             // sell enough for a future buy
-            sell_part_of_each(orders, price_table, 1.0 / (this->portfolio()->n_long_pos() + 1));
+            sell_part_of_each(orders, price_table, 1.0 / (this->n_long_pos() + 1));
         }
     }
 }
@@ -112,7 +112,7 @@ void Investor01::sell_part_of_each(std::vector<Order> &orders,
         const std::unordered_map<std::string, double> &price_table, const double &portion) const {
     int shares = 0;
 
-    for (auto it = this->portfolio()->begin(); it != this->portfolio()->end(); it++) {
+    for (auto it = this->pfbegin(); it != this->pfend(); it++) {
         shares = static_cast<int>(portion * it->second);    
         if (shares > 0) {
             orders.push_back(Order(Order::Type::kSell, Order::Mode::kLimit, it->first,
