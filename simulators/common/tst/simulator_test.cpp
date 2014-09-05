@@ -32,9 +32,20 @@ class MyInvestor : public Investor {
         return std::vector<Order>();
     }
 };
+
+constexpr double kEpsilon = 0.001;
+
 TEST_CASE("correct initialization", "[Simulator]") {
     MyInvestor investor;
     std::vector<DailyOhlcs> price_data;
     std::vector<DailyRecommendations> recommendations;
     Simulator simulator(investor, price_data, recommendations);
+
+    REQUIRE(simulator.actions().size() == 0);
+    REQUIRE(simulator.start_value() > -kEpsilon);
+    REQUIRE(simulator.start_value() < kEpsilon);
+    REQUIRE(simulator.end_value() > -kEpsilon);
+    REQUIRE(simulator.end_value() < kEpsilon);
+    REQUIRE(simulator.start_date() == "");
+    REQUIRE(simulator.end_date() == "");
 }

@@ -25,6 +25,11 @@ Simulator::Simulator(Investor &investor, const std::vector<DailyOhlcs> &price_da
 }
 
 void Simulator::run() {
+    std::vector<DailyRecommendations>::const_iterator rec_iter = recommendations_.cbegin();
+    std::vector<DailyOhlcs>::const_iterator ohlc_iter = price_data_.cbegin();
+
+    // move ohlc_iter forward until dates match
+    
     // TODO
 }
 

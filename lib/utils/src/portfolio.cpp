@@ -17,7 +17,9 @@
 #include <unordered_map>
 #include <algorithm>
 #include <stdexcept>
+
 #include "portfolio.h"
+#include "ohlc.h"
 
 Portfolio::Portfolio() : Portfolio(0.0) {}
 
@@ -88,6 +90,20 @@ double Portfolio::value(const std::unordered_map<std::string, double> &price_tab
                 throw std::invalid_argument("stock not present in price table");
             }
             value += price_table.at(stock.first) * stock.second;
+        }
+    }
+    return value;
+}
+
+double Portfolio::value(const std::unordered_map<std::string, Ohlc> &price_table) const {
+    double value = cash_;
+    for (const auto &stock : *stocks_) {
+        if (stock.second != 0) {
+            // raise exception if stock not found in table
+            if (price_table.count(stock.first) == 0) {
+                throw std::invalid_argument("stock not present in price table");
+            }
+            value += price_table.at(stock.first).close * stock.second;
         }
     }
     return value;

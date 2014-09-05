@@ -19,6 +19,7 @@
 #include <algorithm>
 
 #include "portfolio.h"
+#include "ohlc.h"
 
 #define RESET "\033[0m"
 #define BOLDRED "\033[1m\033[31m"
@@ -59,8 +60,11 @@ void test(Portfolio *pf, double cash) {
         eq2 = "bar",
         eq3 = "blah";
     std::unordered_map<std::string, double> price_table;
+    std::unordered_map<std::string, Ohlc> ohlc_table;
     price_table[eq1] = 10.0;
     price_table[eq2] = 5.0;
+    ohlc_table[eq1] = { 0.0, 20.0, 1.0, 10.0 };
+    ohlc_table[eq2] = { 0.0, 20.0, 1.0, 5.0 };
 
     std::cout << "Testing initial cash." << std::endl;
     show_msg("initial cash", approx(actual_cash, cash), passed, failed);
@@ -76,6 +80,7 @@ void test(Portfolio *pf, double cash) {
 
     std::cout << "Testing initial value." << std::endl;
     show_msg("initial value", approx(pf->value(price_table), pf_value), passed, failed);
+    show_msg("initial value using ohlc table", approx(pf->value(ohlc_table), pf_value), passed, failed);
 
     std::cout << "Test buying shares." << std::endl;
     constexpr int shares_to_buy = 50;
@@ -89,6 +94,7 @@ void test(Portfolio *pf, double cash) {
     // shares correct
     show_msg("shares after purchase", shares1 == pf->shares(eq1), passed, failed);
     show_msg("value after purchase", approx(pf->value(price_table), pf_value), passed, failed);
+    show_msg("value after purchase using ohlc table", approx(pf->value(ohlc_table), pf_value), passed, failed);
 
     std::cout << "Test selling shares." << std::endl;
     constexpr int shares_to_sell = 23;
@@ -98,6 +104,7 @@ void test(Portfolio *pf, double cash) {
     pf->sell(eq2, shares_to_sell, value);
     pf_value += value - price_table[eq2] * shares_to_sell;
     show_msg("value after buy and sell", approx(pf->value(price_table), pf_value), passed, failed);
+    show_msg("value after buy and sell using ohlc table", approx(pf->value(ohlc_table), pf_value), passed, failed);
     pf->sell(eq3, shares_to_sell, value);
     try {
         // exception expected because eq3 not in price table
@@ -106,6 +113,14 @@ void test(Portfolio *pf, double cash) {
     }
     catch (const std::invalid_argument &e) {
         show_msg("stock missing from price table", true, passed, failed);
+    }
+    try {
+        // exception expected because eq3 not in price table
+        pf->value(ohlc_table);
+        show_msg("stock missing from ohlc table", false, passed, failed);
+    }
+    catch (const std::invalid_argument &e) {
+        show_msg("stock missing from ohlc table", true, passed, failed);
     }
     actual_cash += 3.0 * value;
     shares1 -= shares_to_sell;  // 27

@@ -23,6 +23,7 @@
 
 #include "portfolio.h"
 #include "order.h"
+#include "ohlc.h"
 
 class Investor {
 private:
@@ -43,6 +44,7 @@ public:
     int n_long_pos() const;
     int n_short_pos() const;
     double value(const std::unordered_map<std::string, double> &price_table) const;
+    double value(const std::unordered_map<std::string, Ohlc> &ohlc_table) const;
     // iterator through stocks in portfolio
     std::unordered_map<std::string, int>::iterator pfbegin() const;
     std::unordered_map<std::string, int>::iterator pfend() const;

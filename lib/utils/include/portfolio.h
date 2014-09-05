@@ -19,6 +19,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "ohlc.h"
+
 class Portfolio {
 private:
     double cash_;
@@ -41,6 +43,7 @@ public:
     int n_short_pos() const;
     // get portfolio value given share prices of stocks owned
     double value(const std::unordered_map<std::string, double> &price_table) const;
+    double value(const std::unordered_map<std::string, Ohlc> &price_table) const;
     // iterator through stocks
     std::unordered_map<std::string, int>::iterator begin() const;
     std::unordered_map<std::string, int>::iterator end() const;

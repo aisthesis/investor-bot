@@ -62,6 +62,10 @@ double Investor::value(const std::unordered_map<std::string, double> &price_tabl
     return portfolio_->value(price_table);
 }
 
+double Investor::value(const std::unordered_map<std::string, Ohlc> &ohlc_table) const {
+    return portfolio_->value(ohlc_table);
+}
+
 // iterator through stocks in portfolio
 std::unordered_map<std::string, int>::iterator Investor::pfbegin() const {
     return portfolio_->begin();
