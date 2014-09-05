@@ -25,6 +25,9 @@ Order::Order(const Type &type, const Mode &mode, const std::string &ticker,
     share_price_ = share_price;
 }
 
+Order::Order(const Order &order) 
+        : Order(order.type_, order.mode_, order.ticker_, order.shares_, order.share_price_) {}
+
 Order::Type Order::type() const {
     return type_;
 }

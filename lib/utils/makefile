@@ -15,6 +15,7 @@ CFLAGS = -Wall
 CPPFLAGS = -std=c++11 -Iinclude
 PROG1 = portfolio
 PROG2 = order
+PROG3 = order_action
 ODIR = obj
 BDIR = bin
 CPPFLAGSTEST = $(CPPFLAGS)
@@ -22,7 +23,7 @@ CPPFLAGSTEST = $(CPPFLAGS)
 vpath %.cpp src tst
 
 .PHONY: all
-all: directories $(PROG1)_test $(PROG2)_test
+all: directories $(PROG1)_test $(PROG2)_test $(PROG3)_test
 
 .PHONY: directories
 directories:
@@ -48,6 +49,19 @@ $(ODIR)/$(PROG2).o: $(PROG2).cpp directories
 
 $(ODIR)/$(PROG2)_test.o: $(PROG2)_test.cpp directories
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
+
+# OrderAction
+$(PROG3)_test: $(ODIR)/$(PROG3)_test.o $(ODIR)/test.o $(ODIR)/$(PROG3).o $(ODIR)/order.o
+	$(CC) $(CFLAGS) $^ -o $(BDIR)/$@
+
+$(ODIR)/$(PROG3).o: $(PROG3).cpp
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(ODIR)/$(PROG3)_test.o: $(PROG3)_test.cpp
+	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
+
+$(ODIR)/test.o: test.cpp
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:

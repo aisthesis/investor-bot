@@ -34,6 +34,7 @@ private:
 
 public:
     Order(const Type &, const Mode &, const std::string &, const int &, const double &);
+    Order(const Order &);
     ~Order() {}
 
     Type type() const;

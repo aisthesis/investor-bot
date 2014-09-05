@@ -23,14 +23,31 @@
 
 #include "investor.h"
 #include "globals.h"
+#include "order_action.h"
 
 class Simulator {
 private:
     Investor *investor_;
-    std::vector<DailyOhlcs> price_data_;
-    std::vector<DailyRecommendations> recommendations_;
+    const std::vector<DailyOhlcs> price_data_;
+    const std::vector<DailyRecommendations> recommendations_;
+
+    // populated on run:
+    std::vector<OrderAction> actions_;
+    std::string start_date_;
+    double start_value_;
+    std::string end_date_;
+    double end_value_;
 public:
-    Simulator() {}
+    // both price data and recommendations must be sorted (earliest date first) for the simulator
+    // to work properly
+    Simulator(Investor &, const std::vector<DailyOhlcs> &, const std::vector<DailyRecommendations> &);
     ~Simulator() {}
+
+    void run();
+    std::vector<OrderAction> actions() const;
+    double start_value() const;
+    double end_value() const;
+    std::string start_date() const;
+    std::string end_date() const;
 };
 #endif

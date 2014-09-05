@@ -21,8 +21,20 @@
 #include <unordered_map>
 #include <vector>
 
+#include "globals.h"
+#include "investor.h"
 #include "simulator.h"
 
+// concrete subclass for testing
+class MyInvestor : public Investor {
+    std::vector<Order> order(const std::unordered_map<std::string, double> &strengths,
+            const std::unordered_map<std::string, double> &price_list) {
+        return std::vector<Order>();
+    }
+};
 TEST_CASE("correct initialization", "[Simulator]") {
-    Simulator simulator;
+    MyInvestor investor;
+    std::vector<DailyOhlcs> price_data;
+    std::vector<DailyRecommendations> recommendations;
+    Simulator simulator(investor, price_data, recommendations);
 }
