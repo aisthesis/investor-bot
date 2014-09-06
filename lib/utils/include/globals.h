@@ -21,12 +21,18 @@
 
 #include "ohlc.h"
 
-// key is ticker
+// keys are tickers
 typedef std::unordered_map<std::string, Ohlc> TickerOhlcMap;
-// key is a date string
-typedef std::unordered_map<std::string, TickerOhlcMap> DailyOhlcs;
-// key is a ticker
-typedef std::unordered_map<std::string, double> DailyRecommendations;
+
+struct DailyOhlcs {
+    std::string date;
+    TickerOhlcMap ohlc_values;
+};
+
+struct DailyRecommendations {
+    std::string date;
+    std::unordered_map<std::string, double> recommendations;
+};
 
 namespace investor {
     constexpr double kSellHoldThreshold = 1.0 / 3.0;

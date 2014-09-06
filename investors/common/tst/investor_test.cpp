@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "investor.h"
+#include "globals.h"
 
 #define RESET "\033[0m"
 #define BOLDRED "\033[1m\033[31m"
@@ -31,7 +32,7 @@ bool show_msg(const char *, const bool &, int &, int &);
 // concrete subclass for testing
 class MyInvestor : public Investor {
     std::vector<Order> order(const std::unordered_map<std::string, double> &strengths,
-            const std::unordered_map<std::string, double> &price_list) {
+            const TickerOhlcMap &ohlc_map) {            
         return std::vector<Order>();
     }
 };

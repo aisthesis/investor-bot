@@ -28,7 +28,7 @@
 class Simulator {
 private:
     Investor *investor_;
-    const std::vector<DailyOhlcs> price_data_;
+    const std::vector<DailyOhlcs> ohlc_data_;
     const std::vector<DailyRecommendations> recommendations_;
 
     // populated on run:
@@ -49,5 +49,9 @@ public:
     double end_value() const;
     std::string start_date() const;
     std::string end_date() const;
+    virtual double commission() const;
+private:
+    void process_standing_orders(const std::string &date, const std::vector<Order> &orders, 
+            const TickerOhlcMap &ohlc_map);
 };
 #endif

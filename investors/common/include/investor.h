@@ -24,6 +24,7 @@
 #include "portfolio.h"
 #include "order.h"
 #include "ohlc.h"
+#include "globals.h"
 
 class Investor {
 private:
@@ -57,6 +58,6 @@ public:
 
     // this is where all of the investor logic goes:
     virtual std::vector<Order> order(const std::unordered_map<std::string, double> &strengths, 
-            const std::unordered_map<std::string, double> &price_list) = 0;
+            const TickerOhlcMap &ohlc_map) = 0;
 };
 #endif
