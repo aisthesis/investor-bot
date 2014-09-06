@@ -41,17 +41,21 @@ void Simulator::run() {
     }
     // set initial portfolio value using ohlc data from start date
     start_value_ = investor_->value(ohlc_iter->ohlc_values);
-    while (ohlc_iter != ohlc_data_.cend() && rec_iter != recommendations_.cend()) {
-        if (ohlc_iter->date != rec_iter->date) {
+    while (ohlc_iter != ohlc_data_.cend()) {
+        if (rec_iter != recommendations_.cend() && ohlc_iter->date != rec_iter->date) {
             throw std::logic_error("mismatched dates for recommendations and ohlc data");
         }
-        // process standing_orders based on today's prices
+        // process standing_orders based on today's prices (this can still be done
+        // even if we have processed all recommendations)
         process_standing_orders(ohlc_iter->date, standing_orders, ohlc_iter->ohlc_values);
-
-        // TODO
+        if (rec_iter == recommendations_.cend()) break;
+        // get new orders (requires new recommendations)
+        standing_orders = investor_->order(rec_iter->recommendations, ohlc_iter->ohlc_values);
         ++ohlc_iter;
         ++rec_iter;
     }
+    if (ohlc_iter == ohlc_data_.cend()) --ohlc_iter;
+    end_value_ = investor_->value(ohlc_iter->ohlc_values);
 }
 
 std::vector<OrderAction> Simulator::actions() const {
