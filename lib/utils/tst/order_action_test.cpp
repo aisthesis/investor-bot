@@ -54,6 +54,10 @@ TEST_CASE("fill order", "[OrderAction]") {
     REQUIRE(action.order().shares() == 10);
     REQUIRE(approx(action.order().share_price(), 6.0));
     REQUIRE(approx(action.total(), 65.0));
+    REQUIRE(action == OrderAction("2014-09-03", OrderAction::Act::kFill,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "bar", 10, 6.0), 65.0));
+    REQUIRE(action != OrderAction("2014-09-03", OrderAction::Act::kPlace,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "bar", 10, 6.0), 65.0));
 }
 
 TEST_CASE("cancel order", "[OrderAction]") {
@@ -68,4 +72,10 @@ TEST_CASE("cancel order", "[OrderAction]") {
     REQUIRE(action.order().shares() == 10);
     REQUIRE(approx(action.order().share_price(), 6.0));
     REQUIRE(approx(action.total(), 0.0));
+    REQUIRE(action == OrderAction("2014-09-03", OrderAction::Act::kCancel,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "bar", 10, 6.0)));
+    REQUIRE(action != OrderAction("2014-09-03", OrderAction::Act::kCancel,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "bar", 10, 6.0)));
+    REQUIRE(action != OrderAction("2014-09-03", OrderAction::Act::kCancel,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "bar", 10, 6.0), 1.0));
 }
