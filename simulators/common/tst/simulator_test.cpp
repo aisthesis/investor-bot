@@ -42,6 +42,7 @@ TEST_CASE("correct initialization", "[Simulator]") {
     REQUIRE(approx(simulator.end_value(), 0.0));
     REQUIRE(simulator.start_date() == "");
     REQUIRE(simulator.end_date() == "");
+    REQUIRE(approx(investor.pending(), 0.0));
 }
 
 TEST_CASE("errors in data inputs", "[Simulator]") {
@@ -120,6 +121,8 @@ TEST_CASE("fillable buy and sell", "[Simulator]") {
             Order(Order::Type::kSell, Order::Mode::kLimit, "foo", 400, 3.0), 1200.0));
 
     REQUIRE(approx(simulator.end_value(), expected_end_value));
+    // no orders pending after simulation
+    REQUIRE(approx(investor.pending(), 0.0));
 }
 
 TEST_CASE("sell required for buy", "[Simulator]") {
@@ -153,12 +156,37 @@ TEST_CASE("sell required for buy", "[Simulator]") {
             Order(Order::Type::kSell, Order::Mode::kLimit, "foo", 200, 3.0)));
 
     REQUIRE(approx(simulator.end_value(), expected_end_value));
+    // no orders pending after simulation
+    REQUIRE(approx(investor.pending(), 0.0));
 }
 
-TEST_CASE("buy can't be filled", "[Simulator]") {
-    REQUIRE(false);
-}
+TEST_CASE("buy can't be filled: price out of range", "[Simulator]") {
+    Investor01 investor;
+    investor.deposit(kInitialDeposit);
+    double expected_end_value = kInitialDeposit;
+    std::vector<DailyOhlcs> ohlc_data;
+    std::vector<DailyRecommendations> recommendations;
+    ohlc_data.push_back({"2014-01-01", {{"foo", {2.0, 1.0, 3.0, 2.5}}}});
+    // should generate buy order for 400 shares of foo at 2.5
+    recommendations.push_back({"2014-01-01", {{"foo", 1.0}}});
+    // order can't be filled
+    ohlc_data.push_back({"2014-01-02", {{"foo", {3.0, 2.6, 5.2, 4.0}}}});
+    // continue to recommend buy
+    recommendations.push_back({"2014-01-02", {{"foo", 1.0}}});
 
-TEST_CASE("pending order prevents buy", "[Simulator]") {
-    REQUIRE(false);
+    Simulator simulator(investor, ohlc_data, recommendations);
+    simulator.run();
+    std::vector<OrderAction> actions = simulator.actions();
+
+    REQUIRE(actions.size() == 3);
+    // order placed
+    REQUIRE(actions[0] == OrderAction("2014-01-01", OrderAction::Act::kPlace,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5)));
+    // order canceled
+    REQUIRE(actions[1] == OrderAction("2014-01-02", OrderAction::Act::kCancel,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5)));
+    // end value unchanged
+    REQUIRE(approx(simulator.end_value(), expected_end_value));
+    // order for foo still pending after simulation
+    REQUIRE(approx(investor.pending(), kInitialDeposit));
 }

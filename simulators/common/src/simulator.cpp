@@ -110,6 +110,9 @@ void Simulator::process_standing_orders(const std::string &date, const std::vect
             actions_.push_back(OrderAction(date, OrderAction::Act::kFill, order, amount));
         }
         else {
+            if (order.type() == Order::Type::kBuy) {
+                investor_->add_to_pending(-order.share_price() * order.shares());
+            }
             actions_.push_back(OrderAction(date, OrderAction::Act::kCancel, order, 0.0));
         }
     }
