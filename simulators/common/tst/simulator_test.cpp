@@ -38,10 +38,8 @@ TEST_CASE("correct initialization", "[Simulator]") {
     Simulator simulator(investor, ohlc_data, recommendations);
 
     REQUIRE(simulator.actions().size() == 0);
-    REQUIRE(simulator.start_value() > -kEpsilon);
-    REQUIRE(simulator.start_value() < kEpsilon);
-    REQUIRE(simulator.end_value() > -kEpsilon);
-    REQUIRE(simulator.end_value() < kEpsilon);
+    REQUIRE(approx(simulator.start_value(), 0.0));
+    REQUIRE(approx(simulator.end_value(), 0.0));
     REQUIRE(simulator.start_date() == "");
     REQUIRE(simulator.end_date() == "");
 }
@@ -83,7 +81,7 @@ TEST_CASE("errors in data inputs", "[Simulator]") {
     }
 }
 
-TEST_CASE("correct orders and growth", "[Simulator]") {
+TEST_CASE("fillable buy and sell", "[Simulator]") {
     Investor01 investor;
     investor.deposit(kInitialDeposit);
     double expected_end_value = kInitialDeposit;
@@ -105,21 +103,62 @@ TEST_CASE("correct orders and growth", "[Simulator]") {
     Simulator simulator(investor, ohlc_data, recommendations);
     simulator.run();
     std::vector<OrderAction> actions = simulator.actions();
-    REQUIRE(simulator.start_value() > kInitialDeposit - kEpsilon);
-    REQUIRE(simulator.start_value() < kInitialDeposit + kEpsilon);
+    REQUIRE(approx(simulator.start_value(), kInitialDeposit));
     // correct actions
-    REQUIRE(actions[0].date() == "2014-01-01");
-    REQUIRE(actions[0].act() == OrderAction::Act::kPlace);
-    REQUIRE(actions[0].order().type() == Order::Type::kBuy);
-    REQUIRE(actions[0].order().mode() == Order::Mode::kLimit);
-    REQUIRE(actions[0].order().ticker() == "foo");
-    REQUIRE(actions[0].order().shares() == 400);
-    REQUIRE(actions[0].order().share_price() > 2.5 - kEpsilon);
-    REQUIRE(actions[0].order().share_price() < 2.5 + kEpsilon);
-    REQUIRE(actions[0].total() > -kEpsilon);
-    REQUIRE(actions[0].total() < kEpsilon);
-    REQUIRE(actions[0] == OrderAction("2014-01-01", OrderAction::Act::kPlace, Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5), 0.0));
-    REQUIRE(simulator.end_value() > expected_end_value - kEpsilon);
-    REQUIRE(simulator.end_value() < expected_end_value + kEpsilon);
-    
+    // placed buy order: use entire bankroll to buy foo
+    REQUIRE(actions.size() == 4);
+    REQUIRE(actions[0] == OrderAction("2014-01-01", OrderAction::Act::kPlace,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5)));
+    // order to buy foo for 1000.0 filled
+    REQUIRE(actions[1] == OrderAction("2014-01-02", OrderAction::Act::kFill,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5), -kInitialDeposit));
+    // placed sell order
+    REQUIRE(actions[2] == OrderAction("2014-01-02", OrderAction::Act::kPlace,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "foo", 400, 3.0)));
+    // filled sell order
+    REQUIRE(actions[3] == OrderAction("2014-01-03", OrderAction::Act::kFill,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "foo", 400, 3.0), 1200.0));
+
+    REQUIRE(approx(simulator.end_value(), expected_end_value));
+}
+
+TEST_CASE("sell required for buy", "[Simulator]") {
+    Investor01 investor;
+    investor.deposit(kInitialDeposit);
+    double expected_end_value = kInitialDeposit;
+    std::vector<DailyOhlcs> ohlc_data;
+    std::vector<DailyRecommendations> recommendations;
+    ohlc_data.push_back({"2014-01-01", {{"foo", {2.0, 1.0, 3.0, 2.5}}}});
+    // should generate buy order for 400 shares of foo at 2.5
+    recommendations.push_back({"2014-01-01", {{"foo", 1.0}}});
+    // order can be filled
+    ohlc_data.push_back({"2014-01-02", {{"foo", {2.0, 1.0, 3.1, 3.0}},
+            {"bar", {20.0, 10.0, 31.0, 25.0}}}});
+    // recommend holding foo and buying bar
+    recommendations.push_back({"2014-01-02", {{"foo", 0.5}, {"bar", 1.0}}}); 
+    expected_end_value = 3.0 * 400;
+
+    Simulator simulator(investor, ohlc_data, recommendations);
+    simulator.run();
+    std::vector<OrderAction> actions = simulator.actions();
+    // actions[0] and actions[1] are same as above
+    REQUIRE(actions.size() == 3);
+    REQUIRE(actions[0] == OrderAction("2014-01-01", OrderAction::Act::kPlace,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5)));
+    // order to buy foo for 1000.0 filled
+    REQUIRE(actions[1] == OrderAction("2014-01-02", OrderAction::Act::kFill,
+            Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 400, 2.5), -kInitialDeposit));
+    // placed sell order
+    REQUIRE(actions[2] == OrderAction("2014-01-02", OrderAction::Act::kPlace,
+            Order(Order::Type::kSell, Order::Mode::kLimit, "foo", 200, 3.0)));
+
+    REQUIRE(approx(simulator.end_value(), expected_end_value));
+}
+
+TEST_CASE("buy can't be filled", "[Simulator]") {
+    REQUIRE(false);
+}
+
+TEST_CASE("pending order prevents buy", "[Simulator]") {
+    REQUIRE(false);
 }
