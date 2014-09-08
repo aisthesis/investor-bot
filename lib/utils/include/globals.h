@@ -36,6 +36,10 @@ struct DailyRecommendations {
 
 // for floating point equality
 constexpr double kEpsilon = 0.000001;
+inline bool approx(const double &a, const double &b) {
+    if (a <= b) return b - a < kEpsilon;
+    return a - b < kEpsilon;
+}
 
 namespace investor {
     constexpr double kSellHoldThreshold = 1.0 / 3.0;

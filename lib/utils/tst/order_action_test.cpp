@@ -21,6 +21,7 @@
 
 #include "order_action.h"
 #include "order.h"
+#include "globals.h"
 
 TEST_CASE("place order", "[OrderAction]") {
     OrderAction action("2014-09-03", OrderAction::Act::kPlace, 
@@ -32,10 +33,13 @@ TEST_CASE("place order", "[OrderAction]") {
     REQUIRE(action.order().mode() == Order::Mode::kMarket);
     REQUIRE(action.order().ticker() == "foo");
     REQUIRE(action.order().shares() == 3);
-    REQUIRE(action.order().share_price() > 5.999);
-    REQUIRE(action.order().share_price() < 6.001);
-    REQUIRE(action.total() > -0.001);
-    REQUIRE(action.total() < 0.001);
+    REQUIRE(approx(action.order().share_price(), 6.0));
+    REQUIRE(approx(action.total(), 0.0));
+    REQUIRE(action == OrderAction("2014-09-03", OrderAction::Act::kPlace,
+            Order(Order::Type::kBuy, Order::Mode::kMarket, "foo", 3, 6.0)));
+    REQUIRE(action != OrderAction("2014-09-04", OrderAction::Act::kPlace,
+            Order(Order::Type::kBuy, Order::Mode::kMarket, "foo", 3, 6.0)));
+
 }
 
 TEST_CASE("fill order", "[OrderAction]") {
@@ -48,10 +52,8 @@ TEST_CASE("fill order", "[OrderAction]") {
     REQUIRE(action.order().mode() == Order::Mode::kLimit);
     REQUIRE(action.order().ticker() == "bar");
     REQUIRE(action.order().shares() == 10);
-    REQUIRE(action.order().share_price() > 5.999);
-    REQUIRE(action.order().share_price() < 6.001);
-    REQUIRE(action.total() > 64.999);
-    REQUIRE(action.total() < 65.001);
+    REQUIRE(approx(action.order().share_price(), 6.0));
+    REQUIRE(approx(action.total(), 65.0));
 }
 
 TEST_CASE("cancel order", "[OrderAction]") {
@@ -64,8 +66,6 @@ TEST_CASE("cancel order", "[OrderAction]") {
     REQUIRE(action.order().mode() == Order::Mode::kLimit);
     REQUIRE(action.order().ticker() == "bar");
     REQUIRE(action.order().shares() == 10);
-    REQUIRE(action.order().share_price() > 5.999);
-    REQUIRE(action.order().share_price() < 6.001);
-    REQUIRE(action.total() > -0.001);
-    REQUIRE(action.total() < 0.001);
+    REQUIRE(approx(action.order().share_price(), 6.0));
+    REQUIRE(approx(action.total(), 0.0));
 }

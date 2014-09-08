@@ -22,7 +22,6 @@
 #define RESET "\033[0m"
 #define BOLDRED "\033[1m\033[31m"
 
-bool approx(const double &, const double &);
 // return false if a test has failed
 bool show_msg(const char *, const bool &, int &, int &);
 
@@ -141,11 +140,6 @@ int main() {
         << (failed > 0 ? BOLDRED : RESET) << failed << " tests failed." << RESET << std::endl << std::endl;
     
     return 0;
-}
-
-bool approx(const double &x1, const double &x2) {
-    if (x1 >= x2) return x1 - x2 < kEpsilon;
-    return x2 - x1 < kEpsilon;
 }
 
 bool show_msg(const char *tst_desc, const bool &passing_condition, int &passed, int &failed) {

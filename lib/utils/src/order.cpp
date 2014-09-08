@@ -78,8 +78,7 @@ bool Order::fillable(const double &range_begin, const double &range_end) const {
 
 bool Order::operator==(const Order &other) const {
     return this->type_ == other.type_ && this->mode_ == other.mode_ && this->ticker_ == other.ticker_
-            && this->shares_ == other.shares_ && -kEpsilon < (this->share_price_ - other.share_price_)
-            && (this->share_price_ - other.share_price_) < kEpsilon;
+            && this->shares_ == other.shares_ && approx(this->share_price_, other.share_price_);
 }
 
 bool Order::operator!=(const Order &other) const {

@@ -20,6 +20,7 @@
 
 #include "order.h"
 #include "order_action.h"
+#include "globals.h"
 
 OrderAction::OrderAction(const std::string &date, const Act &act, 
         const Order &order, const double &total) 
@@ -42,4 +43,13 @@ Order OrderAction::order() const {
 
 double OrderAction::total() const {
     return total_;
+}
+
+bool OrderAction::operator==(const OrderAction &action) const {
+    return this->date_ == action.date_ && this->act_ == action.act_ && this->order_ == action.order_
+            && approx(this->total_, action.total_);
+}
+
+bool OrderAction::operator!=(const OrderAction &action) const {
+    return !(*this == action);
 }

@@ -22,6 +22,7 @@
 #include <string>
 
 #include "order.h"
+#include "order_action.h"
 
 class OrderAction {
 public:
@@ -45,5 +46,8 @@ public:
     Act act() const;
     Order order() const;
     double total() const;
+
+    bool operator==(const OrderAction &) const;
+    bool operator!=(const OrderAction &) const;
 };
 #endif
