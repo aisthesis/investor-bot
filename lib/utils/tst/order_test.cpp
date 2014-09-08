@@ -15,12 +15,12 @@
 
 #include <iostream>
 #include <string>
+
+#include "globals.h"
 #include "order.h"
 
 #define RESET "\033[0m"
 #define BOLDRED "\033[1m\033[31m"
-
-constexpr double EPSILON = 0.001;
 
 bool approx(const double &, const double &);
 // return false if a test has failed
@@ -46,6 +46,12 @@ int main() {
     show_msg("correct ticker", order->ticker() == ticker, passed, failed);
     show_msg("correct shares", order->shares() == shares, passed, failed);
     show_msg("correct share_price", approx(order->share_price(), share_price), passed, failed);
+    show_msg("limit buy order: equality", 
+            *order == Order(Order::Type::kBuy, Order::Mode::kLimit, ticker, shares, share_price),
+            passed, failed);
+    show_msg("limit buy order: inequality", 
+            *order != Order(Order::Type::kSell, Order::Mode::kLimit, ticker, shares, share_price),
+            passed, failed);
 
     // fillable()
     show_msg("limit buy order: mkt below limit", order->fillable(low_mkt_price), passed, failed);
@@ -62,6 +68,12 @@ int main() {
     show_msg("stop-loss buy order: range below limit", !order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
     show_msg("stop-loss buy order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
     show_msg("stop-loss buy order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
+    show_msg("stop-loss buy order: equality", 
+            *order == Order(Order::Type::kBuy, Order::Mode::kStopLoss, ticker, shares, share_price),
+            passed, failed);
+    show_msg("stop-loss buy order: inequality", 
+            *order != Order(Order::Type::kBuy, Order::Mode::kLimit, ticker, shares, share_price),
+            passed, failed);
     delete order;
 
     // Mode Market
@@ -71,6 +83,12 @@ int main() {
     show_msg("market buy order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
     show_msg("market buy order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
     show_msg("market buy order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
+    show_msg("market buy order: equality", 
+            *order == Order(Order::Type::kBuy, Order::Mode::kMarket, ticker, shares, share_price),
+            passed, failed);
+    show_msg("market buy order: inequality", 
+            *order != Order(Order::Type::kBuy, Order::Mode::kMarket, "notblah", shares, share_price),
+            passed, failed);
     delete order;
 
     std::cout << "Testing order type SELL:" << std::endl;
@@ -81,6 +99,12 @@ int main() {
     show_msg("limit sell order: range below limit", !order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
     show_msg("limit sell order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
     show_msg("limit sell order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
+    show_msg("limit buy order: equality", 
+            *order == Order(Order::Type::kSell, Order::Mode::kLimit, ticker, shares, share_price),
+            passed, failed);
+    show_msg("limit buy order: inequality", 
+            *order != Order(Order::Type::kSell, Order::Mode::kLimit, ticker, shares + 1, share_price),
+            passed, failed);
     delete order;
 
     // Mode kStopLoss
@@ -90,6 +114,12 @@ int main() {
     show_msg("stop-loss sell order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
     show_msg("stop-loss sell order: range above limit", !order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
     show_msg("stop-loss sell order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
+    show_msg("stop-loss buy order: equality", 
+            *order == Order(Order::Type::kSell, Order::Mode::kStopLoss, ticker, shares, share_price),
+            passed, failed);
+    show_msg("stop-loss buy order: inequality", 
+            *order != Order(Order::Type::kSell, Order::Mode::kStopLoss, ticker, shares, share_price + 1.0),
+            passed, failed);
     delete order;
 
     // Mode Market
@@ -99,6 +129,12 @@ int main() {
     show_msg("market sell order: range below limit", order->fillable(low_mkt_price, lower_mkt_price), passed, failed);
     show_msg("market sell order: range above limit", order->fillable(high_mkt_price, higher_mkt_price), passed, failed);
     show_msg("market sell order: range includes limit", order->fillable(high_mkt_price, low_mkt_price), passed, failed);
+    show_msg("limit buy order: equality", 
+            *order == Order(Order::Type::kSell, Order::Mode::kMarket, ticker, shares, share_price),
+            passed, failed);
+    show_msg("limit buy order: inequality", 
+            *order != Order(Order::Type::kSell, Order::Mode::kLimit, ticker, shares, share_price),
+            passed, failed);
     delete order;
 
     std::cout << passed << " tests passed." << std::endl
@@ -108,8 +144,8 @@ int main() {
 }
 
 bool approx(const double &x1, const double &x2) {
-    if (x1 >= x2) return x1 - x2 < EPSILON;
-    return x2 - x1 < EPSILON;
+    if (x1 >= x2) return x1 - x2 < kEpsilon;
+    return x2 - x1 < kEpsilon;
 }
 
 bool show_msg(const char *tst_desc, const bool &passing_condition, int &passed, int &failed) {

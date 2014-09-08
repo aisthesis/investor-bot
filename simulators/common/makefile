@@ -15,9 +15,11 @@ CFLAGS = -Wall
 CPPFLAGS = -std=c++11 -Iinclude
 ROOTDIR = ../../
 PROG1 = simulator
-PROG1FLAGS = -I$(ROOTDIR)investors/common/include -I$(ROOTDIR)lib/utils/include
+PROG1FLAGS = -I$(ROOTDIR)investors/common/include -I$(ROOTDIR)lib/utils/include \
+	-I$(ROOTDIR)investors/01/include
 PROG1OBJDEPS = $(ROOTDIR)investors/common/obj/investor.o $(ROOTDIR)lib/utils/obj/portfolio.o \
-	$(ROOTDIR)lib/utils/obj/order_action.o $(ROOTDIR)lib/utils/obj/order.o
+	$(ROOTDIR)lib/utils/obj/order_action.o $(ROOTDIR)lib/utils/obj/order.o \
+	$(ROOTDIR)investors/01/obj/investor01.o
 ODIR = obj
 BDIR = bin
 CPPFLAGSTEST = $(CPPFLAGS)

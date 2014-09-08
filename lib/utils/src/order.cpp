@@ -14,6 +14,8 @@
  */
 
 #include <string>
+
+#include "globals.h"
 #include "order.h"
 
 Order::Order(const Type &type, const Mode &mode, const std::string &ticker, 
@@ -72,4 +74,14 @@ bool Order::fillable(const double &range_begin, const double &range_end) const {
     if (type_ == Type::kBuy && mode_ == Mode::kLimit) return true;
     if (type_ == Type::kSell && mode_ == Mode::kStopLoss) return true;
     return false;
+}
+
+bool Order::operator==(const Order &other) const {
+    return this->type_ == other.type_ && this->mode_ == other.mode_ && this->ticker_ == other.ticker_
+            && this->shares_ == other.shares_ && -kEpsilon < (this->share_price_ - other.share_price_)
+            && (this->share_price_ - other.share_price_) < kEpsilon;
+}
+
+bool Order::operator!=(const Order &other) const {
+    return !(*this == other);
 }

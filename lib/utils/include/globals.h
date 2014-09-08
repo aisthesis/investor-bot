@@ -34,6 +34,9 @@ struct DailyRecommendations {
     std::unordered_map<std::string, double> recommendations;
 };
 
+// for floating point equality
+constexpr double kEpsilon = 0.000001;
+
 namespace investor {
     constexpr double kSellHoldThreshold = 1.0 / 3.0;
     constexpr double kHoldBuyThreshold = 2.0 / 3.0;

@@ -45,5 +45,8 @@ public:
 
     bool fillable(const double &) const;
     bool fillable(const double &, const double &) const;
+
+    bool operator==(const Order &) const;
+    bool operator!=(const Order &) const;
 };
 #endif

@@ -9,4 +9,4 @@ Inputs:
 
 Outputs:
 - value of investment portfolio at endpoint.
-- to console: Records of all purchases and sales.
+- records of all purchases and sales.

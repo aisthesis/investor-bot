@@ -33,8 +33,12 @@ void Simulator::run() {
     std::vector<DailyOhlcs>::const_iterator ohlc_iter = ohlc_data_.cbegin();
     std::vector<Order> standing_orders;
 
+    // no recommendations
+    if (rec_iter == recommendations_.cend()) {
+        throw std::logic_error("no recommendations on which to act");
+    }
     // move ohlc_iter forward until dates match
-    while (ohlc_iter->date != rec_iter->date && ohlc_iter != ohlc_data_.cend()) ++ohlc_iter;
+    while (ohlc_iter != ohlc_data_.cend() && ohlc_iter->date != rec_iter->date) ++ohlc_iter;
     // throw exception if date ranges don't match
     if (ohlc_iter == ohlc_data_.cend()) {
         throw std::logic_error("no ohlc data to act on recommendations");
@@ -51,6 +55,10 @@ void Simulator::run() {
         if (rec_iter == recommendations_.cend()) break;
         // get new orders (requires new recommendations)
         standing_orders = investor_->order(rec_iter->recommendations, ohlc_iter->ohlc_values);
+        // place standing orders
+        for (auto &order : standing_orders) {
+            actions_.push_back(OrderAction(rec_iter->date, OrderAction::Act::kPlace, order, 0.0));
+        }
         ++ohlc_iter;
         ++rec_iter;
     }
@@ -99,10 +107,10 @@ void Simulator::process_standing_orders(const std::string &date, const std::vect
                 amount -= commission();
                 investor_->sell(order.ticker(), order.shares(), amount);
             }
-            actions_.push_back(OrderAction(date, OrderAction::Act::kFill, Order(order), amount));
+            actions_.push_back(OrderAction(date, OrderAction::Act::kFill, order, amount));
         }
         else {
-            actions_.push_back(OrderAction(date, OrderAction::Act::kCancel, Order(order), 0.0));
+            actions_.push_back(OrderAction(date, OrderAction::Act::kCancel, order, 0.0));
         }
     }
 }
