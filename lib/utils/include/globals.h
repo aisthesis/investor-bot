@@ -19,7 +19,12 @@
 #include <unordered_map>
 #include <string>
 
-#include "ohlc.h"
+struct Ohlc {
+    double open;
+    double high;
+    double low;
+    double close;
+};
 
 // keys are tickers
 typedef std::unordered_map<std::string, Ohlc> TickerOhlcMap;

@@ -19,7 +19,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "ohlc.h"
+#include "globals.h"
 
 class Portfolio {
 private:

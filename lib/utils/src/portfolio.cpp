@@ -19,7 +19,7 @@
 #include <stdexcept>
 
 #include "portfolio.h"
-#include "ohlc.h"
+#include "globals.h"
 
 Portfolio::Portfolio() : Portfolio(0.0) {}
 
@@ -47,12 +47,24 @@ void Portfolio::withdraw(const double &amt) {
 
 // always succeeds but can be on margin
 void Portfolio::buy(const std::string &equity, const int &shares, const double &cost) {
+    if (cost < 0.0) {
+        throw std::invalid_argument("cost of purchase cannot be negative");
+    }
+    if (shares <= 0) {
+        throw std::invalid_argument("shares purchased must be positive");
+    }
     cash_ -= cost;
     add_shares(equity, shares);
 }
 
 // always succeeds, but possibly on margin 
 void Portfolio::sell(const std::string &equity, const int &shares, const double &value) {
+    if (value < 0.0) {
+        throw std::invalid_argument("value of sale cannot be negative");
+    }
+    if (shares <= 0) {
+        throw std::invalid_argument("shares sold must be positive");
+    }
     cash_ += value;
     add_shares(equity, -shares);
 }

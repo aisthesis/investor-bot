@@ -12,7 +12,7 @@ do
 done
 
 run_unit_tests() {
-    for file in ./bin/*
+    for file in ./bin/*_test
     do
         echo "running unit tests $file"
         $file
@@ -34,7 +34,7 @@ echo "Recommender binary data files built."; echo ""
 echo "Building common C++ utils."
 pushd lib/utils > /dev/null
 make
-if [ $RUN_TESTS = 1 ];
+if [ $RUN_TESTS -eq 1 ];
 then
     run_unit_tests
 fi
@@ -45,7 +45,7 @@ echo "Building C++ investor classes."
 echo "Building Investor abstract base class."
 pushd investors/common > /dev/null
 make
-if [ $RUN_TESTS = 1 ];
+if [ $RUN_TESTS -eq 1 ];
 then
     run_unit_tests
 fi
@@ -54,7 +54,7 @@ echo "Investor base class built."
 echo "Building Investor01."
 pushd investors/common > /dev/null
 make
-if [ $RUN_TESTS = 1 ];
+if [ $RUN_TESTS -eq 1 ];
 then
     run_unit_tests
 fi
@@ -65,7 +65,7 @@ echo "C++ investor classes built."; echo ""
 echo "Building C++ simulator classes."
 pushd simulators/common > /dev/null
 make
-if [ $RUN_TESTS = 1 ];
+if [ $RUN_TESTS -eq 1 ];
 then
     run_unit_tests
 fi

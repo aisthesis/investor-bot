@@ -18,44 +18,15 @@
 #include <unordered_map>
 #include <algorithm>
 
+#include "catch.hpp"
+
 #include "portfolio.h"
-#include "ohlc.h"
+#include "globals.h"
 
-#define RESET "\033[0m"
-#define BOLDRED "\033[1m\033[31m"
-
-constexpr double EPSILON = 0.001;
-
-bool approx(const double &, const double &);
-// test assumes no stocks are owned initially
-void test(Portfolio *cashonly_portfolio, double cash);
-// return false if a test has failed
-bool show_msg(const char *, const bool &, int &, int &);
-
-int main() {
-    std::cout << "Running tests on portfolio initialized with default constructor:" << std::endl;
-    Portfolio pf1;
-    test(&pf1, 0.0);
-    constexpr double cash = 1000.0;
-    Portfolio pf2(cash);
-    std::cout << "Running tests on portfolio initialized with double:" << std::endl;
-    test(&pf2, cash);
-    return 0;
-}
-
-bool approx(const double &x1, const double &x2) {
-    if (x1 >= x2) return x1 - x2 < EPSILON;
-    return x2 - x1 < EPSILON;
-}
-
-void test(Portfolio *pf, double cash) {
-    int passed = 0,
-        failed = 0,
-        shares1 = 0,
+TEST_CASE("portfolio tests", "[Portfolio]") {
+    int shares1 = 0,
         shares2 = 0,
         shares3 = 0;
-    double actual_cash = pf->cash();
-    double pf_value = cash;
     std::string eq1 = "foo",
         eq2 = "bar",
         eq3 = "blah";
@@ -66,96 +37,99 @@ void test(Portfolio *pf, double cash) {
     ohlc_table[eq1] = { 0.0, 20.0, 1.0, 10.0 };
     ohlc_table[eq2] = { 0.0, 20.0, 1.0, 5.0 };
 
-    std::cout << "Testing initial cash." << std::endl;
-    show_msg("initial cash", approx(actual_cash, cash), passed, failed);
+    SECTION("default constructor") {
+        Portfolio portfolio;
+        double expected_cash = 0.0,
+            expected_value = 0.0;
 
-    std::cout << "Testing initial stock ownership." << std::endl;
-    show_msg("initial stock ownership", pf->shares(eq1) == shares1, passed, failed);
-
-    std::cout << "Testing initial long positions." << std::endl;
-    show_msg("initial long positions", pf->n_long_pos() == 0, passed, failed);
-    
-    std::cout << "Testing initial short positions." << std::endl;
-    show_msg("initial short positions", pf->n_short_pos() == 0, passed, failed);
-
-    std::cout << "Testing initial value." << std::endl;
-    show_msg("initial value", approx(pf->value(price_table), pf_value), passed, failed);
-    show_msg("initial value using ohlc table", approx(pf->value(ohlc_table), pf_value), passed, failed);
-
-    std::cout << "Test buying shares." << std::endl;
-    constexpr int shares_to_buy = 50;
-    constexpr double cost = 200.0;
-    pf->buy(eq1, shares_to_buy, cost);
-    actual_cash -= cost;
-    shares1 += shares_to_buy;
-    pf_value += 300.0;
-    // cash correct
-    show_msg("cash after purchase", approx(pf->cash(), actual_cash), passed, failed);
-    // shares correct
-    show_msg("shares after purchase", shares1 == pf->shares(eq1), passed, failed);
-    show_msg("value after purchase", approx(pf->value(price_table), pf_value), passed, failed);
-    show_msg("value after purchase using ohlc table", approx(pf->value(ohlc_table), pf_value), passed, failed);
-
-    std::cout << "Test selling shares." << std::endl;
-    constexpr int shares_to_sell = 23;
-    constexpr double value = 193.1234890;
-    pf->sell(eq1, shares_to_sell, value);
-    pf_value += value - price_table[eq1] * shares_to_sell;
-    pf->sell(eq2, shares_to_sell, value);
-    pf_value += value - price_table[eq2] * shares_to_sell;
-    show_msg("value after buy and sell", approx(pf->value(price_table), pf_value), passed, failed);
-    show_msg("value after buy and sell using ohlc table", approx(pf->value(ohlc_table), pf_value), passed, failed);
-    pf->sell(eq3, shares_to_sell, value);
-    try {
-        // exception expected because eq3 not in price table
-        pf->value(price_table);
-        show_msg("stock missing from price table", false, passed, failed);
+        SECTION("initial state") {
+            REQUIRE(approx(expected_cash, portfolio.cash()));
+            REQUIRE(shares1 == portfolio.shares(eq1));
+            REQUIRE(shares2 == portfolio.shares(eq2));
+            REQUIRE(portfolio.n_long_pos() == 0);
+            REQUIRE(portfolio.n_short_pos() == 0);
+            REQUIRE(portfolio.value(price_table) == expected_value);
+            REQUIRE(portfolio.value(ohlc_table) == expected_value);
+        }
+        SECTION("buy and sell shares") {
+            // buy 50 shares of eq1 for 200.0
+            portfolio.buy(eq1, 50, 200.0);
+            expected_cash -= 200.0;
+            shares1 += 50;
+            // the shares are worth 500.0, so value is increased by 300.0
+            expected_value += 300.0;
+            REQUIRE(approx(portfolio.cash(), expected_cash));
+            REQUIRE(shares1 == portfolio.shares(eq1));
+            REQUIRE(approx(portfolio.value(price_table), expected_value));
+            REQUIRE(approx(portfolio.value(ohlc_table), expected_value));
+            // sell 20 shares of eq1 and eq2 for 400.0 
+            portfolio.sell(eq1, 20, 400.0);
+            // shares are worth 200.0 but sold for 400.0, so value increases by 200.0
+            expected_value += 200.0;
+            expected_cash += 400.0;
+            shares1 -= 20;  // 30 altogether
+            portfolio.sell(eq2, 20, 400.0);
+            shares2 -= 20;  // -20 (short)
+            // shares are worth 100.0 but sold for 400.0
+            expected_value += 300.0;
+            expected_cash += 400.0;
+            REQUIRE(approx(portfolio.value(ohlc_table), expected_value));
+            portfolio.sell(eq3, 10, 10.0);
+            shares3 -= 10;  // -10 (short)
+            expected_cash += 10.0;
+            REQUIRE(portfolio.shares(eq1) == shares1);
+            REQUIRE(portfolio.shares(eq2) == shares2);
+            REQUIRE(approx(portfolio.cash(), expected_cash));
+            REQUIRE(portfolio.n_long_pos() == 1);
+            REQUIRE(portfolio.n_short_pos() == 2);
+            SECTION("iterator") {
+                std::unordered_map<std::string, int>::iterator it = std::find_if(portfolio.begin(),
+                        portfolio.end(), [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq1; });
+                REQUIRE(it->second == shares1);
+                it = std::find_if(portfolio.begin(), portfolio.end(), 
+                        [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq2; });
+                REQUIRE(it->second == shares2);
+                it = std::find_if(portfolio.begin(), portfolio.end(), 
+                        [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq3; });
+                REQUIRE(it->second == shares3);
+            }
+            SECTION("exceptions") {
+                // selling eq3 causes exception in checking value (equity not in ohlc or price table)
+                REQUIRE_THROWS_AS(portfolio.value(price_table), std::invalid_argument);
+                REQUIRE_THROWS_AS(portfolio.value(ohlc_table), std::invalid_argument);
+                // pass negative cost or shares to buy or sell
+                REQUIRE_THROWS_AS(portfolio.buy(eq1, 10, -3.0), std::invalid_argument);
+                REQUIRE_THROWS_AS(portfolio.buy(eq1, -10, 3.0), std::invalid_argument);
+                REQUIRE_THROWS_AS(portfolio.sell(eq1, 10, -3.0), std::invalid_argument);
+                REQUIRE_THROWS_AS(portfolio.sell(eq1, -10, 3.0), std::invalid_argument);
+            }
+        }
     }
-    catch (const std::invalid_argument &e) {
-        show_msg("stock missing from price table", true, passed, failed);
-    }
-    try {
-        // exception expected because eq3 not in price table
-        pf->value(ohlc_table);
-        show_msg("stock missing from ohlc table", false, passed, failed);
-    }
-    catch (const std::invalid_argument &e) {
-        show_msg("stock missing from ohlc table", true, passed, failed);
-    }
-    actual_cash += 3.0 * value;
-    shares1 -= shares_to_sell;  // 27
-    shares2 -= shares_to_sell;  // -23
-    shares3 -= shares_to_sell;  // -23
-    // cash correct
-    show_msg("cash after sales", approx(pf->cash(), actual_cash), passed, failed);
-    // shares for eq1 correct
-    show_msg("shares after buy and sell", shares1 == pf->shares(eq1), passed, failed);
-    // shares for eq2 correct
-    show_msg("shares after short sale", shares2 == pf->shares(eq2), passed, failed);
-    // long position count correct
-    show_msg("long position count after purchase and sale", pf->n_long_pos() == 1, passed, failed);
-    // short position count correct
-    show_msg("short position count after short sales", pf->n_short_pos() == 2, passed, failed);
-    std::unordered_map<std::string, int>::iterator it = std::find_if(pf->begin(), pf->end(),
-            [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq1; });
-    show_msg("eq1 shares determined through iterator", it->second == shares1, passed, failed);
-    it = std::find_if(pf->begin(), pf->end(), 
-            [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq2; });
-    show_msg("eq2 shares determined through iterator", it->second == shares2, passed, failed);
-    it = std::find_if(pf->begin(), pf->end(), 
-            [&](std::pair<std::string, int> my_pair) { return my_pair.first == eq3; });
-    show_msg("eq3 shares determined through iterator", it->second == shares3, passed, failed);
+    SECTION("Portfolio(const double &)") {
+        Portfolio portfolio(1000.0);
+        double expected_cash = 1000.0,
+            expected_value = 1000.0;
 
-    std::cout << passed << " tests passed." << std::endl
-        << (failed > 0 ? BOLDRED : RESET) << failed << " tests failed." << RESET << std::endl << std::endl;
-}
-
-bool show_msg(const char *tst_desc, const bool &passing_condition, int &passed, int &failed) {
-    if (passing_condition) {
-        ++passed;
-        return true;
+        SECTION("initial state") {
+            REQUIRE(approx(expected_cash, portfolio.cash()));
+            REQUIRE(shares1 == portfolio.shares(eq1));
+            REQUIRE(shares2 == portfolio.shares(eq2));
+            REQUIRE(portfolio.n_long_pos() == 0);
+            REQUIRE(portfolio.n_short_pos() == 0);
+            REQUIRE(portfolio.value(price_table) == expected_value);
+            REQUIRE(portfolio.value(ohlc_table) == expected_value);
+        }
+        SECTION("buy shares") {
+            // buy 50 shares of eq1 for 200.0
+            portfolio.buy(eq1, 50, 200.0);
+            expected_cash -= 200.0;
+            shares1 += 50;
+            // the shares are worth 500.0, so value is increased by 300.0
+            expected_value += 300.0;
+            REQUIRE(approx(portfolio.cash(), expected_cash));
+            REQUIRE(shares1 == portfolio.shares(eq1));
+            REQUIRE(approx(portfolio.value(price_table), expected_value));
+            REQUIRE(approx(portfolio.value(ohlc_table), expected_value));
+        }
     }
-    ++failed;
-    std::cout << BOLDRED << failed << " tests failed: " << tst_desc << RESET << std::endl << std::endl;
-    return false;
 }
