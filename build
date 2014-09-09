@@ -1,10 +1,10 @@
 #!/bin/bash
 RUN_TESTS=1
-# tests can be disabled by passing the -q (quick) option
-while getopts "q" OPTION
+# tests can be disabled by passing the -f (fast) option
+while getopts "f" OPTION
 do
     case $OPTION in
-    q)
+    f)
         RUN_TESTS=0
         echo "Skipping unit tests while building"; echo ""
         ;;
