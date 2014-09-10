@@ -17,6 +17,7 @@
 #define ORDER_H
 
 #include <string>
+#include <ostream>
 
 class Order {
 public:
@@ -48,5 +49,11 @@ public:
 
     bool operator==(const Order &) const;
     bool operator!=(const Order &) const;
+
+    friend std::ostream &operator<<(std::ostream &strm, const Order &order);
 };
+
+std::ostream &operator<<(std::ostream &strm, const Order::Type &type);
+std::ostream &operator<<(std::ostream &strm, const Order::Mode &mode);
+std::ostream &operator<<(std::ostream &strm, const Order &order);
 #endif

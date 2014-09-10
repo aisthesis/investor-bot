@@ -96,14 +96,22 @@ void Simulator::process_standing_orders(const std::string &date, const std::vect
     double amount = 0.0;
     for (auto &order : orders) {
         if (order.fillable(ohlc_map.at(order.ticker()).low, ohlc_map.at(order.ticker()).high)) {
-            amount = order.share_price() * order.shares();
             if (order.type() == Order::Type::kBuy) {
-                amount = -amount;
+                amount = -order.share_price() * order.shares();
                 investor_->add_to_pending(amount);
+                if (order.mode() == Order::Mode::kMarket) {
+                    amount = -ohlc_map.at(order.ticker()).open * order.shares();
+                }
                 amount -= commission();
                 investor_->buy(order.ticker(), order.shares(), -amount);
             }
             else {
+                if (order.mode() == Order::Mode::kMarket) {
+                    amount = ohlc_map.at(order.ticker()).open * order.shares();
+                }
+                else {
+                    amount = order.share_price() * order.shares();
+                }
                 amount -= commission();
                 investor_->sell(order.ticker(), order.shares(), amount);
             }

@@ -14,6 +14,7 @@
  */
 
 #include <string>
+#include <ostream>
 
 #include "catch.hpp"
 
@@ -115,5 +116,38 @@ TEST_CASE("order tests", "[Order]") {
                 REQUIRE(order.fillable(high_mkt_price, low_mkt_price));
             }
         }
+    }
+}
+
+TEST_CASE("serialization", "[Order]") {
+    std::ostringstream oss;
+
+    SECTION("order type") {
+        SECTION("buy") {
+            oss << Order::Type::kBuy;
+            REQUIRE(oss.str() == "buy");
+        }
+        SECTION("sell") {
+            oss << Order::Type::kSell;
+            REQUIRE(oss.str() == "sell");
+        }
+    }
+
+    SECTION("order mode") {
+        SECTION("limit") {
+            oss << Order::Mode::kLimit;
+            REQUIRE(oss.str() == "limit");
+        }
+        SECTION("market") {
+            oss << Order::Mode::kMarket;
+            REQUIRE(oss.str() == "market");
+        }
+        SECTION("stop-loss") {
+            oss << Order::Mode::kStopLoss;
+            REQUIRE(oss.str() == "stop-loss");
+        }
+    }
+
+    SECTION("complete order") {
     }
 }

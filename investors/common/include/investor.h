@@ -56,6 +56,12 @@ public:
     double add_to_pending(const double &);
 
     // this is where all of the investor logic goes:
+    /**
+     * Note that if an investor places market orders, it should still use a realistic
+     * amount (such as closing price): While the amount is irrelevant in determining
+     * whether or not a market order will be filled, it is the amount to be used
+     * as an estimate for pending purchases
+     */
     virtual std::vector<Order> order(const std::unordered_map<std::string, double> &strengths, 
             const TickerOhlcMap &ohlc_map) = 0;
 };

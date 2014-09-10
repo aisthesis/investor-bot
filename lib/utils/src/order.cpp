@@ -14,6 +14,8 @@
  */
 
 #include <string>
+#include <ostream>
+#include <iomanip>
 
 #include "globals.h"
 #include "order.h"
@@ -83,4 +85,30 @@ bool Order::operator==(const Order &other) const {
 
 bool Order::operator!=(const Order &other) const {
     return !(*this == other);
+}
+
+std::ostream &operator<<(std::ostream &strm, const Order::Type &type) {
+    if (type == Order::Type::kBuy) {
+        return strm << "buy";
+    }
+    return strm << "sell";
+}
+
+std::ostream &operator<<(std::ostream &strm, const Order::Mode &mode) {
+    if (mode == Order::Mode::kLimit) {
+        return strm << "limit";
+    }
+    if (mode == Order::Mode::kMarket) {
+        return strm << "market";
+    }
+    return strm << "stop-loss";
+}
+
+std::ostream &operator<<(std::ostream &strm, const Order &order) {
+    std::ios_base::fmtflags old_flags = strm.flags();
+
+    strm << order.type_ << " " << order.shares_ << " shares " << order.ticker_ << " at "
+            << order.mode_ << " " << std::fixed << std::setprecision(2) << order.share_price_;
+    strm.flags(old_flags);
+    return strm;
 }
