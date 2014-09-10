@@ -18,6 +18,7 @@
 #include "catch.hpp"
 
 #include <string>
+#include <ostream>
 
 #include "order_action.h"
 #include "order.h"
@@ -78,4 +79,39 @@ TEST_CASE("cancel order", "[OrderAction]") {
             Order(Order::Type::kBuy, Order::Mode::kLimit, "bar", 10, 6.0)));
     REQUIRE(action != OrderAction("2014-09-03", OrderAction::Act::kCancel,
             Order(Order::Type::kSell, Order::Mode::kLimit, "bar", 10, 6.0), 1.0));
+}
+
+TEST_CASE("serialization", "[OrderAction]") {
+    std::ostringstream oss;
+
+    SECTION("act") {
+        SECTION("place") {
+            oss << OrderAction::Act::kPlace;
+            REQUIRE(oss.str() == "place");
+        }
+        SECTION("fill") {
+            oss << OrderAction::Act::kFill;
+            REQUIRE(oss.str() == "fill");
+        }
+        SECTION("cancel") {
+            oss << OrderAction::Act::kCancel;
+            REQUIRE(oss.str() == "cancel");
+        }
+    }
+
+    SECTION("complete action") {
+        Order order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 3, 7.2296);
+        SECTION("place") {
+            oss << OrderAction("2014-08-01", OrderAction::Act::kPlace, order);
+            REQUIRE(oss.str() == "2014-08-01 place for 0.00 {buy 3 shares foo at limit 7.23}");
+        }
+        SECTION("fill") {
+            oss << OrderAction("1932-01-31", OrderAction::Act::kFill, order, 30.056);
+            REQUIRE(oss.str() == "1932-01-31 fill for 30.06 {buy 3 shares foo at limit 7.23}");
+        }
+        SECTION("cancel") {
+            oss << OrderAction("1945-05-31", OrderAction::Act::kCancel, order);
+            REQUIRE(oss.str() == "1945-05-31 cancel for 0.00 {buy 3 shares foo at limit 7.23}");
+        }
+    }
 }

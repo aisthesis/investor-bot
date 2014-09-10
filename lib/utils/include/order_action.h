@@ -20,9 +20,9 @@
 #define ORDER_ACTION_H
 
 #include <string>
+#include <ostream>
 
 #include "order.h"
-#include "order_action.h"
 
 class OrderAction {
 public:
@@ -49,5 +49,10 @@ public:
 
     bool operator==(const OrderAction &) const;
     bool operator!=(const OrderAction &) const;
+
+    friend std::ostream &operator<<(std::ostream &strm, const OrderAction &action);
 };
+
+std::ostream &operator<<(std::ostream &strm, const OrderAction::Act &act);
+std::ostream &operator<<(std::ostream &strm, const OrderAction &action);
 #endif

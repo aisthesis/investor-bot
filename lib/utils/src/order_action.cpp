@@ -17,6 +17,8 @@
  */
 
 #include <string>
+#include <ostream>
+#include <iomanip>
 
 #include "order.h"
 #include "order_action.h"
@@ -52,4 +54,23 @@ bool OrderAction::operator==(const OrderAction &action) const {
 
 bool OrderAction::operator!=(const OrderAction &action) const {
     return !(*this == action);
+}
+
+std::ostream &operator<<(std::ostream &strm, const OrderAction::Act &act) {
+    if (act == OrderAction::Act::kPlace) {
+        return strm << "place";
+    }
+    if (act == OrderAction::Act::kFill) {
+        return strm << "fill";
+    }
+    return strm << "cancel";
+}
+
+std::ostream &operator<<(std::ostream &strm, const OrderAction &action) {
+    std::ios_base::fmtflags old_flags = strm.flags();
+
+    strm << action.date_ << " " << action.act_ << " for " << std::fixed << std::setprecision(2)
+        << action.total_ << " {" << action.order_ << "}";
+    strm.flags(old_flags);
+    return strm;
 }
