@@ -149,5 +149,19 @@ TEST_CASE("serialization", "[Order]") {
     }
 
     SECTION("complete order") {
+        SECTION("limit buy order") {
+            oss << Order(Order::Type::kBuy, Order::Mode::kLimit, "foo", 3, 0);
+            REQUIRE(oss.str() == "buy 3 shares foo at limit 0.00");
+        }
+
+        SECTION("stop-loss sell order") {
+            oss << Order(Order::Type::kSell, Order::Mode::kStopLoss, "bar", 100001, 3.14159265358);
+            REQUIRE(oss.str() == "sell 100001 shares bar at stop-loss 3.14");
+        }
+
+        SECTION("market buy order") {
+            oss << Order(Order::Type::kBuy, Order::Mode::kMarket, "foo", 123, 1234567.899);
+            REQUIRE(oss.str() == "buy 123 shares foo at market 1234567.90");
+        }
     }
 }
