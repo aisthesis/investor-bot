@@ -1,0 +1,6 @@
+#!/bin/bash
+for file in ./bin/*_test
+do
+    echo "running unit tests $file"
+    $file
+done

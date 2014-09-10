@@ -23,7 +23,6 @@
 
 #include "investor01.h"
 #include "order.h"
-#include "ohlc.h"
 #include "globals.h"
 
 TEST_CASE("correct orders generated from recommendations", "[Investor01]") {

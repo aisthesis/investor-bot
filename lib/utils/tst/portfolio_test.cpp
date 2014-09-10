@@ -13,7 +13,6 @@
  * Since 2014-08-25
  */
 
-#include <iostream>
 #include <string>
 #include <unordered_map>
 #include <algorithm>

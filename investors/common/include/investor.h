@@ -23,7 +23,6 @@
 
 #include "portfolio.h"
 #include "order.h"
-#include "ohlc.h"
 #include "globals.h"
 
 class Investor {
