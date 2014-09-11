@@ -16,6 +16,7 @@ CPPFLAGS = -std=c++11 -Iinclude
 PROG1 = portfolio
 PROG2 = order
 PROG3 = order_action
+PROG4 = csv_reader
 ODIR = obj
 BDIR = bin
 CPPFLAGSTEST = $(CPPFLAGS)
@@ -23,7 +24,7 @@ CPPFLAGSTEST = $(CPPFLAGS)
 vpath %.cpp src tst
 
 .PHONY: all
-all: directories $(PROG1)_test $(PROG2)_test $(PROG3)_test
+all: directories $(PROG1)_test $(PROG2)_test $(PROG3)_test $(PROG4)_test
 
 .PHONY: directories
 directories:
@@ -58,6 +59,16 @@ $(ODIR)/$(PROG3).o: $(PROG3).cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 $(ODIR)/$(PROG3)_test.o: $(PROG3)_test.cpp
+	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
+
+# CsvReader
+$(PROG4)_test: $(ODIR)/$(PROG4)_test.o $(ODIR)/$(PROG4).o $(ODIR)/test.o
+	$(CC) $(CFLAGS) $^ -o $(BDIR)/$@
+
+$(ODIR)/$(PROG4).o: $(PROG4).cpp
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(ODIR)/$(PROG4)_test.o: $(PROG4)_test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
 
 $(ODIR)/test.o: test.cpp

@@ -1,3 +1,5 @@
-## Commands that will be run whenever Octave is started
-## from the current directory
-setenv("DATA_ROOT", "../../data/")
+PROJECT_ROOT = "../..";
+setenv("DATA_ROOT", sprintf("%s/data/", PROJECT_ROOT))
+
+addpath(sprintf("%s/lib/utils/", PROJECT_ROOT))
+clear PROJECT_ROOT
