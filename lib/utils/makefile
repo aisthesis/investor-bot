@@ -35,20 +35,20 @@ directories:
 $(PROG1)_test: $(ODIR)/$(PROG1)_test.o $(ODIR)/$(PROG1).o $(ODIR)/test.o
 	$(CC) $(CFLAGS) $^ -o $(BDIR)/$@
 
-$(ODIR)/$(PROG1).o: $(PROG1).cpp directories
+$(ODIR)/$(PROG1).o: $(PROG1).cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-$(ODIR)/$(PROG1)_test.o: $(PROG1)_test.cpp directories
+$(ODIR)/$(PROG1)_test.o: $(PROG1)_test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
 
 # Order
 $(PROG2)_test: $(ODIR)/$(PROG2)_test.o $(ODIR)/$(PROG2).o $(ODIR)/test.o
 	$(CC) $(CFLAGS) $^ -o $(BDIR)/$@
 
-$(ODIR)/$(PROG2).o: $(PROG2).cpp directories
+$(ODIR)/$(PROG2).o: $(PROG2).cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
-$(ODIR)/$(PROG2)_test.o: $(PROG2)_test.cpp directories
+$(ODIR)/$(PROG2)_test.o: $(PROG2)_test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
 
 # OrderAction
