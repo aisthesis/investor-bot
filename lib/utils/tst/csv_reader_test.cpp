@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
 
 #include "catch.hpp"
 
@@ -69,9 +70,51 @@ TEST_CASE("get ohlc data", "[CsvReader]") {
             REQUIRE(approx(data[4].ohlc_values["bar"].high, 10.1111));
             REQUIRE(approx(data[4].ohlc_values["bar"].low, 9.9583));
             REQUIRE(approx(data[4].ohlc_values["bar"].close, 10.1111));
-
         }
         SECTION("no header row") {
+            std::vector<std::string> tickers = { "foo", "bar", "blah" };
+            std::string suffix = "-noheader.csv";
+            CsvReader reader(path, tickers, suffix, false);
+            data = reader.get_ohlc_data();
+            REQUIRE(data.size() == 6);
+            
+            // 1972-06-01
+            REQUIRE(data[0].date == "1972-06-01");
+            // foo
+            REQUIRE(approx(data[0].ohlc_values["foo"].open, 4.7292));
+            REQUIRE(approx(data[0].ohlc_values["foo"].high, 4.7392));
+            REQUIRE(approx(data[0].ohlc_values["foo"].low, 4.6767));
+            REQUIRE(approx(data[0].ohlc_values["foo"].close, 4.7083));
+            // bar
+            REQUIRE(approx(data[0].ohlc_values["bar"].open, 9.4583));
+            REQUIRE(approx(data[0].ohlc_values["bar"].high, 9.5344));
+            REQUIRE(approx(data[0].ohlc_values["bar"].low, 9.4444));
+            REQUIRE(approx(data[0].ohlc_values["bar"].close, 9.5067));
+            // blah
+            REQUIRE(approx(data[0].ohlc_values["blah"].open, 2.1706));
+            REQUIRE(approx(data[0].ohlc_values["blah"].high, 2.1735));
+            REQUIRE(approx(data[0].ohlc_values["blah"].low, 2.1492));
+            REQUIRE(approx(data[0].ohlc_values["blah"].close, 2.1534));
+
+            // 1972-06-05 (only data is for blah)
+            REQUIRE(data[2].date == "1972-06-05");
+            REQUIRE(approx(data[2].ohlc_values["blah"].open, 2.1492));
+            REQUIRE(approx(data[2].ohlc_values["blah"].high, 2.1696));
+            REQUIRE(approx(data[2].ohlc_values["blah"].low, 2.1411));
+            REQUIRE(approx(data[2].ohlc_values["blah"].close, 2.1492));
+
+            // 1973-01-02 (data for foo and bar only)
+            REQUIRE(data[4].date == "1973-01-02");
+            // foo
+            REQUIRE(approx(data[4].ohlc_values["foo"].open, 5.5417));
+            REQUIRE(approx(data[4].ohlc_values["foo"].high, 5.6567));
+            REQUIRE(approx(data[4].ohlc_values["foo"].low, 5.5317));
+            REQUIRE(approx(data[4].ohlc_values["foo"].close, 5.6250));
+            // bar
+            REQUIRE(approx(data[4].ohlc_values["bar"].open, 9.9583));
+            REQUIRE(approx(data[4].ohlc_values["bar"].high, 10.1111));
+            REQUIRE(approx(data[4].ohlc_values["bar"].low, 9.9583));
+            REQUIRE(approx(data[4].ohlc_values["bar"].close, 10.1111));
         }
     }
 
@@ -84,6 +127,7 @@ TEST_CASE("get ohlc data", "[CsvReader]") {
         SECTION("bad data") {
             std::vector<std::string> tickers = { "evil" };
             CsvReader reader(path, tickers);
+            REQUIRE_THROWS_AS(data = reader.get_ohlc_data(), std::invalid_argument);
         }
     }
 }

@@ -22,8 +22,6 @@
 #include <unordered_map>
 #include <sstream>
 #include <algorithm>
-// TODO remove
-#include <iostream>
 
 #include "csv_reader.h"
 #include "globals.h"
@@ -51,8 +49,6 @@ std::vector<DailyOhlcs> CsvReader::get_ohlc_data() const {
         }
         fin.close();
     }
-    //TODO
-    //std::cout << date_to_values.size() << std::endl;
     result.reserve(date_to_values.size());
     for (auto it = date_to_values.begin(); it != date_to_values.end(); ++it) {
         result.push_back({it->first, it->second});
