@@ -16,20 +16,74 @@
  */
 
 #include <string>
-#include <iterator>
 #include <vector>
+#include <fstream>
+#include <stdexcept>
+#include <unordered_map>
+#include <sstream>
+#include <algorithm>
+// TODO remove
+#include <iostream>
 
 #include "csv_reader.h"
 #include "globals.h"
 
-CsvReader::CsvReader(const std::string &path, const std::vector<std::string> &fnames,
-        const bool &has_header_row)
-        : path_(path), fnames_(fnames), has_header_row_(has_header_row) {}
+CsvReader::CsvReader(const std::string &path, const std::vector<std::string> &tickers,
+        const std::string &file_suffix, const bool &has_header_row)
+        : path_(path), tickers_(tickers), file_suffix_(file_suffix), has_header_row_(has_header_row) {}
 
 std::vector<DailyOhlcs> CsvReader::get_ohlc_data() const {
-    return std::vector<DailyOhlcs>();
+    std::string fname,
+        line;
+    std::ifstream fin;
+    std::unordered_map<std::string, TickerOhlcMap> date_to_values;
+    std::vector<DailyOhlcs> result;
+    for (auto &ticker : tickers_) {
+        fname = path_ + ticker + file_suffix_;
+        fin.open(fname);
+        if (!fin) {
+            throw std::logic_error("could not open file " + fname);
+        }
+        // throw away header as needed
+        if (has_header_row_) std::getline(fin, line);
+        while (std::getline(fin, line)) {
+            process_ohlc_line(date_to_values, ticker, line);
+        }
+        fin.close();
+    }
+    //TODO
+    //std::cout << date_to_values.size() << std::endl;
+    result.reserve(date_to_values.size());
+    for (auto it = date_to_values.begin(); it != date_to_values.end(); ++it) {
+        result.push_back({it->first, it->second});
+    }
+    std::sort(result.begin(), result.end(), [](DailyOhlcs x1, DailyOhlcs x2) 
+            { return x1.date < x2.date; }); 
+    return result;
 }
 
 std::vector<DailyRecommendations> CsvReader::get_recommendations() const {
     return std::vector<DailyRecommendations>();
+}
+
+void CsvReader::process_ohlc_line(std::unordered_map<std::string, TickerOhlcMap> &date_to_values, 
+        const std::string &ticker, const std::string &line) {
+    std::istringstream iss(line);
+    std::string date,
+        tmp;
+    double open,
+        high,
+        low,
+        close;
+
+    std::getline(iss, date, ',');
+    std::getline(iss, tmp, ',');
+    open = std::stod(tmp);
+    std::getline(iss, tmp, ',');
+    high = std::stod(tmp);
+    std::getline(iss, tmp, ',');
+    low = std::stod(tmp);
+    std::getline(iss, tmp, ',');
+    close = std::stod(tmp);
+    date_to_values[date][ticker] = { open, high, low, close };
 }

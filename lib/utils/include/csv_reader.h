@@ -26,14 +26,18 @@
 class CsvReader {
 private:
     const std::string path_;
-    const std::vector<std::string> fnames_;
+    const std::vector<std::string> tickers_;
+    const std::string file_suffix_;
     const bool has_header_row_;
 public:
-    CsvReader(const std::string &path, const std::vector<std::string> &fnames, 
-            const bool &has_header_row = true);
+    CsvReader(const std::string &path, const std::vector<std::string> &tickers, 
+            const std::string &file_suffix = ".csv", const bool &has_header_row = true);
     ~CsvReader() {}
 
     std::vector<DailyOhlcs> get_ohlc_data() const;
     std::vector<DailyRecommendations> get_recommendations() const;
+private:
+    static void process_ohlc_line(std::unordered_map<std::string, TickerOhlcMap> &date_to_values, 
+            const std::string &ticker, const std::string &line); 
 };
 #endif
