@@ -39,5 +39,8 @@ public:
 private:
     static void process_ohlc_line(std::unordered_map<std::string, TickerOhlcMap> &date_to_values, 
             const std::string &ticker, const std::string &line); 
+    static void process_rec_line(std::unordered_map<std::string, 
+            std::unordered_map<std::string, double> > &date_to_values, const std::string &ticker, 
+            const std::string &line);
 };
 #endif

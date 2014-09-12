@@ -131,3 +131,131 @@ TEST_CASE("get ohlc data", "[CsvReader]") {
         }
     }
 }
+
+TEST_CASE("get recommendations", "[CsvReader]") {
+    std::string path = "../tst_data/rec/";
+    std::vector<DailyRecommendations> data;
+
+    SECTION("well-formed test data") {
+        SECTION("with header row") {
+            std::vector<std::string> tickers = { "foo", "bar", "blah" };
+            CsvReader reader(path, tickers);
+            data = reader.get_recommendations();
+            REQUIRE(data.size() == 8);
+            
+            // 2010-12-30
+            REQUIRE(data[0].date == "2010-12-30");
+            REQUIRE(approx(data[0].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[0].recommendations["blah"], 0.0));
+
+            // 2010-12-31
+            REQUIRE(data[1].date == "2010-12-31");
+            REQUIRE(approx(data[1].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[1].recommendations["bar"], 0.123));
+            REQUIRE_THROWS_AS(data[1].recommendations.at("blah"), std::out_of_range);
+
+            // 2011-01-03
+            REQUIRE(data[2].date == "2011-01-03");
+            REQUIRE(approx(data[2].recommendations["foo"], 0.0));
+            REQUIRE(approx(data[2].recommendations["blah"], 1.0));
+            REQUIRE_THROWS_AS(data[2].recommendations.at("bar"), std::out_of_range);
+
+            // 2011-01-04
+            REQUIRE(data[3].date == "2011-01-04");
+            REQUIRE(approx(data[3].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[3].recommendations["bar"], 0.5781));
+            REQUIRE_THROWS_AS(data[3].recommendations.at("blah"), std::out_of_range);
+
+            // 2011-01-05
+            REQUIRE(data[4].date == "2011-01-05");
+            REQUIRE(approx(data[4].recommendations["foo"], 0.0));
+            REQUIRE(approx(data[4].recommendations["blah"], 1.0));
+            REQUIRE_THROWS_AS(data[4].recommendations.at("bar"), std::out_of_range);
+
+            // 2011-01-06
+            REQUIRE(data[5].date == "2011-01-06");
+            REQUIRE(approx(data[5].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[5].recommendations["bar"], 1.0));
+            REQUIRE_THROWS_AS(data[5].recommendations.at("blah"), std::out_of_range);
+
+            // 2011-01-07
+            REQUIRE(data[6].date == "2011-01-07");
+            REQUIRE(approx(data[6].recommendations["foo"], 0.0));
+            REQUIRE(approx(data[6].recommendations["blah"], 0.1456));
+            REQUIRE_THROWS_AS(data[6].recommendations.at("bar"), std::out_of_range);
+
+            // 2011-01-10
+            REQUIRE(data[7].date == "2011-01-10");
+            REQUIRE(approx(data[7].recommendations["blah"], 0.333));
+            REQUIRE_THROWS_AS(data[7].recommendations.at("foo"), std::out_of_range);
+            REQUIRE_THROWS_AS(data[7].recommendations.at("bar"), std::out_of_range);
+        }
+        SECTION("no header row") {
+            std::vector<std::string> tickers = { "foo", "bar", "blah" };
+            std::string suffix = "-noheader.csv";
+            CsvReader reader(path, tickers, suffix, false);
+            data = reader.get_recommendations();
+            REQUIRE(data.size() == 8);
+            
+            // 2010-12-30
+            REQUIRE(data[0].date == "2010-12-30");
+            REQUIRE(approx(data[0].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[0].recommendations["blah"], 0.0));
+
+            // 2010-12-31
+            REQUIRE(data[1].date == "2010-12-31");
+            REQUIRE(approx(data[1].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[1].recommendations["bar"], 0.123));
+            REQUIRE_THROWS_AS(data[1].recommendations.at("blah"), std::out_of_range);
+
+            // 2011-01-03
+            REQUIRE(data[2].date == "2011-01-03");
+            REQUIRE(approx(data[2].recommendations["foo"], 0.0));
+            REQUIRE(approx(data[2].recommendations["blah"], 1.0));
+            REQUIRE_THROWS_AS(data[2].recommendations.at("bar"), std::out_of_range);
+
+            // 2011-01-04
+            REQUIRE(data[3].date == "2011-01-04");
+            REQUIRE(approx(data[3].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[3].recommendations["bar"], 0.5781));
+            REQUIRE_THROWS_AS(data[3].recommendations.at("blah"), std::out_of_range);
+
+            // 2011-01-05
+            REQUIRE(data[4].date == "2011-01-05");
+            REQUIRE(approx(data[4].recommendations["foo"], 0.0));
+            REQUIRE(approx(data[4].recommendations["blah"], 1.0));
+            REQUIRE_THROWS_AS(data[4].recommendations.at("bar"), std::out_of_range);
+
+            // 2011-01-06
+            REQUIRE(data[5].date == "2011-01-06");
+            REQUIRE(approx(data[5].recommendations["foo"], 1.0));
+            REQUIRE(approx(data[5].recommendations["bar"], 1.0));
+            REQUIRE_THROWS_AS(data[5].recommendations.at("blah"), std::out_of_range);
+
+            // 2011-01-07
+            REQUIRE(data[6].date == "2011-01-07");
+            REQUIRE(approx(data[6].recommendations["foo"], 0.0));
+            REQUIRE(approx(data[6].recommendations["blah"], 0.1456));
+            REQUIRE_THROWS_AS(data[6].recommendations.at("bar"), std::out_of_range);
+
+            // 2011-01-10
+            REQUIRE(data[7].date == "2011-01-10");
+            REQUIRE(approx(data[7].recommendations["blah"], 0.333));
+            REQUIRE_THROWS_AS(data[7].recommendations.at("foo"), std::out_of_range);
+            REQUIRE_THROWS_AS(data[7].recommendations.at("bar"), std::out_of_range);
+        }
+    }
+
+    SECTION("exceptions") {
+        SECTION("file not found") {
+            std::vector<std::string> tickers = { "zorg" };
+            CsvReader reader(path, tickers);
+            REQUIRE_THROWS_AS(data = reader.get_recommendations(), std::logic_error);
+        }
+        SECTION("bad data") {
+            std::vector<std::string> tickers = { "evil" };
+            CsvReader reader(path, tickers);
+            REQUIRE_THROWS_AS(data = reader.get_recommendations(), std::invalid_argument);
+        }
+    }
+}
