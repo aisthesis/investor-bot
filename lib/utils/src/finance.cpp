@@ -14,6 +14,7 @@
  */
 
 #include <string>
+#include <cmath>
 
 #include "finance.h"
 
@@ -52,4 +53,19 @@ int Finance::date_diff(const std::string &earlier, const std::string &later) {
     if (yr1 % 4 == 0 && mo1 <= 2) ++result;
     if (yr2 % 4 == 0 && mo2 <= 2) --result;
     return result;
+}
+
+double Finance::annual_mult(const std::string &start_date, const double &start_value,
+        const std::string &end_date, const double &end_value) {
+    int days = date_diff(start_date, end_date);
+    double yrs = days / 365.25, 
+        mult = end_value / start_value,
+        ln_mult = std::log(mult);
+
+    return std::exp(ln_mult / yrs);
+}
+
+double Finance::annual_pct_return(const std::string &start_date, const double &start_value,
+        const std::string &end_date, const double &end_value) {
+    return (annual_mult(start_date, start_value, end_date, end_value) - 1.0) * 100.0;
 }

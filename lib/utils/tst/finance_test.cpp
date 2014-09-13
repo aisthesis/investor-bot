@@ -19,6 +19,7 @@
 
 #include <string>
 
+#include "globals.h"
 #include "finance.h"
 
 TEST_CASE("date parsing", "[Finance]") {
@@ -43,4 +44,34 @@ TEST_CASE("date difference", "[Finance]") {
     REQUIRE(Finance::date_diff("2000-02-01", "2004-03-01") == 1490);
     REQUIRE(Finance::date_diff("2000-03-01", "2004-03-01") == 1461);
     REQUIRE(Finance::date_diff("2000-03-01", "2004-02-01") == 1432);
+}
+
+TEST_CASE("annual mult", "[Finance]") {
+    constexpr double kLocalEpsilon = 0.00005;
+
+    REQUIRE(approx(Finance::annual_mult("2001-01-01", 1.0, "2005-01-01", 16.0), 2.0));
+    REQUIRE(approx(Finance::annual_mult("2001-01-01", 16.0, "2005-01-01", 1.0), 0.5));
+    // actual S&P values
+    REQUIRE(approx(Finance::annual_mult("1962-01-02", 70.96, "2014-04-09", 1872.18), 1.0646, kLocalEpsilon));
+    REQUIRE(approx(Finance::annual_mult("1950-01-03", 16.66, "2014-04-25", 1863.4), 1.0761, kLocalEpsilon));
+    // actual DJI
+    REQUIRE(approx(Finance::annual_mult("1962-01-02", 724.71, "2014-04-09", 16437.18), 1.0615, kLocalEpsilon));
+    
+}
+
+TEST_CASE("annual pct return", "[Finance]") {
+    constexpr double kLocalEpsilon = 0.2;
+
+    REQUIRE(approx(Finance::annual_pct_return("2001-01-01", 1.0, "2005-01-01", 16.0), 100.0));
+    REQUIRE(approx(Finance::annual_pct_return("2001-01-01", 16.0, "2005-01-01", 1.0), -50.0));
+    // actual S&P values
+    REQUIRE(approx(Finance::annual_pct_return("1962-01-02", 70.96, "2014-04-09", 1872.18), 6.46, kLocalEpsilon));
+    REQUIRE(approx(Finance::annual_pct_return("1950-01-03", 16.66, "2014-04-25", 1863.4), 7.61, kLocalEpsilon));
+    // actual DJI
+    REQUIRE(approx(Finance::annual_pct_return("1962-01-02", 724.71, "2014-04-09", 16437.18), 6.15, kLocalEpsilon));
+    // other examples calculated in Excel
+    REQUIRE(approx(Finance::annual_pct_return("2011-10-03", 34.21, "2012-06-26", 41.98), 32.31, kLocalEpsilon));
+    REQUIRE(approx(Finance::annual_pct_return("2009-03-01", 7.6, "2012-10-01", 17.95), 27.08, kLocalEpsilon));
+    REQUIRE(approx(Finance::annual_pct_return("2011-11-25", 14.7, "2013-10-09", 23.57), 28.67, kLocalEpsilon));
+    REQUIRE(approx(Finance::annual_pct_return("2013-11-14", 64.28, "2014-03-06", 58.24), -27.52, kLocalEpsilon));
 }

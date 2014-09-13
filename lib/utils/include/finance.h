@@ -26,5 +26,9 @@ public:
     static int month(const std::string &yyyy_mm_dd);
     static int day_of_month(const std::string &yyyy_mm_dd);
     static int date_diff(const std::string &earlier, const std::string &later);
+    static double annual_mult(const std::string &start_date, const double &start_value,
+            const std::string &end_date, const double &end_value);
+    static double annual_pct_return(const std::string &start_date, const double &start_value,
+            const std::string &end_date, const double &end_value);
 };
 #endif
