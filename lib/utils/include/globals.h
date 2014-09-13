@@ -41,9 +41,9 @@ struct DailyRecommendations {
 
 // for floating point equality
 constexpr double kEpsilon = 0.000001;
-inline bool approx(const double &a, const double &b) {
-    if (a <= b) return b - a < kEpsilon;
-    return a - b < kEpsilon;
+inline bool approx(const double &a, const double &b, const double &epsilon = kEpsilon) {
+    if (a <= b) return b - a < epsilon;
+    return a - b < epsilon;
 }
 
 namespace investor {
