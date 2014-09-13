@@ -17,6 +17,7 @@ PROG1 = portfolio
 PROG2 = order
 PROG3 = order_action
 PROG4 = csv_reader
+PROG5 = finance
 ODIR = obj
 BDIR = bin
 CPPFLAGSTEST = $(CPPFLAGS)
@@ -24,7 +25,8 @@ CPPFLAGSTEST = $(CPPFLAGS)
 vpath %.cpp src tst
 
 .PHONY: all
-all: directories $(PROG1)_test $(PROG2)_test $(PROG3)_test $(PROG4)_test
+all: directories $(PROG1)_test $(PROG2)_test $(PROG3)_test $(PROG4)_test \
+    $(PROG5)_test
 
 .PHONY: directories
 directories:
@@ -69,6 +71,16 @@ $(ODIR)/$(PROG4).o: $(PROG4).cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 $(ODIR)/$(PROG4)_test.o: $(PROG4)_test.cpp
+	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
+
+# Finance
+$(PROG5)_test: $(ODIR)/$(PROG5)_test.o $(ODIR)/$(PROG5).o $(ODIR)/test.o
+	$(CC) $(CFLAGS) $^ -o $(BDIR)/$@
+
+$(ODIR)/$(PROG5).o: $(PROG5).cpp
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(ODIR)/$(PROG5)_test.o: $(PROG5)_test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGSTEST) -c $< -o $@
 
 $(ODIR)/test.o: test.cpp
