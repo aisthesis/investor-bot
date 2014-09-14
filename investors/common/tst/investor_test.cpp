@@ -24,10 +24,8 @@
 
 // concrete subclass for testing
 class MyInvestor : public Investor {
-    std::vector<Order> order(const std::unordered_map<std::string, double> &strengths,
-            const TickerOhlcMap &ohlc_map) {            
-        return std::vector<Order>();
-    }
+    void order(std::vector<Order> *orders, const std::unordered_map<std::string, double> &strengths,
+            const TickerOhlcMap &ohlc_map) {}
 };
 
 TEST_CASE("investor tests", "[Investor]") {

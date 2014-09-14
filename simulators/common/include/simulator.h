@@ -28,8 +28,8 @@
 class Simulator {
 private:
     Investor *investor_;
-    const std::vector<DailyOhlcs> ohlc_data_;
-    const std::vector<DailyRecommendations> recommendations_;
+    std::vector<DailyOhlcs> *ohlc_data_;
+    std::vector<DailyRecommendations> *recommendations_;
 
     // populated on run:
     std::vector<OrderAction> actions_;
@@ -40,7 +40,7 @@ private:
 public:
     // both price data and recommendations must be sorted (earliest date first) for the simulator
     // to work properly
-    Simulator(Investor &, const std::vector<DailyOhlcs> &, const std::vector<DailyRecommendations> &);
+    Simulator(Investor &, std::vector<DailyOhlcs> &, std::vector<DailyRecommendations> &);
     ~Simulator() {}
 
     void run();

@@ -19,42 +19,44 @@
 #include "order.h"
 #include "order_action.h"
 
-Simulator::Simulator(Investor &investor, const std::vector<DailyOhlcs> &ohlc_data, 
-        const std::vector<DailyRecommendations> &recommendations) 
-        : ohlc_data_(ohlc_data), recommendations_(recommendations) {
+Simulator::Simulator(Investor &investor, std::vector<DailyOhlcs> &ohlc_data, 
+        std::vector<DailyRecommendations> &recommendations) {
     investor_ = &investor;
-
+    ohlc_data_ = &ohlc_data;
+    recommendations_ = &recommendations;
     start_value_ = 0.0;
     end_value_ = 0.0;
 }
 
 void Simulator::run() {
-    std::vector<DailyRecommendations>::const_iterator rec_iter = recommendations_.cbegin();
-    std::vector<DailyOhlcs>::const_iterator ohlc_iter = ohlc_data_.cbegin();
+    std::vector<DailyRecommendations>::iterator rec_iter = recommendations_->begin();
+    std::vector<DailyOhlcs>::iterator ohlc_iter = ohlc_data_->begin();
     std::vector<Order> standing_orders;
 
     // no recommendations
-    if (rec_iter == recommendations_.cend()) {
+    if (rec_iter == recommendations_->end()) {
         throw std::logic_error("no recommendations on which to act");
     }
     // move ohlc_iter forward until dates match
-    while (ohlc_iter != ohlc_data_.cend() && ohlc_iter->date != rec_iter->date) ++ohlc_iter;
+    while (ohlc_iter != ohlc_data_->end() && ohlc_iter->date != rec_iter->date) ++ohlc_iter;
     // throw exception if date ranges don't match
-    if (ohlc_iter == ohlc_data_.cend()) {
+    if (ohlc_iter == ohlc_data_->end()) {
         throw std::logic_error("no ohlc data to act on recommendations");
     }
     // set initial portfolio value using ohlc data from start date
     start_value_ = investor_->value(ohlc_iter->ohlc_values);
-    while (ohlc_iter != ohlc_data_.cend()) {
-        if (rec_iter != recommendations_.cend() && ohlc_iter->date != rec_iter->date) {
+    start_date_ = ohlc_iter->date;
+    while (ohlc_iter != ohlc_data_->end()) {
+        if (rec_iter != recommendations_->end() && ohlc_iter->date != rec_iter->date) {
             throw std::logic_error("mismatched dates for recommendations and ohlc data");
         }
         // process standing_orders based on today's prices (this can still be done
         // even if we have processed all recommendations)
         process_standing_orders(ohlc_iter->date, standing_orders, ohlc_iter->ohlc_values);
-        if (rec_iter == recommendations_.cend()) break;
+        if (rec_iter == recommendations_->end()) break;
+        standing_orders.clear();
         // get new orders (requires new recommendations)
-        standing_orders = investor_->order(rec_iter->recommendations, ohlc_iter->ohlc_values);
+        investor_->order(&standing_orders, rec_iter->recommendations, ohlc_iter->ohlc_values);
         // place standing orders
         for (auto &order : standing_orders) {
             actions_.push_back(OrderAction(rec_iter->date, OrderAction::Act::kPlace, order, 0.0));
@@ -62,8 +64,9 @@ void Simulator::run() {
         ++ohlc_iter;
         ++rec_iter;
     }
-    if (ohlc_iter == ohlc_data_.cend()) --ohlc_iter;
+    if (ohlc_iter == ohlc_data_->end()) --ohlc_iter;
     end_value_ = investor_->value(ohlc_iter->ohlc_values);
+    end_date_ = ohlc_iter->date;
 }
 
 std::vector<OrderAction> Simulator::actions() const {
@@ -115,13 +118,13 @@ void Simulator::process_standing_orders(const std::string &date, const std::vect
                 amount -= commission();
                 investor_->sell(order.ticker(), order.shares(), amount);
             }
-            actions_.push_back(OrderAction(date, OrderAction::Act::kFill, order, amount));
+            actions_.push_back(OrderAction(date, OrderAction::Act::kFill, Order(order), amount));
         }
         else {
             if (order.type() == Order::Type::kBuy) {
                 investor_->add_to_pending(-order.share_price() * order.shares());
             }
-            actions_.push_back(OrderAction(date, OrderAction::Act::kCancel, order, 0.0));
+            actions_.push_back(OrderAction(date, OrderAction::Act::kCancel, Order(order), 0.0));
         }
     }
 }

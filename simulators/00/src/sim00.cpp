@@ -32,7 +32,7 @@
 int main() {
     // investor will start with 1000.0 dollars
     Investor01 investor;
-    investor.deposit(1000.0);
+    investor.deposit(10000.0);
     // get input data
     const std::string kProjectRoot = "../../../";
     std::vector<std::string> tickers = { "cat", "dd", "f", "ge", "ibm", "jnj", "jpm", "xom" };
@@ -72,7 +72,7 @@ int main() {
             << std::setprecision(2) << simulator.start_value() << std::endl;
     ofs << "Bankroll on " << simulator.end_date() << " : " << std::fixed 
             << std::setprecision(2) << simulator.end_value() << std::endl;
-    ofs << "Average annual gain: " << std::setprecision(2) << simulator.end_value() 
+    ofs << "Average annual gain: " << std::setprecision(2)
             << Finance::annual_pct_return(simulator.start_date(), simulator.start_value(),
             simulator.end_date(), simulator.end_value()) << " pct" << std::endl << std::endl;
     ofs << "### Actions" << std::endl;

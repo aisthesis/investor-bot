@@ -28,16 +28,15 @@ public:
     Investor01() {}
     ~Investor01() {}
 
-    // order for 0 shares if no action
-    // this is where all of the investor logic goes:
-    std::vector<Order> order(const std::unordered_map<std::string, double> &strengths,
-            const TickerOhlcMap &ohlc_map);            
+    // this is where all of the investor logic goes, populating orders vector
+    void order(std::vector<Order> *orders, const std::unordered_map<std::string, 
+            double> &strengths, const TickerOhlcMap &ohlc_map);            
 
 private:
     int shares_to_buy(const std::string &ticker, const TickerOhlcMap &ohlc_map) const;
-    void process_recommendation(std::vector<Order> &orders, const std::string &ticker,
+    void process_recommendation(std::vector<Order> *orders, const std::string &ticker,
             const double &strength, const TickerOhlcMap &ohlc_map);
-    void sell_part_of_each(std::vector<Order> &orders, const TickerOhlcMap &ohlc_map, 
+    void sell_part_of_each(std::vector<Order> *orders, const TickerOhlcMap &ohlc_map, 
             const double &portion) const;
 };
 #endif

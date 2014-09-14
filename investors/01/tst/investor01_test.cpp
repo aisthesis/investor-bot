@@ -72,7 +72,8 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
         // recommend buying foo
         std::unordered_map<std::string, double> strengths({{"foo", 1.0}});
         TickerOhlcMap ohlc_map({{"foo", {0.0, 40.0, 1.0, 20.0}}});
-        std::vector<Order> orders = investor.order(strengths, ohlc_map);
+        std::vector<Order> orders;
+        investor.order(&orders, strengths, ohlc_map);
 
         SECTION("single recommendation, empty portfolio, nothing pending") {
             REQUIRE(orders.size() == 1);
@@ -85,7 +86,8 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
         ohlc_map.clear();
         strengths["bar"] = 1.0;
         ohlc_map["bar"] = {0.0, 100.0, 1.0, 50.0};
-        orders = investor.order(strengths, ohlc_map);
+        orders.clear();
+        investor.order(&orders, strengths, ohlc_map);
         SECTION("orders empty because other order is still pending") {
             REQUIRE(orders.size() == 0);
             REQUIRE(approx(investor.pending(), 1000.0));
@@ -97,7 +99,8 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
         // foo still a buy, bar also a buy (cf. above)
         strengths["foo"] = 1.0;
         ohlc_map["foo"] = {0.0, 60.0, 1.0, 30.0};
-        orders = investor.order(strengths, ohlc_map);
+        orders.clear();
+        investor.order(&orders, strengths, ohlc_map);
         // here we should sell 1/2 of foo to buy bar (no order yet for bar)
         SECTION("orders with nothing pending but insufficient cash") {
             REQUIRE(orders.size() == 1);
@@ -108,7 +111,8 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
 
         // sell half of foo, total cash will now be 750.01, nothing pending
         investor.sell("foo", 25, 750.0);
-        orders = investor.order(strengths, ohlc_map);
+        orders.clear();
+        investor.order(&orders, strengths, ohlc_map);
         SECTION("order with enough cash and 1 stock in portfolio") {
             REQUIRE(orders.size() == 1);
             REQUIRE(orders[0] == Order(Order::Type::kBuy, Order::Mode::kLimit, "bar", 15, 50.0));
@@ -120,14 +124,16 @@ TEST_CASE("correct orders generated from recommendations", "[Investor01]") {
         investor.clear_pending();
         strengths["foo"] = 0.5;
         strengths["bar"] = 0.5;
-        orders = investor.order(strengths, ohlc_map);
+        orders.clear();
+        investor.order(&orders, strengths, ohlc_map);
         SECTION("hold recommendations") {
             REQUIRE(orders.size() == 0);
         }
 
         // sell recommendation
         strengths["foo"] = 0.1;
-        orders = investor.order(strengths, ohlc_map);
+        orders.clear();
+        investor.order(&orders, strengths, ohlc_map);
         SECTION("sell recommendation") {
             REQUIRE(orders[0] == Order(Order::Type::kSell, Order::Mode::kLimit, "foo", 25, 30.0));
             REQUIRE(approx(investor.pending(), 0.0));

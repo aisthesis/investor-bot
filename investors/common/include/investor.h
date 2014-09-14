@@ -62,7 +62,7 @@ public:
      * whether or not a market order will be filled, it is the amount to be used
      * as an estimate for pending purchases
      */
-    virtual std::vector<Order> order(const std::unordered_map<std::string, double> &strengths, 
+    virtual void order(std::vector<Order> *orders, const std::unordered_map<std::string, double> &strengths, 
             const TickerOhlcMap &ohlc_map) = 0;
 };
 #endif

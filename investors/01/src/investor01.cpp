@@ -30,8 +30,6 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
-// TODO remove
-#include <iostream>
 
 #include "investor01.h"
 #include "portfolio.h"
@@ -39,26 +37,15 @@
 #include "globals.h"
 
 // public
-std::vector<Order> Investor01::order(const std::unordered_map<std::string, double> &strengths,
+void Investor01::order(std::vector<Order> *orders, const std::unordered_map<std::string, double> &strengths,
         const TickerOhlcMap &ohlc_map) {
-    std::vector<Order> orders;
-    if (strengths.size() > 6) {
-        std::cout << "converting strength map to vector" << std::endl;
-    }
+    std::vector<std::pair<std::string, double> > strengths_desc(strengths.cbegin(), strengths.cend());
     // sort recommendations to buy strongest stocks first
-    std::vector<std::pair<std::string, double> > strengths_desc;
-    if (strengths.size() > 6) {
-        std::cout << "populating vector" << std::endl;
-    }
-    for (auto it = strengths.begin(); it != strengths.end(); ++it) {
-        strengths_desc.push_back({it->first, it->second});
-    }
-    std::sort(strengths_desc.begin(), strengths_desc.end(), [](std::pair<std::string, double> x1,
-            std::pair<std::string, double> x2) { return x1.second >= x2.second; });
+    std::sort(strengths_desc.begin(), strengths_desc.end(), [](const std::pair<std::string, double> &x1,
+            const std::pair<std::string, double> &x2) { return x1.second > x2.second; });
     for (const auto &strength : strengths_desc) {
         process_recommendation(orders, strength.first, strength.second, ohlc_map);
     }
-    return orders;
 }
 
 // private
@@ -79,23 +66,20 @@ int Investor01::shares_to_buy(const std::string &ticker,
     return shares;
 }
 
-void Investor01::process_recommendation(std::vector<Order> &orders, const std::string &ticker,
+void Investor01::process_recommendation(std::vector<Order> *orders, const std::string &ticker,
         const double &strength, const TickerOhlcMap &ohlc_map) {
-    if (ticker == "f") {
-        std::cout << "processing 'f' recommendation" << std::endl;
-    }
     // sell recommendation
     if (strength < investor::kSellHoldThreshold) {
         // we are long the given stock
         if (this->shares(ticker) > 0) {
             // if a sell order exists (e.g., to raise funds for a buy), delete it
             // because we're selling the whole position
-            std::vector<Order>::iterator it = find_if(orders.begin(), orders.end(), 
+            std::vector<Order>::iterator it = find_if(orders->begin(), orders->end(), 
                     [&](Order order) { return order.ticker() == ticker; });
-            if (it != orders.end()) {
-                orders.erase(it);
+            if (it != orders->end()) {
+                orders->erase(it);
             }
-            orders.push_back(Order(Order::Type::kSell, Order::Mode::kLimit, ticker,
+            orders->push_back(Order(Order::Type::kSell, Order::Mode::kLimit, ticker,
                     this->shares(ticker), ohlc_map.at(ticker).close));
         }
         // no shares owned: do nothing
@@ -108,11 +92,10 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
     // buy recommendation
     // no shares owned: buy them (otherwise do nothing)
     if (this->shares(ticker) <= 0) {
-        std::cout << "trying to buy '" << ticker << "'" << std::endl;
         int shares = shares_to_buy(ticker, ohlc_map);
         
         if (shares > 0) {
-            orders.push_back(Order(Order::Type::kBuy, Order::Mode::kLimit, ticker,
+            orders->push_back(Order(Order::Type::kBuy, Order::Mode::kLimit, ticker,
                     shares, ohlc_map.at(ticker).close));
             this->add_to_pending(ohlc_map.at(ticker).close * shares);
         }
@@ -123,14 +106,14 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
     }
 }
 
-void Investor01::sell_part_of_each(std::vector<Order> &orders, 
+void Investor01::sell_part_of_each(std::vector<Order> *orders, 
         const TickerOhlcMap &ohlc_map, const double &portion) const {
     int shares = 0;
 
     for (auto it = this->pfbegin(); it != this->pfend(); it++) {
         shares = static_cast<int>(portion * it->second);    
         if (shares > 0) {
-            orders.push_back(Order(Order::Type::kSell, Order::Mode::kLimit, it->first,
+            orders->push_back(Order(Order::Type::kSell, Order::Mode::kLimit, it->first,
                 shares, ohlc_map.at(it->first).close));
         }
     }
