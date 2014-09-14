@@ -11,7 +11,7 @@
 # Since 2014-09-03
 
 CC = g++
-CFLAGS = -Wall
+CFLAGS = -g -Wall
 CPPFLAGS = -std=c++11 -Iinclude
 ROOTDIR = ../../
 PROG1 = simulator

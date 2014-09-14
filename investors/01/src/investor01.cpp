@@ -30,6 +30,8 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+// TODO remove
+#include <iostream>
 
 #include "investor01.h"
 #include "portfolio.h"
@@ -40,8 +42,17 @@
 std::vector<Order> Investor01::order(const std::unordered_map<std::string, double> &strengths,
         const TickerOhlcMap &ohlc_map) {
     std::vector<Order> orders;
+    if (strengths.size() > 6) {
+        std::cout << "converting strength map to vector" << std::endl;
+    }
     // sort recommendations to buy strongest stocks first
-    std::vector<std::pair<std::string, double> > strengths_desc(strengths.begin(), strengths.end());
+    std::vector<std::pair<std::string, double> > strengths_desc;
+    if (strengths.size() > 6) {
+        std::cout << "populating vector" << std::endl;
+    }
+    for (auto it = strengths.begin(); it != strengths.end(); ++it) {
+        strengths_desc.push_back({it->first, it->second});
+    }
     std::sort(strengths_desc.begin(), strengths_desc.end(), [](std::pair<std::string, double> x1,
             std::pair<std::string, double> x2) { return x1.second >= x2.second; });
     for (const auto &strength : strengths_desc) {
@@ -70,6 +81,9 @@ int Investor01::shares_to_buy(const std::string &ticker,
 
 void Investor01::process_recommendation(std::vector<Order> &orders, const std::string &ticker,
         const double &strength, const TickerOhlcMap &ohlc_map) {
+    if (ticker == "f") {
+        std::cout << "processing 'f' recommendation" << std::endl;
+    }
     // sell recommendation
     if (strength < investor::kSellHoldThreshold) {
         // we are long the given stock
@@ -94,6 +108,7 @@ void Investor01::process_recommendation(std::vector<Order> &orders, const std::s
     // buy recommendation
     // no shares owned: buy them (otherwise do nothing)
     if (this->shares(ticker) <= 0) {
+        std::cout << "trying to buy '" << ticker << "'" << std::endl;
         int shares = shares_to_buy(ticker, ohlc_map);
         
         if (shares > 0) {

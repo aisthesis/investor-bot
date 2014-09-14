@@ -11,7 +11,7 @@
 # Since 2014-08-25
 
 CC = g++
-CFLAGS = -Wall
+CFLAGS = -g -Wall
 CPPFLAGS = -std=c++11 -Iinclude
 PROG1 = portfolio
 PROG2 = order

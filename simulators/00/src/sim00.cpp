@@ -65,7 +65,7 @@ int main() {
     ofs << "Description" << std::endl << "---" << std::endl;
     ofs << "Uses:" << std::endl;
     ofs << "- recommenders/00" << std::endl;
-    ofs << "- investors/01" << std::endl;
+    ofs << "- investors/01" << std::endl << std::endl;
     ofs << "Results" << std::endl << "---" << std::endl;
     ofs << "### Summary" << std::endl;
     ofs << "Bankroll on " << simulator.start_date() << " : " << std::fixed 
@@ -74,7 +74,7 @@ int main() {
             << std::setprecision(2) << simulator.end_value() << std::endl;
     ofs << "Average annual gain: " << std::setprecision(2) << simulator.end_value() 
             << Finance::annual_pct_return(simulator.start_date(), simulator.start_value(),
-            simulator.end_date(), simulator.end_value()) << " pct" << std::endl;
+            simulator.end_date(), simulator.end_value()) << " pct" << std::endl << std::endl;
     ofs << "### Actions" << std::endl;
     for (auto action : actions) {
         ofs << action << std::endl;
