@@ -10,7 +10,9 @@ Results
 ---
 ### Summary
 Bankroll on 1963-01-07 : 10000.00
+
 Bankroll on 2014-04-09 : 379368.96
+
 Average annual gain: 7.35 pct
 
 ### Actions

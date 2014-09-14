@@ -69,9 +69,9 @@ int main() {
     ofs << "Results" << std::endl << "---" << std::endl;
     ofs << "### Summary" << std::endl;
     ofs << "Bankroll on " << simulator.start_date() << " : " << std::fixed 
-            << std::setprecision(2) << simulator.start_value() << std::endl;
+            << std::setprecision(2) << simulator.start_value() << std::endl << std::endl;
     ofs << "Bankroll on " << simulator.end_date() << " : " << std::fixed 
-            << std::setprecision(2) << simulator.end_value() << std::endl;
+            << std::setprecision(2) << simulator.end_value() << std::endl << std::endl;
     ofs << "Average annual gain: " << std::setprecision(2)
             << Finance::annual_pct_return(simulator.start_date(), simulator.start_value(),
             simulator.end_date(), simulator.end_value()) << " pct" << std::endl << std::endl;
