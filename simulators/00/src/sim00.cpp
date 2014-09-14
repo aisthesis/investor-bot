@@ -77,7 +77,7 @@ int main() {
             simulator.end_date(), simulator.end_value()) << " pct" << std::endl << std::endl;
     ofs << "### Actions" << std::endl;
     for (auto action : actions) {
-        ofs << action << std::endl;
+        ofs << "- " << action << std::endl;
     }
     ofs.close();
     std::cout << "Done!" << std::endl;

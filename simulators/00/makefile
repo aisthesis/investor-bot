@@ -35,6 +35,7 @@ all: directories $(PROG1)
 directories:
 	mkdir -p ./$(BDIR)
 	mkdir -p ./$(ODIR)
+	mkdir -p ./output
 
 # sim00
 $(PROG1): $(ODIR)/$(PROG1).o $(PROG1OBJDEPS)
