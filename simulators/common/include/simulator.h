@@ -41,7 +41,7 @@ public:
     // both price data and recommendations must be sorted (earliest date first) for the simulator
     // to work properly
     Simulator(Investor &, std::vector<DailyOhlcs> &, std::vector<DailyRecommendations> &);
-    ~Simulator() {}
+    virtual ~Simulator() {}
 
     void run();
     std::vector<OrderAction> actions() const;

@@ -15,11 +15,14 @@ CFLAGS = -g -Wall
 CPPFLAGS = -std=c++11 -Iinclude
 ROOTDIR = ../../
 PROG1 = simulator
+PROG2 = sim_runner
+# Investor01 is used for testing (Investor is abstract)
 PROG1FLAGS = -I$(ROOTDIR)investors/common/include -I$(ROOTDIR)lib/utils/include \
 	-I$(ROOTDIR)investors/01/include
 PROG1OBJDEPS = $(ROOTDIR)investors/common/obj/investor.o $(ROOTDIR)lib/utils/obj/portfolio.o \
 	$(ROOTDIR)lib/utils/obj/order_action.o $(ROOTDIR)lib/utils/obj/order.o \
 	$(ROOTDIR)investors/01/obj/investor01.o
+PROG2FLAGS = -I$(ROOTDIR)investors/common/include -I$(ROOTDIR)lib/utils/include
 ODIR = obj
 BDIR = bin
 CPPFLAGSTEST = $(CPPFLAGS)
@@ -27,7 +30,7 @@ CPPFLAGSTEST = $(CPPFLAGS)
 vpath %.cpp src tst
 
 .PHONY: all
-all: directories $(PROG1)_test
+all: directories $(PROG1)_test $(ODIR)/$(PROG2).o
 
 .PHONY: directories
 directories:
@@ -46,6 +49,10 @@ $(ODIR)/$(PROG1)_test.o: $(PROG1)_test.cpp
 
 $(ODIR)/test.o: test.cpp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+# SimRunner (no executable needed, will be massively tested by running)
+$(ODIR)/$(PROG2).o: $(PROG2).cpp
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(PROG2FLAGS) -c $< -o $@
 
 .PHONY: clean
 clean:

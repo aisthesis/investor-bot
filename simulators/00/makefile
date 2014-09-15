@@ -21,6 +21,7 @@ PROG1FLAGS = -I$(ROOTDIR)investors/common/include -I$(ROOTDIR)lib/utils/include 
 PROG1OBJDEPS = $(ROOTDIR)investors/common/obj/investor.o $(ROOTDIR)lib/utils/obj/portfolio.o \
 	$(ROOTDIR)lib/utils/obj/order_action.o $(ROOTDIR)lib/utils/obj/order.o \
 	$(ROOTDIR)investors/01/obj/investor01.o $(ROOTDIR)simulators/common/obj/simulator.o \
+    $(ROOTDIR)simulators/common/obj/sim_runner.o \
 	$(ROOTDIR)lib/utils/obj/csv_reader.o $(ROOTDIR)lib/utils/obj/finance.o
 ODIR = obj
 BDIR = bin
