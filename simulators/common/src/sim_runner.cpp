@@ -19,15 +19,17 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <locale>
 #include <string>
 #include <vector>
 
-#include "sim_runner.h"
-#include "simulator.h"
+#include "comma_numpunct.h"
 #include "csv_reader.h"
 #include "finance.h"
 #include "globals.h"
 #include "order_action.h"
+#include "sim_runner.h"
+#include "simulator.h"
 
 SimRunner::SimRunner(Investor &investor, const std::string &inv_label, const std::string &recommender_label,
         const std::vector<std::string> &tickers, const std::string &path_to_project_root,
@@ -74,8 +76,13 @@ void SimRunner::run_simulation() {
 }
 
 void SimRunner::report_results() {
+    constexpr int kValueWidth = 13;
+    std::locale comma_locale(std::locale(), new comma_numpunct());
+
     std::cout << "Reporting results" << std::endl;
     std::ofstream ofs("../output/SIM_RESULTS.md");
+    ofs.imbue(comma_locale);
+    ofs << std::fixed << std::setprecision(2) << std::right;
     ofs << "Simulation Summary" << std::endl << "===" << std::endl;
     ofs << "Description" << std::endl << "---" << std::endl;
     ofs << "Uses:" << std::endl;
@@ -83,11 +90,11 @@ void SimRunner::report_results() {
     ofs << "- investors/" + inv_label_ << std::endl << std::endl;
     ofs << "Results" << std::endl << "---" << std::endl;
     ofs << "### Summary" << std::endl;
-    ofs << "Bankroll on " << simulator_->start_date() << " : " << std::fixed 
-            << std::setprecision(2) << simulator_->start_value() << std::endl << std::endl;
-    ofs << "Bankroll on " << simulator_->end_date() << " : " << std::fixed 
-            << std::setprecision(2) << simulator_->end_value() << std::endl << std::endl;
-    ofs << "Average annual gain: " << std::setprecision(2)
+    ofs << "    Bankroll on " << simulator_->start_date() << " : $" << std::setw(kValueWidth) 
+            << simulator_->start_value() << std::endl << std::endl;
+    ofs << "    Bankroll on " << simulator_->end_date() << " : $" << std::setw(kValueWidth)
+            << simulator_->end_value() << std::endl << std::endl;
+    ofs << "    Average annual gain : "
             << Finance::annual_pct_return(simulator_->start_date(), simulator_->start_value(),
             simulator_->end_date(), simulator_->end_value()) << " pct" << std::endl << std::endl;
     ofs << "### Actions" << std::endl;
