@@ -53,6 +53,7 @@ private:
     void get_ohlc_data();
     void get_recommendations();
     void run_simulation();
-    void report_results();
+    void report_results() const;
+    std::vector<std::pair<std::string, int> > get_positions() const;
 };
 #endif

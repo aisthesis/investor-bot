@@ -37,6 +37,7 @@ private:
     double start_value_;
     std::string end_date_;
     double end_value_;
+    std::unordered_map<std::string, double> final_share_prices_;
 public:
     // both price data and recommendations must be sorted (earliest date first) for the simulator
     // to work properly
@@ -49,9 +50,11 @@ public:
     double end_value() const;
     std::string start_date() const;
     std::string end_date() const;
+    double final_share_price(const std::string &ticker) const;
     virtual double commission() const;
 private:
     void process_standing_orders(const std::string &date, const std::vector<Order> &orders, 
             const TickerOhlcMap &ohlc_map);
+    void set_final_share_prices(const TickerOhlcMap &ohlc_map);
 };
 #endif

@@ -10,11 +10,22 @@ Results
 ---
 ### Summary
     Bankroll on 1963-01-07 : $    10,000.00
-
     Bankroll on 2014-04-09 : $   379,368.96
 
     Average annual gain : 7.35 pct
 
+    Portfolio composition on 2014-04-09 :
+    Position    Shares    Share Price           Value
+    -------------------------------------------------
+        Cash       N/A            N/A  $       440.14
+         cat       355  $      102.99  $    36,561.45
+          dd        87  $       67.52  $     5,874.24
+           f     1,325  $       15.84  $    20,988.00
+          ge     1,642  $       25.95  $    42,609.90
+         ibm       210  $      196.64  $    41,294.40
+         jnj     1,360  $       98.95  $   134,572.00
+         jpm       302  $       59.27  $    17,899.54
+         xom       813  $       97.33  $    79,129.29
 ### Actions
 - 1963-01-07 place for 0.00 {buy 786 shares cat at limit 3.18}
 - 1963-01-07 place for 0.00 {buy 3,126 shares ge at limit 0.80}

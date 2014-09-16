@@ -66,6 +66,7 @@ void Simulator::run() {
     }
     if (ohlc_iter == ohlc_data_->end()) --ohlc_iter;
     end_value_ = investor_->value(ohlc_iter->ohlc_values);
+    set_final_share_prices(ohlc_iter->ohlc_values);
     end_date_ = ohlc_iter->date;
 }
 
@@ -87,6 +88,15 @@ std::string Simulator::start_date() const {
 
 std::string Simulator::end_date() const {
     return end_date_;
+}
+
+double Simulator::final_share_price(const std::string &ticker) const {
+    // don't throw but return 0 if ticker isn't present in portfolio
+    try {
+        return final_share_prices_.at(ticker);
+    }
+    catch (std::out_of_range e) {}
+    return 0;
 }
 
 double Simulator::commission() const {
@@ -126,5 +136,11 @@ void Simulator::process_standing_orders(const std::string &date, const std::vect
             }
             actions_.push_back(OrderAction(date, OrderAction::Act::kCancel, Order(order), 0.0));
         }
+    }
+}
+
+void Simulator::set_final_share_prices(const TickerOhlcMap &ohlc_map) {
+    for (auto it = investor_->pfbegin(); it != investor_->pfend(); ++it) {
+        final_share_prices_[it->first] = ohlc_map.at(it->first).close;
     }
 }

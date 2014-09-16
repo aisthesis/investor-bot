@@ -16,6 +16,7 @@
  * Since 2014-09-12
  */
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -75,9 +76,11 @@ void SimRunner::run_simulation() {
     std::cout << "Simulation complete" << std::endl;
 }
 
-void SimRunner::report_results() {
+void SimRunner::report_results() const {
+    std::vector<std::pair<std::string, int> > positions = get_positions();
     constexpr int kValueWidth = 13;
     std::locale comma_locale(std::locale(), new comma_numpunct());
+    double share_price = 0.0;
 
     std::cout << "Reporting results" << std::endl;
     std::ofstream ofs("../output/SIM_RESULTS.md");
@@ -91,15 +94,34 @@ void SimRunner::report_results() {
     ofs << "Results" << std::endl << "---" << std::endl;
     ofs << "### Summary" << std::endl;
     ofs << "    Bankroll on " << simulator_->start_date() << " : $" << std::setw(kValueWidth) 
-            << simulator_->start_value() << std::endl << std::endl;
+            << simulator_->start_value() << std::endl;
     ofs << "    Bankroll on " << simulator_->end_date() << " : $" << std::setw(kValueWidth)
             << simulator_->end_value() << std::endl << std::endl;
     ofs << "    Average annual gain : "
             << Finance::annual_pct_return(simulator_->start_date(), simulator_->start_value(),
             simulator_->end_date(), simulator_->end_value()) << " pct" << std::endl << std::endl;
+    ofs << "    Portfolio composition on " << simulator_->end_date() << " :" << std::endl;
+    ofs << "    Position    Shares    Share Price           Value" << std::endl;
+    ofs << "    -------------------------------------------------" << std::endl;
+    ofs << "        Cash       N/A            N/A  $" << std::setw(kValueWidth) << investor_->cash() << std::endl;  
+    for (auto &position : positions) { 
+        share_price = simulator_->final_share_price(position.first);
+        ofs << "    " << std::setw(8) << position.first << std::setw(10) << position.second << "  $" 
+                << std::setw(12) << share_price << "  $" << std::setw(kValueWidth) << (share_price * position.second) << std::endl; 
+    }
     ofs << "### Actions" << std::endl;
     for (auto action : actions_) {
         ofs << "- " << action << std::endl;
     }
     ofs.close();
+}
+
+std::vector<std::pair<std::string, int> > SimRunner::get_positions() const {
+    std::vector<std::pair<std::string, int> > positions;
+    for (auto it = investor_->pfbegin(); it != investor_->pfend(); ++it) {
+        positions.push_back({it->first, it->second});
+    }
+    std::sort(positions.begin(), positions.end(), [](const std::pair<std::string, int> &x1, 
+            const std::pair<std::string, int> &x2) { return x1.first < x2.first; });
+    return positions;
 }
