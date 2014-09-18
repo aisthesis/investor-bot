@@ -51,15 +51,26 @@
 
 function [permutations] = setEqDataDivisions(path, nDivisions)
 
+PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% if binary file exists, nothing needs to be done
+outFile = sprintf("%s/%s/divisions-%d.mat", PREDICTOR_DATA_ROOT, path, nDivisions);
+if exist(outFile, "file")
+    displayNow("Divisions already saved.");
+    printf("Delete file %s/%s/divisions-%d.mat and rerun script to rebuild.\n", ...
+        PREDICTOR_DATA_ROOT, path, nDivisions);
+    return;
+endif
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % get permutations: from file if it exists, otherwise create file
-PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
 inFile = sprintf("%s/%s/equities.csv", PREDICTOR_DATA_ROOT, path);
 outFile = sprintf("%s/%s/divisions-%d.csv", PREDICTOR_DATA_ROOT, path, nDivisions);
 
 permutations = struct();
 
 if exist(outFile, "file")
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % csv file exists
     inFile = outFile;
     displayNow("Random permutation csv exists. Reading from file.");
@@ -77,6 +88,7 @@ if exist(outFile, "file")
         endfor
     endwhile
 else
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % csv file doesn't exist, so create it
     displayNow("Generating random permutations.");
     equities = textread(inFile, "%s")
@@ -96,10 +108,11 @@ else
     displayNow("Permutations written to csv.");
 endif
 
-% now save in binary format
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% save permutations in binary format
 displayNow("Saving result in matlab binary format.");
 outFile = sprintf("%s/%s/divisions-%d.mat", PREDICTOR_DATA_ROOT, path, nDivisions);
 save("-mat-binary", outFile, "permutations");
-displayNow("Permutation saved.");
+displayNow("Permutations saved.");
 
 end
