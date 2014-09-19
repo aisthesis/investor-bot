@@ -93,20 +93,12 @@ for i = 1:nEquities
         printfNow("Training and test data created for equity '%s'\n", equities{i});
     endif
 endfor
+tmp = trainTestCombine(labelType, equities, featureInterval, labelInterval, ratio);
+filesExist = filesExist && tmp;
 if filesExist
     displayNow("Training and test data already exist. Delete files to rebuild.");
 else
     displayNow("Training and test data created!\n");
 endif
-
-return;
-
-% TODO
-
-displayNow("Combining datasets for all equities.");
-trainCvTestCombine(labelType, equities, featureInterval, labelInterval, ratio);
-displayNow("Training, cross-validation and test datasets created!\n");
-
-displayNow("Done!");
 
 end

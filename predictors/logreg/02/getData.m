@@ -29,4 +29,5 @@ function getData()
 
     displayNow("Assembling data for logreg/02");
     build(labelType, str2func(labelMakerFcn), featureInterval, labelInterval, ratio);
+    displayNow("Finished building data for logreg/02"); 
 end
