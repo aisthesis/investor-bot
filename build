@@ -31,6 +31,9 @@ popd > /dev/null
 pushd predictors/getdata/train70test30/splitadj/closes > /dev/null
 octave -q divisions.m
 popd > /dev/null
+pushd predictors/logreg/02 > /dev/null
+octave -q buildScript.m
+popd > /dev/null
 echo "Predictor data files built."; echo ""
 
 echo "Building required data files for recommenders."
