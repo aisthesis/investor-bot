@@ -22,15 +22,25 @@ run_unit_tests() {
 }
 
 echo "Building required data files for predictors."
+# big files
 pushd predictors/getdata > /dev/null
 octave -q makeBigFiles
 popd > /dev/null
+# binaries for testing
 pushd predictors/getdata/tst > /dev/null
 octave -q setEqDataDivisionsTest.m
 popd > /dev/null
+# train70test30/splitadj/closes data selection
+echo ""; echo "train70test30/splitadj/closes data separation"
 pushd predictors/getdata/train70test30/splitadj/closes > /dev/null
 octave -q divisions.m
 popd > /dev/null
+# splitadj/closes/train60xval20test20 data selection
+echo ""; echo "splitadj/closes/train60xval20test20 data separation"
+pushd predictors/getdata/splitadj/closes/train60xval20test20 > /dev/null
+octave -q divisions.m
+popd > /dev/null
+# logreg/02 matlab binaries
 pushd predictors/logreg/02 > /dev/null
 octave -q buildScript.m
 popd > /dev/null
