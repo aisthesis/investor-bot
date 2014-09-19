@@ -55,7 +55,7 @@ tmp = 0;
 for i = 1:nEquities
     [~, tmp] = labelMakerFcn(equities{i}, labelInterval, ratio);
     labelsExist = labelsExist && tmp;
-    if !labelsExist
+    if !tmp
         printfNow("Labels created for equity '%s'\n", equities{i});
     endif
 endfor
@@ -64,20 +64,30 @@ if labelsExist
 else
     displayNow("Labels created.\n");
 endif
+
+displayNow("================================================================");
+displayNow("FEATURES");
+featuresExist = 1;
+tmp = 0;
+for i = 1:nEquities
+    [~, tmp] = featuresEquity(equities{i}, featureInterval);
+    featuresExist = featuresExist && tmp;
+    if !tmp
+        printfNow("Features created for equity '%s'\n", equities{i});
+    endif
+endfor
+if featuresExist
+    displayNow("Features already exist. Delete files to rebuild.");
+else
+    displayNow("Features created!\n");
+endif
+
 return;
 
 % TODO
-displayNow("================================================================");
-displayNow("FEATURES");
-displayNow("Creating features");
-for i = 1:n
-    printfNow("Creating features for equity '%s'\n", equities{i});
-    featuresEquity(equities{i}, featureInterval);
-endfor
-displayNow("Features created!\n");
 
 displayNow("================================================================");
-displayNow("TRAINING, CROSS-VALIDATION, TEST DATA");
+displayNow("TRAINING AND TEST DATA");
 displayNow("Creating training, cross-validation and test datasets");
 for i = 1:n
     printfNow("Creating datasets for equity '%s'\n", equities{i});
