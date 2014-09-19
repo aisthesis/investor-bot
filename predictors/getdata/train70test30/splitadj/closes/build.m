@@ -50,16 +50,16 @@ nEquities = size(equities, 1);
 
 displayNow("================================================================");
 displayNow("LABELS");
-labelsExist = 1;
+filesExist = 1;
 tmp = 0;
 for i = 1:nEquities
     [~, tmp] = labelMakerFcn(equities{i}, labelInterval, ratio);
-    labelsExist = labelsExist && tmp;
+    filesExist = filesExist && tmp;
     if !tmp
         printfNow("Labels created for equity '%s'\n", equities{i});
     endif
 endfor
-if labelsExist
+if filesExist
     displayNow("Labels already exist. Delete files to rebuild.");
 else
     displayNow("Labels created.\n");
@@ -67,32 +67,41 @@ endif
 
 displayNow("================================================================");
 displayNow("FEATURES");
-featuresExist = 1;
+filesExist = 1;
 tmp = 0;
 for i = 1:nEquities
     [~, tmp] = featuresEquity(equities{i}, featureInterval);
-    featuresExist = featuresExist && tmp;
+    filesExist = filesExist && tmp;
     if !tmp
         printfNow("Features created for equity '%s'\n", equities{i});
     endif
 endfor
-if featuresExist
+if filesExist
     displayNow("Features already exist. Delete files to rebuild.");
 else
     displayNow("Features created!\n");
 endif
 
+displayNow("================================================================");
+displayNow("TRAINING AND TEST DATA");
+filesExist = 1;
+tmp = 0;
+for i = 1:nEquities
+    tmp = trainTestEquity(labelType, equities{i}, featureInterval, labelInterval, ratio);
+    filesExist = filesExist && tmp;
+    if !tmp
+        printfNow("Training and test data created for equity '%s'\n", equities{i});
+    endif
+endfor
+if filesExist
+    displayNow("Training and test data already exist. Delete files to rebuild.");
+else
+    displayNow("Training and test data created!\n");
+endif
+
 return;
 
 % TODO
-
-displayNow("================================================================");
-displayNow("TRAINING AND TEST DATA");
-displayNow("Creating training, cross-validation and test datasets");
-for i = 1:n
-    printfNow("Creating datasets for equity '%s'\n", equities{i});
-    trainCvTestEquity(labelType, equities{i}, featureInterval, labelInterval, ratio);
-endfor
 
 displayNow("Combining datasets for all equities.");
 trainCvTestCombine(labelType, equities, featureInterval, labelInterval, ratio);
