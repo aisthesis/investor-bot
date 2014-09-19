@@ -1,0 +1,16 @@
+PROJECT_ROOT = "../../..";
+setenv("DATA_ROOT", sprintf("%s/data", PROJECT_ROOT))
+setenv("PREDICTOR_DATA_ROOT", sprintf("%s/predictors/data", PROJECT_ROOT))
+
+## For assembling data set
+addpath(sprintf("%s/predictors/getdata/train70test30/splitadj/closes/", PROJECT_ROOT))
+addpath(sprintf("%s/predictors/getdata/", PROJECT_ROOT))
+addpath(sprintf("%s/lib/utils/", PROJECT_ROOT))
+
+## For machine learning functions
+addpath(sprintf("%s/predictors/lib/", PROJECT_ROOT))
+
+## Turn off matlab incompatibility warnings
+warning("off", "Octave:matlab-incompatible")
+warning('off', 'Octave:possible-matlab-short-circuit-operator');
+clear PROJECT_ROOT
