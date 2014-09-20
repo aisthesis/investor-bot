@@ -22,6 +22,7 @@
 
 function getData()
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parameters
 algoName = "04";
 labelType = "bullish";
@@ -29,18 +30,10 @@ labelMakerFcn = "bullLabEquity";
 featureInterval = 256;
 labelInterval = 64;
 ratio = 1.0;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 printfNow("Assembling data for logreg/%s\n", algoName);
-% TODO create these functions in getdata/splitadj/closes/train60xval20test20:
-% build(labelType, str2func(labelMakerFcn), featureInterval, labelInterval, ratio);
-% normalizeMean(labelType, featureInterval, labelInterval, ratio);
-% normalizeSd(labelType, featureInterval, labelInterval, ratio);
-% while it's logicall possible to normalize sd without normalizing mean,
-% it's hard to imagine why one would want to. So for now, this function
-% will presuppose normalized mean.
-% normalizeSd() will call normalizeMean(), which in turn will call build()
-% to ensure that pre-requisites are built.
-
+normalizeSd(labelType, str2func(labelMakerFcn), featureInterval, labelInterval, ratio);
 printfNow("Finished building data for logreg/%s\n", algoName); 
 
 end

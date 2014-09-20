@@ -48,6 +48,10 @@ popd > /dev/null
 pushd predictors/logreg/03 > /dev/null
 octave -q buildScript.m
 popd > /dev/null
+# logreg/04 matlab binaries
+pushd predictors/logreg/04 > /dev/null
+octave -q buildScript.m
+popd > /dev/null
 echo "Predictor data files built."; echo ""
 
 echo "Building required data files for recommenders."

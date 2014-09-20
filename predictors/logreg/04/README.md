@@ -2,7 +2,7 @@ predictors/logreg/04
 ===
 Logistic regression using **normalized** split-adjusted closes.
 
-Features will be normalized so that each row has mean 0 and s.d 0.5.
+Features will be normalized so that each row has mean 0 and s.d. 1.
 Otherwise, all parameters will be as in logreg/03
 
 Purpose
