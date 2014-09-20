@@ -4,6 +4,7 @@
 */.project
 */.settings/
 *.swp
+*.mat
 
 # Mac artifacts
 *__MACOSX*

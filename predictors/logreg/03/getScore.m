@@ -34,7 +34,7 @@ function [score, precision, recall] = getScore()
     load("output/learned.mat");
     
     % load test data
-    infile = sprintf("%s/train70test30/splitadj/closes/test/features/%d/labels/%d/%s/%dpct/combined.mat", ...
+    infile = sprintf("%s/splitadj/closes/train60xval20test20/test/features/%d/labels/%d/%s/%dpct/combined.mat", ...
         PREDICTOR_DATA_ROOT, featureInterval, labelInterval, labelType, floor(ratio * 100));
     load(infile);
 

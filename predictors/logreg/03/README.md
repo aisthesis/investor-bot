@@ -9,27 +9,28 @@ https://github.com/aisthesis/investor-bot/blob/marshall/predictors/getdata/split
 - To set up a clean directory structure to allow maximal re-use of
 data sets.
 
-Placeholders (TODO)
-===
-
 Results
 ---
-On test data:
-- F1 score: 67.2% (71.3% in logreg/01)
-- precision: 53.7% (55.6% in logreg/01)
-- recall: 90.0% (99.6% in logreg/01)
+### On test data using 512 iterations:
+- F1 score: 68.4% (67.2% in logreg/02)
+- precision: 57.7% (53.7% in logreg/02)
+- recall: 84.0% (90.0% in logreg/02)
+
+### On test data using 64 iterations:
+- F1 score: 71.6% (67.2% in logreg/02)
+- precision: 56.4% (53.7% in logreg/02)
+- recall: 97.8% (90.0% in logreg/02)
+
 
 Conclusions
 ---
-Contrary to hypothesis,
-it does look like there is enough overfitting to make it worthwhile
-to use regularization.
+Regularization clearly improves results in this kind of logistic
+regression.
 
-I also noticed that there were some mistakes in logreg/01 in dividing
-up test, xval and training sets: The variable startRow never gets reset in lines 68-83 
-of https://github.com/aisthesis/investor-bot/blob/marshall/predictors/getdata/splitadj/closes/trainCvTestEquity.m.
-The data sets  need to be properly separated in order to
-have a valid frame of reference.
+Also, while increased iterations actually reduces overall F1 score,
+the continuation leads to improved precision, which is our main
+problem. I also tried 1024 iterations, but 512 seems to be the sweet
+spot for maximizing precision.
 
 Parameters
 ---
@@ -40,7 +41,11 @@ Parameters
     </tr>
     <tr>
         <td>maxIter</td>
-        <td>64</td>
+        <td>512 / 64</td>
+    </tr>
+    <tr>
+        <td>lambda</td>
+        <td>0.1 / 1.6</td>
     </tr>
     <tr>
         <td>labelType</td>
