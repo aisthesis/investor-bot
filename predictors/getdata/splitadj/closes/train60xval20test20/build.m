@@ -93,14 +93,12 @@ for i = 1:nEquities
         printfNow("Training, xval  and test data created for equity '%s'\n", equities{i});
     endif
 endfor
-% TODO
-return;
-tmp = trainTestCombine(labelType, equities, featureInterval, labelInterval, ratio);
+tmp = trainXvTestCombine(labelType, equities, featureInterval, labelInterval, ratio);
 filesExist = filesExist && tmp;
 if filesExist
-    displayNow("Training and test data already exist. Delete files to rebuild.");
+    displayNow("Training, xval and test data already exist. Delete files to rebuild.");
 else
-    displayNow("Training and test data created!\n");
+    displayNow("Training, xval and test data created!\n");
 endif
 
 end
