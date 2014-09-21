@@ -1,6 +1,6 @@
 predictors/logreg/04
 ===
-Logistic regression using **normalized** split-adjusted closes.
+Logistic regression using *normalized* split-adjusted closes.
 
 Features will be normalized so that each row has mean 0 and s.d. 1.
 Otherwise, all parameters will be as in logreg/03
@@ -9,31 +9,24 @@ Purpose
 ---
 - To determine whether data normalization can improve predictive power.
 
-TODO (Placeholder)
-===
-
 Results
 ---
 ### On test data using 512 iterations:
-- F1 score: 68.4% (67.2% in logreg/02)
-- precision: 57.7% (53.7% in logreg/02)
-- recall: 84.0% (90.0% in logreg/02)
-
-### On test data using 64 iterations:
-- F1 score: 71.6% (67.2% in logreg/02)
-- precision: 56.4% (53.7% in logreg/02)
-- recall: 97.8% (90.0% in logreg/02)
-
+- F1 score: 71.8% (68.4% in logreg/03)
+- precision: 56.4% (57.7% in logreg/03)
+- recall: 98.7% (84.0% in logreg/03)
 
 Conclusions
 ---
-Regularization clearly improves results in this kind of logistic
-regression.
+Normalization improved F1 score by 3%, but at the cost of lower precision.
+The results actually resemble those in logreg/03 using only 64 iterations.
 
-Also, while increased iterations actually reduces overall F1 score,
-the continuation leads to improved precision, which is our main
-problem. I also tried 1024 iterations, but 512 seems to be the sweet
-spot for maximizing precision.
+Noteworthy is that the optimal lambda here was very small. Even 0 works pretty well.
+So, the normalization seems to help prevent overfitting.
+
+Next Steps
+---
+Try normalization only with the mean without adjusting standard deviation.
 
 Parameters
 ---
@@ -44,11 +37,11 @@ Parameters
     </tr>
     <tr>
         <td>maxIter</td>
-        <td>512 / 64</td>
+        <td>512</td>
     </tr>
     <tr>
         <td>lambda</td>
-        <td>0.1 / 1.6</td>
+        <td>0.02</td>
     </tr>
     <tr>
         <td>labelType</td>
