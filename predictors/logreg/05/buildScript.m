@@ -1,0 +1,2 @@
+source(".octaverc");
+getData();
