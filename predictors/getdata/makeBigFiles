@@ -22,3 +22,12 @@ displayNow("Combining training, cross-validation and test datasets for logreg/01
 % logreg/01
 trainCvTestCombine("bullish", equities, 256, 64, 1.0);
 displayNow("Training, cross-validation and test datasets created!\n");
+
+%logreg/03
+setenv("PREDICTOR_DATA_ROOT", "../../../data");
+warning("off", "all");
+displayNow("Creating normalized feature sets");
+normalizeMeanEquities("splitadj/closes", 256);
+setenv("PREDICTOR_DATA_ROOT", "../../../data");
+normalizeSdEquities("splitadj/closes", 256);
+displayNow("Normalized feature sets created.");
