@@ -33,21 +33,13 @@ PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
 algoDataRoot = sprintf("%s/%s", PREDICTOR_DATA_ROOT, dataRootPath);
 equities = textread(sprintf("%s/equities.csv", algoDataRoot), "%s");
 nEquities = size(equities, 1);
-return;
+ofile = "";
+infile = "";
 
-sepNames = {"train" "xval" "test"};
-nSepNames = length(sepNames);
-sepOutPaths = {};
-sepOutFiles = {};
-path = {};
-
-% get output file names and create directories as necessary
-for i = 1:nSepNames
-    path = {"train60xval20test20" sepNames{i} "features" sprintf("%d", featureInterval) "labels" sprintf("%d", labelInterval) ...
-            labelType sprintf("%dpct", floor(ratio * 100)) "mean0"};
-    sepOutPaths{i} = createDir(path, algoDataRoot);
-    sepOutFiles{i} = sprintf("%s/%scombined.mat", algoDataRoot, sepOutPaths{i});
-    alreadyExists = alreadyExists && exist(sepOutFiles{i}, "file");
+% determine whether files already exist
+for i = 1:nEquities
+    ofile = sprintf("%s/features/%d/mean0/%s.mat", algoDataRoot, featureInterval, equities{i});
+    alreadyExists = alreadyExists && exist(ofile, "file");
 endfor
 
 if alreadyExists
@@ -55,25 +47,18 @@ if alreadyExists
     return;
 endif
 
-% get input file names
-sepInPaths = {};
-sepInFiles = {};
-for i = 1:nSepNames
-    sepInPaths{i} = sprintf("%s/train60xval20test20/%s/features/%d/labels/%d/%s/%dpct", ...
-            algoDataRoot, sepNames{i}, featureInterval, labelInterval, labelType, floor(ratio * 100));
-    sepInFiles{i} = sprintf("%s/combined.mat", sepInPaths{i});
-endfor
-
-% load each input file, normalize and save
+% files don't exist so create them
+createDir({"mean0"}, sprintf("%s/features/%d", algoDataRoot, featureInterval));
 meanXbyRow = [];
-for i = 1:nSepNames
-    load(sepInFiles{i});
+for i = 1:nEquities
+    infile = sprintf("%s/features/%d/%s.mat", algoDataRoot, featureInterval, equities{i});
+    ofile = sprintf("%s/features/%d/mean0/%s.mat", algoDataRoot, featureInterval, equities{i});
+    load(infile);
     meanXbyRow = mean(X, 2);
     X = bsxfun(@minus, X, meanXbyRow);
-    save("-mat-binary", sepOutFiles{i}, "X", "y", "currDate");
-    printfNow("Normalized data %s saved\n", sepNames{i});
+    save("-mat-binary", ofile, "X", "currDate");
 endfor
 
-displayNow("Data normalized to mean 0 saved.");
+displayNow("Equity data normalized to mean 0 saved.");
 
 endfunction
