@@ -22,33 +22,36 @@
 
 function [score, precision, recall] = getScore()
     
-    % parameters used:
-    featureInterval = 256;
-    labelInterval = 64;
-    labelType = "bullish";
-    ratio = 1.0;
-    ofname = "output/score.mat";
-    PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% parameters used:
+featureInterval = 256;
+labelInterval = 64;
+labelType = "bullish";
+ratio = 1.0;
+dataRootPath = "splitadj/closes/train60xval20test20";
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ofname = "output/score.mat";
+PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
 
-    % load learned theta
-    load("output/learned.mat");
-    
-    % load test data
-    infile = sprintf("%s/splitadj/closes/train60xval20test20/test/features/%d/labels/%d/%s/%dpct/combined.mat", ...
-        PREDICTOR_DATA_ROOT, featureInterval, labelInterval, labelType, floor(ratio * 100));
-    load(infile);
+% load learned theta
+load("output/learned.mat");
 
-    % add constant feature
-    m = size(X, 1);
-    X = [ones(m, 1), X];
+% load test data
+infile = sprintf("%s/%s/test/features/%d/labels/%d/%s/%dpct/combined.mat", ...
+    PREDICTOR_DATA_ROOT, dataRootPath, featureInterval, labelInterval, labelType, floor(ratio * 100));
+load(infile);
 
-    % get predicted values
-    predicted = lrPredict(X, theta);
+% add constant feature
+m = size(X, 1);
+X = [ones(m, 1), X];
 
-    % get scores
-    [score, precision, recall] = fscore(predicted, y);
+% get predicted values
+predicted = lrPredict(X, theta);
 
-    % save
-    save("-mat-binary", ofname, "score", "precision", "recall");
+% get scores
+[score, precision, recall] = fscore(predicted, y);
+
+% save
+save("-mat-binary", ofname, "score", "precision", "recall");
 
 endfunction
