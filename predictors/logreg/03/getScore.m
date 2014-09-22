@@ -9,10 +9,13 @@
 ## Return and save @var{F1score}, @var{precision} and @var{recall}
 ## over the test dataset.
 ##
+## In addition, score, precision and recall are returned for a baseline
+## predictor which is simply a vector of all 1s.
+##
 ## Usage:
 ## 
 ## @example
-## [score, precision, recall] = getScore()
+## [score, precision, recall, blScore, blPrecision, blRecall] = getScore()
 ## @end example
 ##
 ## @end deftypefn
@@ -20,7 +23,7 @@
 ## Author: mdf
 ## Created: 2014-07-10
 
-function [score, precision, recall] = getScore()
+function [score, precision, recall, blScore, blPrecision, blRecall] = getScore()
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parameters used:
@@ -47,11 +50,13 @@ X = [ones(m, 1), X];
 
 % get predicted values
 predicted = lrPredict(X, theta);
+baseline = ones(m, 1);
 
 % get scores
 [score, precision, recall] = fscore(predicted, y);
+[blScore, blPrecision, blRecall] = fscore(baseline, y);
 
 % save
-save("-mat-binary", ofname, "score", "precision", "recall");
+save("-mat-binary", ofname, "score", "precision", "recall", "blScore", "blPrecision", "blRecall");
 
 endfunction

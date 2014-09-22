@@ -5,7 +5,7 @@
 ## the full extent of the law.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{alreadyExists}=} normalizeMeanEquities (@var{featureInterval})
+## @deftypefn  {Function File} {@var{alreadyExists}=} normalizeMeanEquities (@var{dataRootPath}, @var{featureInterval})
 ## Build normalized features for all relevant equities.
 ## 
 ## Data is normalized so that the mean of each row of features is 0. Otherwise,
@@ -14,7 +14,7 @@
 ## Usage:
 ##
 ## @example
-## alreadyExists = normalizeMeanEquities(256);
+## alreadyExists = normalizeMeanEquities("splitadj/closes", 256);
 ## @end example
 ##
 ## @strong{Caution:} don't run this function directly but instead
@@ -24,16 +24,17 @@
 ## Author: mdf
 ## Created: 2014-09-21
 
-function alreadyExists = normalizeMeanEquities(featureInterval)
+function alreadyExists = normalizeMeanEquities(dataRootPath, featureInterval)
 
-% call build to ensure that source data exists
-build(labelType, labelMakerFcn, featureInterval, labelInterval, ratio);
-
-% construct normalized data
+% get data to be normalized
 displayNow("Normalizing data by row to mean 0");
 alreadyExists = 1;
 PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
-algoDataRoot = sprintf("%s/splitadj/closes", PREDICTOR_DATA_ROOT);
+algoDataRoot = sprintf("%s/%s", PREDICTOR_DATA_ROOT, dataRootPath);
+equities = textread(sprintf("%s/equities.csv", algoDataRoot), "%s");
+nEquities = size(equities, 1);
+return;
+
 sepNames = {"train" "xval" "test"};
 nSepNames = length(sepNames);
 sepOutPaths = {};
