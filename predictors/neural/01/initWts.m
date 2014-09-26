@@ -36,18 +36,20 @@ theta2file = "";
 % only rebuild if at least one file is missing
 
 for i = 1:nOfiles
-    theta1file = sprintf("theta1init%02d.csv", i);
-    theta2file = sprintf("theta2init%02d.csv", i);
+    theta1file = sprintf("params/theta1init%02d.csv", i);
+    theta2file = sprintf("params/theta2init%02d.csv", i);
     alreadyExists = alreadyExists && exist(theta1file, "file") && exist(theta2file, "file");
 endfor
+
 if alreadyExists
     displayNow("Initialization files for theta1 and theta2 already exist. Delete to rebuild.");
     return;
 endif
 
+createDir({"params"});
 for i = 1:nOfiles
-    theta1file = sprintf("theta1init%02d.csv", i);
-    theta2file = sprintf("theta2init%02d.csv", i);
+    theta1file = sprintf("params/theta1init%02d.csv", i);
+    theta2file = sprintf("params/theta2init%02d.csv", i);
     theta1init = randInitializeWeights(featureInterval, nNeurons);
     theta2init = randInitializeWeights(nNeurons, 1);
     csvwrite(theta1file, theta1init);

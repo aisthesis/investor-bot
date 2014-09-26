@@ -15,7 +15,7 @@
 ## Usage:
 ##
 ## @example
-## [theta, lambda] = nnLearn("splitadj/closes/train60xval20test20", "bullish", 256, 64, 1.0, "01", 60, 64, 0.05, 8, 1);
+## [nnParams, lambda] = nnLearn("splitadj/closes/train60xval20test20", "bullish", 256, 64, 1.0, "01", 60, 64, 0.05, 8, 1);
 ## @end example
 ##
 ## @end deftypefn
@@ -23,10 +23,10 @@
 ## Author: mdf
 ## Created: 2014-09-21
 
-function [theta, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightsId, nNeurons, ...
+function [nnParams, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightsId, nNeurons, ...
         maxIter = 16, lambdaSeed = 0.1, nLambdas = 1, relearn = 0)
 
-ofile = "output/learned.mat";
+ofile = sprintf("output/learned%s.mat", weightsId);
 if exist(ofile, "file") && !relearn
     printfNow("Values have already been learned. Delete file '%s' to relearn.\n", ofile);
     displayNow("Returning saved values.");
@@ -51,6 +51,16 @@ n = size(Xtrain, 2);
 ytrain = y;
 initial_theta = zeros(n, 1);
 options = optimset('GradObj', 'on', 'MaxIter', maxIter);
+
+theta1init = csvread(sprintf("params/theta1init%s.csv", weightsId));
+theta2init = csvread(sprintf("params/theta2init%s.csv", weightsId));
+% unroll theta1 and theta2
+nnParamsInit = [theta1init(:); theta2init(:)];
+
+% TODO
+nnParams = [];
+lambda = 0;
+return;
 score = 0;
 bestScore = 0;
 lambda = 0;
