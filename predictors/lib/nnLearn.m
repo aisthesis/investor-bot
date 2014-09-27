@@ -42,6 +42,7 @@ ifTrain = sprintf("%s/%s/train/features/%d/labels/%d/%s/%dpct/combined.mat", ...
     PREDICTOR_DATA_ROOT, dataRootPath, featureInterval, labelInterval, labelType, floor(ratio * 100));
 ifXval = sprintf("%s/%s/xval/features/%d/labels/%d/%s/%dpct/combined.mat", ...
     PREDICTOR_DATA_ROOT, dataRootPath, featureInterval, labelInterval, labelType, floor(ratio * 100));
+createDir({"output"});
 
 displayNow("Loading training set");
 load(ifTrain);
