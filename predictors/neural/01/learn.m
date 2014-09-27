@@ -30,10 +30,10 @@ featureInterval = 256;
 labelInterval = 64;
 ratio = 1.0;
 nFeatures = featureInterval;
-nNeurons = 12;
-maxIter = 4;
+nNeurons = csvread("params/neurons.csv");
+maxIter = 64;
 lambdaSeed = 0.5;
-nLambdas = 3;
+nLambdas = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [theta1, theta2, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightId, nFeatures, nNeurons, ...

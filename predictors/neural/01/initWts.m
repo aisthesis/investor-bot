@@ -25,7 +25,7 @@ function alreadyExists = initWts()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parameters
 featureInterval = 256;
-nNeurons = 12;
+nNeurons = csvread("params/neurons.csv");
 nOfiles = 3;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

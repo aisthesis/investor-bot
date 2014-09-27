@@ -95,6 +95,7 @@ for lamb = lambdas
     endif
 endfor
 
+printfNow("Best cost on cross-validation set: %f, best lambda: %.03f\n", bestJxval, bestLambda);
 displayNow("Training complete. Saving results.");
 nnParams = bestNnParams;
 lambda = bestLambda;
