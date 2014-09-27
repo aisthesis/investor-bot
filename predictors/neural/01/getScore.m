@@ -1,0 +1,63 @@
+## Copyright (C) 2014 Marshall Farrier, Robert Rodrigues
+##
+## Distribution and use of this software without prior written permission
+## of the authors is strictly prohibitied and will be prosecuted to
+## the full extent of the law.
+
+## -*- texinfo -*-
+## @deftypefn  {Function File} {@var{v} =} getScore (@var{weightId})
+## Return and save @var{F1score}, @var{precision} and @var{recall}
+## over the test dataset.
+##
+## In addition, score, precision and recall are returned for a baseline
+## predictor which is simply a vector of all 1s.
+##
+## Usage:
+## 
+## @example
+## [score, precision, recall, blScore, blPrecision, blRecall] = getScore("01")
+## @end example
+##
+## @end deftypefn
+
+## Author: mdf
+## Created: 2014-07-10
+
+function [score, precision, recall, blScore, blPrecision, blRecall] = getScore(weightId)
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% parameters used:
+featureInterval = 256;
+labelInterval = 64;
+labelType = "bullish";
+ratio = 1.0;
+dataRootPath = "splitadj/closes/train60xval20test20";
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ofname = sprintf("output/score%s.mat", weightId);
+PREDICTOR_DATA_ROOT = getenv("PREDICTOR_DATA_ROOT");
+
+% load learned theta
+infile = sprintf("output/learned%s.mat", weightId);
+load(infile);
+
+% load test data
+infile = sprintf("%s/%s/test/features/%d/labels/%d/%s/%dpct/combined.mat", ...
+    PREDICTOR_DATA_ROOT, dataRootPath, featureInterval, labelInterval, labelType, floor(ratio * 100));
+load(infile);
+
+m = size(X, 1);
+
+% get predicted values
+h1 = sigmoid([ones(m, 1) X] * theta1');
+h2 = sigmoid([ones(m, 1) h1] * theta2');
+predicted = h2 >= 0.5;
+baseline = ones(m, 1);
+
+% get scores
+[score, precision, recall] = fscore(predicted, y);
+[blScore, blPrecision, blRecall] = fscore(baseline, y);
+
+% save
+save("-mat-binary", ofname, "score", "precision", "recall", "blScore", "blPrecision", "blRecall");
+
+endfunction
