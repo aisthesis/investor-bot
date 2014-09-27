@@ -5,14 +5,14 @@
 ## the full extent of the law.
 
 ## -*- texinfo -*-
-## @deftypefn  {Function File} {@var{v} =} learn ()
+## @deftypefn  {Function File} {@var{v} =} learn (@var{weightId})
 ## Return and save @var{theta} and optimal regularization parameter
 ## @var{lambda} learned using a neural network. 
 ##
 ## Usage:
 ##
 ## @example
-## [theta1, theta2, lambda] = learn()
+## [theta1, theta2, lambda] = learn("01");
 ## @end example
 ##
 ## @end deftypefn
@@ -20,7 +20,7 @@
 ## Author: mdf
 ## Created: 2014-09-19
 
-function [theta1, theta2, lambda] = learn()
+function [theta1, theta2, lambda] = learn(weightId)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parameters
@@ -29,12 +29,11 @@ labelType = "bullish";
 featureInterval = 256;
 labelInterval = 64;
 ratio = 1.0;
-weightId = "02";
 nFeatures = featureInterval;
 nNeurons = 12;
 maxIter = 4;
-lambdaSeed = 0.0;
-nLambdas = 1;
+lambdaSeed = 0.5;
+nLambdas = 3;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [theta1, theta2, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightId, nFeatures, nNeurons, ...

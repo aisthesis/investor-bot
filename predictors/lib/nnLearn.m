@@ -48,6 +48,7 @@ load(ifTrain);
 Xtrain = X;
 ytrain = y;
 options = optimset('MaxIter', maxIter);
+lambda = 0;
 
 theta1init = csvread(sprintf("params/theta1init%s.csv", weightsId));
 theta2init = csvread(sprintf("params/theta2init%s.csv", weightsId));
@@ -63,53 +64,43 @@ if nLambdas <= 1
     displayNow("Training complete. Saving results.");
     theta1 = reshape(nnParams(1:nNeurons * (nFeatures + 1)), nNeurons, nFeatures + 1);
     theta2 = reshape(nnParams((1 + nNeurons * (nFeatures + 1)):end), 1, nNeurons + 1);
-    lambda = 0;
     save("-mat-binary", ofile, "theta1", "theta2", "lambda", "cost");
     return;
 endif
 
-% TODO
-theta1 = [];
-theta2 = [];
-lambda = 0;
-cost = 1;
-return;
-score = 0;
-bestScore = 0;
-lambda = 0;
+% regularization
+minCost = [];
+bestJxval = -1;
 bestLambda = 0;
-bestTheta = zeros(n, 1);
+bestNnParams = nnParamsInit;
+displayNow("Loading cross-validation set");
+load(ifXval);
+Xxval = X;
+yxval = y;
 
-% no regularization parameter
-if nLambdas <= 1
-    theta = fmincg(@(t)(lrCostFunction(t, Xtrain, ytrain)), initial_theta, options);
-else
-    displayNow("Loading cross-validation set");
-    load(ifXval);
-    m = size(X, 1);
-    Xxval = [ones(m, 1), X];
-    yxval = y;
-    displayNow("Training and cross-validation data loaded");
+displayNow("Training neural network with regularization");
+displayNow("Be patient: Run time can be several hours.");
+for lamb = lambdas
+    printfNow("Training using regularization parameter %.03f\n", lamb);
+    costFcn = @(p) nnCostFunction(p, nFeatures, nNeurons, 1, Xtrain, ytrain, lamb);
+    [nnParams, cost] = fmincg(costFcn, nnParamsInit, options);
+    printfNow("Training complete using regularization parameter %.03f\n", lamb);
+    j = nnCostOnly(nnParams, nFeatures, nNeurons, 1, Xxval, yxval);
+    printfNow("Unbiased cost on cross-validation set: %f\n", j);
+    if bestJxval < 0 || j < bestJxval
+        minCost = cost;
+        bestNnParams = nnParams;
+        bestLambda = lamb;
+        bestJxval = j;
+    endif
+endfor
 
-    displayNow("Finding optimal theta and lambda using logistic regression");
-    for lamb = lambdas
-        theta = fmincg(@(t)(lrCostFunction(t, Xtrain, ytrain, lamb)), initial_theta, options);
-        predicted = lrPredict(Xxval, theta);
-        score = fscore(predicted, yxval);
-        printfNow("lambda: %f, F1 score: %f\n", lamb, score);
-        if score > bestScore
-            bestScore = score;
-            bestTheta = theta;
-            bestLambda = lamb;
-        endif
-    endfor
-
-    theta = bestTheta;
-    lambda = bestLambda;
-endif
-
-displayNow("Learning complete. Saving optimal theta and lambda.");
-createDir({"output"});
-save("-mat-binary", ofile, "theta", "lambda");
+displayNow("Training complete. Saving results.");
+nnParams = bestNnParams;
+lambda = bestLambda;
+cost = minCost;
+theta1 = reshape(nnParams(1:nNeurons * (nFeatures + 1)), nNeurons, nFeatures + 1);
+theta2 = reshape(nnParams((1 + nNeurons * (nFeatures + 1)):end), 1, nNeurons + 1);
+save("-mat-binary", ofile, "theta1", "theta2", "lambda", "cost");
 
 endfunction
