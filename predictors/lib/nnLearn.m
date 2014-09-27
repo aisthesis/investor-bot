@@ -6,8 +6,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {Function File} {@var{v} =} nnLearn (@var{dataRootPath}, @var{labelType}, @var{featureInterval},
-## @var{labelInterval}, @var{ratio}, @var{weightsId}, @var{nNeurons}, @var{maxIter}, @var{lambdaSeed}, @var{nLambdas}, 
-## @var{relearn})
+## @var{labelInterval}, @var{ratio}, @var{weightsId}, @var{nFeatures}, @var{nNeurons}, @var{maxIter}, 
+## @var{lambdaSeed}, @var{nLambdas}) 
 ##
 ## Return and save @var{theta} and optimal regularization parameter
 ## @var{lambda} learned using a 3-layer (1 hidden layer) feedforward neural network with back-propagation.
@@ -15,7 +15,7 @@
 ## Usage:
 ##
 ## @example
-## [nnParams, lambda] = nnLearn("splitadj/closes/train60xval20test20", "bullish", 256, 64, 1.0, "01", 60, 64, 0.05, 8, 1);
+## [theta1, theta2, lambda, cost] = nnLearn("splitadj/closes/train60xval20test20", "bullish", 256, 64, 1.0, "01", 256, 60, 64, 0.05, 8);
 ## @end example
 ##
 ## @end deftypefn
@@ -23,11 +23,11 @@
 ## Author: mdf
 ## Created: 2014-09-21
 
-function [nnParams, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightsId, nNeurons, ...
-        maxIter = 16, lambdaSeed = 0.1, nLambdas = 1, relearn = 0)
+function [theta1, theta2, lambda, cost] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightsId, nFeatures, nNeurons, ...
+        maxIter = 16, lambdaSeed = 0.1, nLambdas = 1)
 
 ofile = sprintf("output/learned%s.mat", weightsId);
-if exist(ofile, "file") && !relearn
+if exist(ofile, "file")
     printfNow("Values have already been learned. Delete file '%s' to relearn.\n", ofile);
     displayNow("Returning saved values.");
     load(ofile);
@@ -45,21 +45,34 @@ ifXval = sprintf("%s/%s/xval/features/%d/labels/%d/%s/%dpct/combined.mat", ...
 
 displayNow("Loading training set");
 load(ifTrain);
-m = size(X, 1);
-Xtrain = [ones(m, 1), X];
-n = size(Xtrain, 2);
+Xtrain = X;
 ytrain = y;
-initial_theta = zeros(n, 1);
-options = optimset('GradObj', 'on', 'MaxIter', maxIter);
+options = optimset('MaxIter', maxIter);
 
 theta1init = csvread(sprintf("params/theta1init%s.csv", weightsId));
 theta2init = csvread(sprintf("params/theta2init%s.csv", weightsId));
 % unroll theta1 and theta2
 nnParamsInit = [theta1init(:); theta2init(:)];
 
+% no reguarization parameter
+if nLambdas <= 1
+    displayNow("Training neural network with no regularization");
+    displayNow("Be patient: Run time can be several hours.");
+    costFcn = @(p) nnCostFunction(p, nFeatures, nNeurons, 1, Xtrain, ytrain, 0);
+    [nnParams, cost] = fmincg(costFcn, nnParamsInit, options);
+    displayNow("Training complete. Saving results.");
+    theta1 = reshape(nnParams(1:nNeurons * (nFeatures + 1)), nNeurons, nFeatures + 1);
+    theta2 = reshape(nnParams((1 + nNeurons * (nFeatures + 1)):end), 1, nNeurons + 1);
+    lambda = 0;
+    save("-mat-binary", ofile, "theta1", "theta2", "lambda", "cost");
+    return;
+endif
+
 % TODO
-nnParams = [];
+theta1 = [];
+theta2 = [];
 lambda = 0;
+cost = 1;
 return;
 score = 0;
 bestScore = 0;

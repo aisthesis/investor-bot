@@ -12,7 +12,7 @@
 ## Usage:
 ##
 ## @example
-## [theta, lambda] = learn()
+## [theta1, theta2, lambda] = learn()
 ## @end example
 ##
 ## @end deftypefn
@@ -20,7 +20,7 @@
 ## Author: mdf
 ## Created: 2014-09-19
 
-function [theta, lambda] = learn()
+function [theta1, theta2, lambda] = learn()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parameters
@@ -29,15 +29,15 @@ labelType = "bullish";
 featureInterval = 256;
 labelInterval = 64;
 ratio = 1.0;
-weightId = "01";
+weightId = "02";
+nFeatures = featureInterval;
 nNeurons = 12;
-maxIter = 16;
+maxIter = 4;
 lambdaSeed = 0.0;
 nLambdas = 1;
-relearn = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[theta, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightId, nNeurons,
-        maxIter, lambdaSeed, nLambdas, relearn);
+[theta1, theta2, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightId, nFeatures, nNeurons, ...
+        maxIter, lambdaSeed, nLambdas);
 
 endfunction
