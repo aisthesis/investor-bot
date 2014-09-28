@@ -48,7 +48,7 @@ displayNow("Loading training set");
 load(ifTrain);
 Xtrain = X;
 ytrain = y;
-options = optimset('MaxIter', maxIter);
+options = optimset('Display', 'iter', 'GradObj', 'on', 'MaxIter', maxIter);
 lambda = 0;
 
 theta1init = csvread(sprintf("params/theta1init%s.csv", weightsId));
