@@ -33,8 +33,7 @@ alreadyExists = 1;
 theta1file = "";
 theta2file = "";
 
-% only rebuild if at least one file is missing
-
+% don't rebuild if they already exist
 for i = 1:nOfiles
     theta1file = sprintf("params/theta1init%02d.csv", i);
     theta2file = sprintf("params/theta2init%02d.csv", i);
@@ -52,8 +51,12 @@ for i = 1:nOfiles
     theta2file = sprintf("params/theta2init%02d.csv", i);
     theta1init = randInitializeWeights(featureInterval, nNeurons);
     theta2init = randInitializeWeights(nNeurons, 1);
-    csvwrite(theta1file, theta1init);
-    csvwrite(theta2file, theta2init);
+    if !exist(theta1file)
+        csvwrite(theta1file, theta1init);
+    endif
+    if !exist(theta2file)
+        csvwrite(theta2file, theta2init);
+    endif
 endfor
 
 endfunction

@@ -12,7 +12,7 @@
 ## Usage:
 ##
 ## @example
-## [theta1, theta2, lambda] = learn("01");
+## [theta1, theta2, lambda, cost] = learn("01");
 ## @end example
 ##
 ## @end deftypefn
@@ -20,23 +20,17 @@
 ## Author: mdf
 ## Created: 2014-09-19
 
-function [theta1, theta2, lambda] = learn(weightId)
+function [theta1, theta2, lambda, cost] = learn(weightId)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parameters
-dataRootPath = "splitadj/closes/train60xval20test20";
-labelType = "bullish";
-featureInterval = 256;
-labelInterval = 64;
-ratio = 1.0;
-nFeatures = featureInterval;
-nNeurons = csvread("params/neurons.csv");
-maxIter = 64;
-lambdaSeed = 0.5;
-nLambdas = 1;
+params = {};
+params.weightsId = weightId;
+params.trainFile = "splitadj/closes/train60xval20test20/train/features/256/labels/64/bullish/100pct/combined.mat";
+params.nNeurons = csvread("params/neurons.csv");
+params.maxIter = 64;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[theta1, theta2, lambda] = nnLearn(dataRootPath, labelType, featureInterval, labelInterval, ratio, weightId, nFeatures, nNeurons, ...
-        maxIter, lambdaSeed, nLambdas);
+[theta1, theta2, lambda, cost] = nnLearn(params);
 
 endfunction
