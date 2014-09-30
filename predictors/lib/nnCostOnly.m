@@ -40,13 +40,8 @@ Theta1 = reshape(nnParams(1:nNeurons * (nFeatures + 1)), ...
 Theta2 = reshape(nnParams((1 + (nNeurons * (nFeatures + 1))):end), ...
                  nLabels, (nNeurons + 1));
 
-% Setup some useful variables
 m = size(X, 1);
-         
-% You need to return the following variables correctly 
 j = 0;
-Theta1_grad = zeros(size(Theta1));
-Theta2_grad = zeros(size(Theta2));
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
