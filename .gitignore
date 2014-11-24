@@ -5,6 +5,7 @@
 */.settings/
 *.swp
 *.mat
+*.pyc
 
 # Mac artifacts
 *__MACOSX*
