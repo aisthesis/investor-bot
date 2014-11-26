@@ -101,6 +101,10 @@ fi
 popd > /dev/null
 echo "C++ simulator classes built."; echo ""
 
-# Build other required files
+# Check for Python libraries
+pushd lib/tst > /dev/null
+./pytst.py
+./py3tst.py
+popd > /dev/null
 
 echo "Done!"
