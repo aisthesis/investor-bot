@@ -13,8 +13,9 @@ Marshall Farrier, marshalldfarrier@gmail.com
 """
 
 import numpy as np
+import pandas as pd
 
-def learn(features, labels):
+def get_model(features, labels):
     """
     baseline for measuring performance of other models
 
@@ -54,3 +55,11 @@ def learn(features, labels):
 
     weights[0, :] = np.average(labels, axis=0)
     return weights
+
+def predict(features, model):
+    """ Return ndarray of predictions """
+    if isinstance(features, pd.DataFrame):
+        _feat = features.values
+    else:
+        _feat = features
+    return _feat.dot(model)

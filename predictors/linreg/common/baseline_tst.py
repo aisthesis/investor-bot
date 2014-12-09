@@ -28,20 +28,30 @@ class TestBaseline(unittest.TestCase):
         d[:, 0] = 1.0
         self.features = pd.DataFrame(data=d, index=self.index, columns=cols) 
 
-    def test_learn_label_vector(self):
+    def test_get_model_label_vector(self):
         cols = ['Label']
         content = np.arange(1, 2.5, 0.5)
         labels = pd.DataFrame(data=content, index=self.index, columns=cols)
-        weights = baseline.learn(self.features, labels)
+        weights = baseline.get_model(self.features, labels)
         self.assertAlmostEqual(weights[0], 1.5)
         for i in range(1, self.features.shape[1]):
             self.assertAlmostEqual(weights[i], 0)
 
-    def test_learn_label_matrix(self):
+    def test_get_model_label_matrix(self):
         cols = ['Label1', 'Label2']
         content = np.arange(1, 4, 0.5).reshape((3, 2))
         labels = pd.DataFrame(data=content, index=self.index, columns=cols)
-        weights = baseline.learn(self.features, labels)
+        weights = baseline.get_model(self.features, labels)
+        self.assertAlmostEqual(weights[0, 0], 2.0)
+        self.assertAlmostEqual(weights[0, 1], 2.5)
+        for i in range(1, self.features.shape[1]):
+            self.assertAlmostEqual(weights[i, 0], 0)
+            self.assertAlmostEqual(weights[i, 1], 0)
+
+    def test_get_model_ndarray(self):
+        cols = ['Label1', 'Label2']
+        content = np.arange(1, 4, 0.5).reshape((3, 2))
+        weights = baseline.get_model(self.features.values, content)
         self.assertAlmostEqual(weights[0, 0], 2.0)
         self.assertAlmostEqual(weights[0, 1], 2.5)
         for i in range(1, self.features.shape[1]):
