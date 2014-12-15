@@ -15,14 +15,17 @@ Marshall Farrier, marshalldfarrier@gmail.com
 import numpy as np
 import pandas as pd
 
-def get_model(features, labels):
+def get_model(features, labels, lamb=0.):
     if isinstance(features, pd.DataFrame):
         _feat = features.values
         _lab = labels.values
     else:
         _feat = features
         _lab = labels
-    return np.linalg.pinv(_feat).dot(_lab)
+    n_cols = _feat.shape[1]
+    return np.linalg.lstsq(_feat.transpose().dot(_feat)\
+            + lamb * np.identity(n_cols, dtype=np.float64),\
+            _feat.transpose().dot(_lab))[0]
 
 def predict(features, model):
     """ Return ndarray of predictions """
