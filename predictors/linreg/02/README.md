@@ -42,5 +42,8 @@ value. Possible approaches:
     to around 16 features (sqrt(256)), we could then try the same method
     used here using a polynomial of all features of order 2.
 
+    For easy implementation: 
+    http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html
+
 Nonlinear transformations are a little easier, but both techniques should be tried.
 We may also need PCA to get acceptable runtimes for Radial basis functions.
