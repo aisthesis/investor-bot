@@ -1,5 +1,5 @@
 """
-Simple linear regression
+Linear regression with centered and normalized data.
 
 Copyright (c) 2014 Marshall Farrier
 
@@ -13,15 +13,17 @@ Marshall Farrier, marshalldfarrier@gmail.com
 """
 
 from __future__ import print_function
+from functools import partial
 import os
 import sys
 
 import numpy as np
+import pandas as pd
+import pynance as pn
 
 sys.path.append('../')
 import settings
 sys.path.append('../common')
-import baseline
 import data
 from metrics import ErrorSummary
 import pylearn as pl
@@ -36,7 +38,7 @@ def get_alldata():
     labelcol = 'Adj Close'
     startdate = '1960-01-01'
     enddate = '2014-12-11'
-    fname = "../{0}/volume/features/{1}/labels/real/{2}/combined.npy".format(settings.DATA_ROOT,
+    fname = "../{0}/growth/relvol/features/{1}/labels/real/{2}/combined.npy".format(settings.DATA_ROOT,
             n_feat_sess, prediction_interval) 
     # retrieve from file if it exists
     if os.path.isfile(fname):
@@ -45,10 +47,106 @@ def get_alldata():
     directory = os.path.dirname(fname)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    features, labels = data.build_alldata(equities, n_feat_sess, prediction_interval,
-            featurecols, labelcol, startdate, enddate)
+    features, labels = _build_data(equities, n_feat_sess, prediction_interval, startdate, enddate)
     data.save(fname, features, labels)
     return features, labels
+
+def _build_data(equities, n_feat_sess, prediction_interval, startdate, enddate):
+    """ Build features and labels to be used in current run.  """
+    features = np.empty((0, 2 * n_feat_sess))
+    labels = np.empty((0, 1))
+    for equity in equities:
+        print("Building features and labels for equity '{0}'".format(equity))
+        sys.stdout.flush()
+        eqfeat, eqlab = _build_eqdata(equity, n_feat_sess, prediction_interval, 
+                startdate, enddate)
+        features = np.append(features, eqfeat.values, axis=0)
+        labels = np.append(labels, eqlab.values, axis=0)
+    features = pn.data.add_const(features)
+    return features, labels
+
+def _build_eqdata(equity, n_feat_sess, prediction_interval, startdate, enddate):
+    """ Build features and labels for given equity """
+    eqdata = pn.data.get(equity, startdate, enddate)
+    ave_interval = 2
+    growth = _get_daily_growth(eqdata, skipstartrows=(ave_interval - 1), 
+            skipendrows=prediction_interval)
+    volume = _get_ratio_to_ave(eqdata, skipendrows=prediction_interval, 
+            ave_interval=ave_interval)
+    features = _build_features(growth, volume, n_feat_sess)
+    labels = _get_labels(eqdata, prediction_interval, skiprows=(ave_interval + n_feat_sess - 1))
+    return features, labels
+
+def _build_features(growth, volume, n_feat_sess):
+    growth_feat = pn.data.featurize(growth, n_feat_sess, selection='Daily Growth')
+    vol_feat = pn.data.featurize(volume, n_feat_sess, selection='Rel Vol')
+    growth_cols = map(partial(_concat, strval='G'), range(-n_feat_sess + 1, 1))
+    vol_cols = map(partial(_concat, strval='V'), range(-n_feat_sess + 1, 1))
+    feature_cols = list(growth_cols) + list(vol_cols)
+    features = pd.DataFrame(index=growth_feat.index, columns=feature_cols,
+            dtype='float64')
+    features.iloc[:, :n_feat_sess] = growth_feat.values
+    features.iloc[:, n_feat_sess:] = vol_feat.values
+    return features
+
+def _concat(intval, strval):
+    return str(intval) + strval
+
+def _get_labels(eqdata, prediction_interval, skiprows=0):
+    col = 'Adj Close'
+    labeldata = eqdata.loc[:, col].values[(skiprows + prediction_interval):] / \
+            eqdata.loc[:, col].values[skiprows:-prediction_interval]
+    return pd.DataFrame(data=labeldata, index=eqdata.index[skiprows:-prediction_interval],
+            columns=['Growth'], dtype='float64')
+
+def _get_daily_growth(eqdata, skipstartrows=0, skipendrows=0, selection='Adj Close', outputcol='Daily Growth'):
+    """ 
+    reusable for any column
+
+    Parameters
+    --
+    skipstartrows : int
+        Rows to skip at beginning in addition to the 1 row that must be skipped
+        because the calculation relies on a prior data point.
+    
+    Returns
+    --
+    DataFrame
+    """
+    size = len(eqdata.index)
+    growthdata = eqdata.loc[:, selection].values[(skipstartrows + 1):(size - skipendrows)] / \
+            eqdata.loc[:, selection].values[skipstartrows:(-1 - skipendrows)]
+    growthindex = eqdata.index[(skipstartrows + 1):(size - skipendrows)]
+    return pd.DataFrame(data=growthdata, index=growthindex,
+            columns=[outputcol], dtype='float64')
+
+def _get_ratio_to_ave(eqdata, skipstartrows=0, skipendrows=0, ave_interval=252, 
+        selection='Volume', outputcol='Rel Vol'):
+    """ 
+    reusable for any column
+
+    Parameters
+    --
+    skipstartrows : int, default 0
+        Rows to skip at beginning in addition to the `ave_interval` rows that
+        must be skipped to get the baseline volume.
+
+    ave_interval : int, default 252
+        interval over which to take the average. Defaults to 252 because that
+        is normally the number of sesssions in a year.
+    
+    Returns
+    --
+    DataFrame
+    """
+    datalen = len(eqdata.index)
+    tmpdata = pn.data.featurize(eqdata, ave_interval, selection=selection)
+    averages = tmpdata.mean(axis=1)
+    avelen = len(averages.index)
+    result_data = eqdata.loc[:, selection].values[(skipstartrows + ave_interval):(datalen - skipendrows)] / \
+            averages.values[skipstartrows:(avelen - skipendrows - 1)]
+    result_index = eqdata.index[(skipstartrows + ave_interval):(datalen - skipendrows)]
+    return pd.DataFrame(data=result_data, index=result_index, columns=[outputcol], dtype='float64')
 
 def get_partitioned_data(features, labels, partition, ix):
     """ separate training and test data using `partition` and `ix` """
@@ -67,7 +165,7 @@ def _update_hilo(report_errors, error):
 
 def evaluate_model(features, labels, partition):
     results = ErrorSummary()
-    baseein_tot = baseeout_tot = modein_tot = modeout_tot = basegrowth_tot = 0.
+    modein_tot = modeout_tot = 0.
     for i in range(10):
         feattrain, labtrain, feattest, labtest = get_partitioned_data(features, labels, partition, i)
         # get results for model
@@ -82,30 +180,14 @@ def evaluate_model(features, labels, partition):
         eout = float(pl.error.meansq(predtest, labtest))
         modeout_tot += eout
         _update_hilo(results.model.eout, eout)
-        # get results for baseline    
-        print('.', end="")
-        sys.stdout.flush()
-        model = baseline.get_model(feattrain, labtrain)
-        basegrowth_tot += float(model[0])
-        predtrain = baseline.predict(feattrain, model)
-        ein = float(pl.error.meansq(predtrain, labtrain))
-        baseein_tot += ein
-        _update_hilo(results.baseline.ein, ein)
-        predtest = baseline.predict(feattest, model)
-        eout = float(pl.error.meansq(predtest, labtest))
-        baseeout_tot += eout
-        _update_hilo(results.baseline.eout, eout)
     # update averages
     results.model.ein.average = modein_tot / 10.0
     results.model.eout.average = modeout_tot / 10.0
-    results.baseline.ein.average = baseein_tot / 10.0
-    results.baseline.eout.average = baseeout_tot / 10.0
-    ave_base_growth = basegrowth_tot / 10.0
     print('.')
     sys.stdout.flush()
-    return results, ave_base_growth
+    return results 
 
-def print_results(results, baseline_growth):
+def print_results(results):
     fname = "RESULTS.md"
     content = """\
 Error Summary
@@ -124,41 +206,19 @@ Error Summary
     <td>{2}</td>
 </tr>
 <tr>
-    <td>Baseline Eout</td>
+    <td>Model Ein</td>
     <td>{3}</td>
     <td>{4}</td>
     <td>{5}</td>
 </tr>
-<tr>
-    <td>Model Ein</td>
-    <td>{6}</td>
-    <td>{7}</td>
-    <td>{8}</td>
-</tr>
-<tr>
-    <td>Baseline Ein</td>
-    <td>{9}</td>
-    <td>{10}</td>
-    <td>{11}</td>
-</tr>
-</table>
-
-Average baseline growth: {12}""".format(results.model.eout.average,
+</table>""".format(results.model.eout.average,
         results.model.eout.highest,
         results.model.eout.lowest,
-        results.baseline.eout.average,
-        results.baseline.eout.highest,
-        results.baseline.eout.lowest,
         results.model.ein.average,
         results.model.ein.highest,
-        results.model.ein.lowest,
-        results.baseline.ein.average,
-        results.baseline.ein.highest,
-        results.baseline.ein.lowest,
-        baseline_growth)
+        results.model.ein.lowest)
     with open(fname, 'w') as f:
         f.write(content)
-
 
 def run():
     print("Retrieving data")
@@ -166,9 +226,9 @@ def run():
     pfile = "../{0}/partition.csv".format(settings.DATA_ROOT)
     partition = data.partition(pfile, features.shape[0])
     print("Evaluating model")
-    results, baseline_growth = evaluate_model(features, labels, partition)
-    return results, baseline_growth
+    results = evaluate_model(features, labels, partition)
+    return results
 
 if __name__ == "__main__":
-    results, baseline_growth = run()
-    print_results(results, baseline_growth)
+    results = run()
+    print_results(results)

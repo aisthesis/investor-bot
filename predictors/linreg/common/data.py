@@ -36,7 +36,7 @@ def partition(fname, size, nparts=10):
     yet reproducible manner.
     """
     if os.path.isfile(fname):
-        randpart = np.loadtxt(fname, dtype=int)
+        randpart = np.loadtxt(fname, dtype=int)[:size]
         if len(randpart) < size:
             raise ValueError("saved file too small")
     else:
