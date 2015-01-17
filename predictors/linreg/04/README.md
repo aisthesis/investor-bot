@@ -34,46 +34,19 @@ Purpose
 ---
 - Get features that can be used for PCA and for radial basis functions.
 - Verify that the given features perform at least as well as those used
-in linreg/02.
+in linreg/03.
 
-Next Steps
---
-- Apply `ln()` to daily growth before centering (suggested in the literature).
-- Use PCA to reduce features.
-
-[TODO: The following remarks are placeholders]
-==
 Results
 --
 Cf. RESULTS.md
 
 Conclusions
 --
-While far from conclusive, the improvement in Ein over `linreg/01` suggests
-that volume is providing useful information. Average Ein for current model:
-0\.01890 vs. 0.01898 for `linreg/01` with a basline for Ein of 0.01916.
-The differences are sufficiently small between all 3 that the improvement
-in the current model appears noteworthy.
-
-At the same time, Eout becomes negligibly *worse* in the current model,
-suggestive of overfitting. It doesn't seem worth it to work on
-regularization here, however, since we're really looking for more improvement
-than even the in-sample error is providing.
+The results are essentially identical to those in linreg/03 (average `Eout`
+differs only after the 14th decimal place). So, centering and normalization
+are not suppressing any relevant information.
 
 Next Steps
 --
-Nonlinear functions are clearly needed in order to get adequate predictive
-value. Possible approaches:
-
--   Radial basis functions
--   Nonlinear transformations. In order to make this work, we would clearly
-    need to apply PCA for feature reduction, since with the introduction of
-    volume, we're working with 513 features. If we could use PCA to reduce
-    to around 16 features (sqrt(256)), we could then try the same method
-    used here using a polynomial of all features of order 2.
-
-    For easy implementation: 
-    http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html
-
-Nonlinear transformations are a little easier, but both techniques should be tried.
-We may also need PCA to get acceptable runtimes for Radial basis functions.
+- Use PCA to reduce features.
+- Apply `ln()` to daily return (not growth!) before centering (suggested in the literature)?
