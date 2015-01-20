@@ -68,7 +68,7 @@ def _build_data(equities, n_feat_sess, prediction_interval, startdate, enddate):
 def _build_eqdata(equity, n_feat_sess, prediction_interval, startdate, enddate):
     """ Build features and labels for given equity """
     eqdata = pn.data.get(equity, startdate, enddate)
-    ave_interval = 2
+    ave_interval = 252
     growth = _get_daily_growth(eqdata, skipstartrows=(ave_interval - 1), 
             skipendrows=prediction_interval)
     volume = _get_ratio_to_ave(eqdata, skipendrows=prediction_interval, 
