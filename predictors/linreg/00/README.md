@@ -1,4 +1,4 @@
-predictors/linreg/01
+predictors/linreg/00
 ===
 Baseline linear regression using as a prediction the average
 gain of all equities during the given time period. Just uses
@@ -19,9 +19,3 @@ Purpose
 Results
 --
 Cf. RESULTS.md
-
-Conclusions
---
-[Here, too, we see that without volume data (and using a linear model), we
-are unable to improve on the baseline of taking average growth for the entire
-data set.]

@@ -95,16 +95,45 @@ def build_alldata(equities, n_feat_sess, prediction_interval, featurecols, label
 
 def save(fname, features, labels):
     # combine features and labels into a single ndarray
-    data = np.empty((features.shape[0], features.shape[1] + 1))
-    data[:, :1] = labels
-    data[:, 1:] = features
+    data = np.empty((features.shape[0], features.shape[1] + labels.shape[1]))
+    data[:, :labels.shape[1]] = labels
+    data[:, labels.shape[1]:] = features
     # save the result
     np.save(fname, data)
 
-def load(fname):
+def load(fname, n_labelcols=1):
     """
     Retrieve features and labels from csv file
     """
     #data = np.loadtxt(fname, delimiter=',', dtype='float64')
     data = np.load(fname)
-    return data[:, 1:], data[:, :1]
+    return data[:, n_labelcols:], data[:, :n_labelcols]
+
+def multi_period_growth(n_periods, pricecol, eqdata):
+    """
+    Function to be passed using partial to `pn.data.labeledfeatures()`
+    """
+    _skipatend = 2**(n_periods - 1)
+    _size = len(eqdata.index)
+    _cols = map(str, map(lambda n: 2**n, range(n_periods)))
+    _all_labs = pd.DataFrame(index=eqdata.index[:-_skipatend], columns=_cols, dtype=np.float64)
+    for i in range(n_periods):
+        _df, _ = pn.data.lab.growth(2**i, pricecol, eqdata)
+        _all_labs.iloc[:, i] = _df.iloc[:(_size - _skipatend), 0]
+    return _all_labs, _skipatend
+
+def aggregate(equities, startdate, enddate, featurefunc, labelfunc):
+    """
+    Aggregate data for all of the given equities
+    """
+    _eqdata = pn.data.get(equities[0], startdate, enddate)
+    _featdf, _labdf = pn.data.labeledfeatures(_eqdata, featurefunc, labelfunc)
+    _features = _featdf.values
+    _labels = _labdf.values
+    for i in range(1, len(equities)):
+        _eqdata = pn.data.get(equities[i], startdate, enddate)
+        print("{0} records retrieved for equity '{1}'".format(len(_eqdata.index), equities[i]))
+        _featdf, _labdf = pn.data.labeledfeatures(_eqdata, featurefunc, labelfunc)
+        _features = np.append(_features, _featdf.values, axis=0)
+        _labels = np.append(_labels, _labdf.values, axis=0)
+    return _features, _labels
