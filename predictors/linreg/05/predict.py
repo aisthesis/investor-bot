@@ -25,7 +25,7 @@ import settings
 sys.path.append('../common')
 import baseline
 import data
-from metrics import ErrorSummary
+from metrics import EinEout
 import pylearn as pl
 
 def get_alldata():
@@ -70,72 +70,103 @@ def get_partitioned_data(features, labels, partition, ix):
     labtest = labels[~mask, :]
     return feattrain, labtrain, feattest, labtest
 
-def _update_hilo(report_errors, error):
-    if report_errors.highest < error:
-        report_errors.highest = error
-    if report_errors.lowest > error:
-        report_errors.lowest = error
+def _update_summaries(summaries, ein, eout):
+    for i in range(len(summaries)):
+        _update_hilo(summaries[i].ein, ein[0, i])
+        _update_hilo(summaries[i].eout, eout[0, i])
+
+def _update_hilo(err_sum, current_err):
+    if err_sum.highest < current_err:
+        err_sum.highest = current_err
+    if err_sum.lowest > current_err:
+        err_sum.lowest = current_err
 
 def evaluate_model(features, labels, partition):
-    results = ErrorSummary()
-    baseein_tot = baseeout_tot = basegrowth_tot = 0.
+    results = [EinEout() for i in range(labels.shape[1])]
+    baseein_tot = np.zeros((1, labels.shape[1]))
+    baseeout_tot = np.zeros((1, labels.shape[1]))
+    basegrowth_tot = np.zeros((1, labels.shape[1]))
     for i in range(10):
         feattrain, labtrain, feattest, labtest = get_partitioned_data(features, labels, partition, i)
         # get results for baseline    
         print('.', end="")
         sys.stdout.flush()
         model = baseline.get_model(feattrain, labtrain)
-        basegrowth_tot += float(model[0])
+        basegrowth_tot += model[0, :]
         predtrain = baseline.predict(feattrain, model)
-        ein = float(pl.error.meansq(predtrain, labtrain))
+        ein = pl.error.stderr(predtrain, labtrain)
         baseein_tot += ein
-        _update_hilo(results.baseline.ein, ein)
         predtest = baseline.predict(feattest, model)
-        eout = float(pl.error.meansq(predtest, labtest))
+        eout = pl.error.stderr(predtest, labtest)
         baseeout_tot += eout
-        _update_hilo(results.baseline.eout, eout)
+        _update_summaries(results, ein, eout)
     # update averages
-    results.baseline.ein.average = baseein_tot / 10.0
-    results.baseline.eout.average = baseeout_tot / 10.0
-    ave_base_growth = basegrowth_tot / 10.0
+    for i in range(labels.shape[1]):
+        results[i].ein.average = 0.1 * baseein_tot[0, i]
+        results[i].eout.average = 0.1 * baseeout_tot[0, i]
+        ave_base_growth = 0.1 * basegrowth_tot
     print('.')
     sys.stdout.flush()
     return results, ave_base_growth
 
 def print_results(results, baseline_growth):
     fname = "RESULTS.md"
-    content = """\
+    contents = []
+    contents.append( """\
 Error Summary
 ==
 <table>
 <tr>
     <th>Metric</th>
-    <th>Average</th>
-    <th>Highest</th>
-    <th>Lowest</th>
+    <th>Forecast Distance</th>
+    <th>Ave.</th>
+    <th>High</th>
+    <th>Low</th>
+</tr>
+""")
+
+    for i in range(len(results)):
+        contents.append("""
+<tr>
+    <td>Eout</td>
+    <td>{}</td>
+    <td>{:6.4f}</td>
+    <td>{:6.4f}</td>
+    <td>{:6.4f}</td>
 </tr>
 <tr>
-    <td>Baseline Eout</td>
-    <td>{0}</td>
-    <td>{1}</td>
-    <td>{2}</td>
+    <td>Ein</td>
+    <td>{}</td>
+    <td>{:6.4f}</td>
+    <td>{:6.4f}</td>
+    <td>{:6.4f}</td>
 </tr>
-<tr>
-    <td>Baseline Ein</td>
-    <td>{3}</td>
-    <td>{4}</td>
-    <td>{5}</td>
-</tr>
+""".format(2**i, results[i].eout.average, results[i].eout.highest, results[i].eout.lowest,
+            2**i, results[i].ein.average, results[i].ein.highest, results[i].ein.lowest))
+
+    contents.append("""
 </table>
 
-Average baseline growth: {6}""".format(
-        results.baseline.eout.average,
-        results.baseline.eout.highest,
-        results.baseline.eout.lowest,
-        results.baseline.ein.average,
-        results.baseline.ein.highest,
-        results.baseline.ein.lowest,
-        baseline_growth)
+Growth
+==
+<table>
+<tr>
+    <th>Forecast Distance</th>
+    <th>Ave. Growth</th>
+</tr>
+""")
+
+    for i in range(baseline_growth.shape[1]):
+        contents.append("""
+<tr>
+    <td>{}</td>
+    <td>{:6.4f}</td>
+</tr>
+""".format(2**i, baseline_growth[0, i]))
+
+    contents.append("""</table>""")
+
+    content = ''.join(contents)
     with open(fname, 'w') as f:
         f.write(content)
 

@@ -24,6 +24,11 @@ adjusted close values further back are often so small that actual
 daily returns get lost: With an adjusted close of .10, the minimum
 daily gain or loss is 10%.
 
+I'm also switching to standard error (sqrt of mean squared error rather
+than raw mean squared error) because it provides a more accurate picture
+of how much the model is normally off. This change amounts to using standard deviation
+rather than variance. Standard deviation is more intuitive.
+
 Purpose
 ---
 - Establish a baseline standard for other algorithms.

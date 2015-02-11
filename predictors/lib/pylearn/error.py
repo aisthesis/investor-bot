@@ -19,14 +19,32 @@ def meansq(predicted, actual):
     """
     Return mean squared error by column of ndarray or DataFrame
     """
+    return _wrapper(predicted, actual, _meansq_measure, ['Mean Sq Error'])
+
+def stderr(predicted, actual):
+    """
+    Return square root of mean squared error
+    """
+    return _wrapper(predicted, actual, _stderr_measure, ['Std Error'])
+
+def _wrapper(predicted, actual, measure_fn, df_index):
+    """
+    Wrapper to handle either DataFrame or ndarray as input.
+    """
     isdataframe = isinstance(predicted, pd.DataFrame)
     if isdataframe:
         diff = predicted.values - actual.values
     else:
         diff = predicted - actual
-    content = np.average(diff * diff, axis=0).reshape((1, predicted.shape[1]))
+    content = measure_fn(diff)
     if not isdataframe:
         # inputs are ndarray
         return content
     # inputs are DataFrame, so return same
-    return pd.DataFrame(data=content, index=['Mean Sq Error'], columns=predicted.columns)
+    return pd.DataFrame(data=content, index=df_index, columns=predicted.columns)
+
+def _meansq_measure(diff):
+    return np.average(diff * diff, axis=0).reshape((1, diff.shape[1]))
+
+def _stderr_measure(diff):
+    return np.sqrt(_meansq_measure(diff))
