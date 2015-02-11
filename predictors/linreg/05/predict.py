@@ -27,6 +27,7 @@ import baseline
 import data
 from metrics import EinEout
 import pylearn as pl
+import report
 
 def get_alldata():
     """ Return features, labels combined for all equities """
@@ -109,64 +110,9 @@ def evaluate_model(features, labels, partition):
     sys.stdout.flush()
     return results, ave_base_growth
 
-def print_results(results, baseline_growth):
+def save_results(results, baseline_growth):
     fname = "RESULTS.md"
-    contents = []
-    contents.append( """\
-Error Summary
-==
-<table>
-<tr>
-    <th>Metric</th>
-    <th>Forecast Distance</th>
-    <th>Ave.</th>
-    <th>High</th>
-    <th>Low</th>
-</tr>
-""")
-
-    for i in range(len(results)):
-        contents.append("""
-<tr>
-    <td>Eout</td>
-    <td>{}</td>
-    <td>{:6.4f}</td>
-    <td>{:6.4f}</td>
-    <td>{:6.4f}</td>
-</tr>
-<tr>
-    <td>Ein</td>
-    <td>{}</td>
-    <td>{:6.4f}</td>
-    <td>{:6.4f}</td>
-    <td>{:6.4f}</td>
-</tr>
-""".format(2**i, results[i].eout.average, results[i].eout.highest, results[i].eout.lowest,
-            2**i, results[i].ein.average, results[i].ein.highest, results[i].ein.lowest))
-
-    contents.append("""
-</table>
-
-Growth
-==
-<table>
-<tr>
-    <th>Forecast Distance</th>
-    <th>Ave. Growth</th>
-</tr>
-""")
-
-    for i in range(baseline_growth.shape[1]):
-        contents.append("""
-<tr>
-    <td>{}</td>
-    <td>{:6.4f}</td>
-</tr>
-""".format(2**i, baseline_growth[0, i]))
-
-    contents.append("""</table>""")
-
-    content = ''.join(contents)
+    content = report.errors_by_dist(results, baseline_growth, [2**i for i in range(7)])
     with open(fname, 'w') as f:
         f.write(content)
 
@@ -181,4 +127,4 @@ def run():
 
 if __name__ == "__main__":
     results, baseline_growth = run()
-    print_results(results, baseline_growth)
+    save_results(results, baseline_growth)
