@@ -12,7 +12,7 @@ by
 Marshall Farrier, marshalldfarrier@gmail.com
 """
 
-def errors_by_dist(results, growth_aves, distances):
+def errors_by_dist(results, distances):
     """
     Error report showing dependency on forecast distance
 
@@ -61,9 +61,12 @@ Error Summary
 """.format(distances[i], results[i].eout.average, results[i].eout.highest, results[i].eout.lowest,
             distances[i], results[i].ein.average, results[i].ein.highest, results[i].ein.lowest))
 
-    contents.append("""
-</table>
+    contents.append("</table>")
+    return ''.join(contents)
 
+def growth_by_dist(growth_aves, distances):
+    contents = []
+    contents.append("""\
 Growth
 ==
 <table>
@@ -81,5 +84,5 @@ Growth
 </tr>
 """.format(distances[i], growth_aves[0, i]))
 
-    contents.append("""</table>""")
+    contents.append("</table>")
     return ''.join(contents)

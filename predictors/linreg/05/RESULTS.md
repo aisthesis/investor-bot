@@ -113,10 +113,7 @@ Error Summary
     <td>0.1572</td>
     <td>0.1550</td>
 </tr>
-
-</table>
-
-Growth
+</table>Growth
 ==
 <table>
 <tr>

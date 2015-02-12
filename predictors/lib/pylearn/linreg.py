@@ -15,6 +15,17 @@ Marshall Farrier, marshalldfarrier@gmail.com
 import numpy as np
 import pandas as pd
 
+from .model import Model
+
+class LinRegModel(Model):
+    def __init__(self, **kwargs):
+        self.weights = kwargs.get('weights')
+        if self.weights is None:
+            raise TypeError("ctor missing 1 keyword argument: 'weights'")
+
+    def predict(self, features):
+        return features.dot(self.weights)
+
 def get_model(features, labels, lamb=0.):
     if isinstance(features, pd.DataFrame):
         _feat = features.values
@@ -22,15 +33,8 @@ def get_model(features, labels, lamb=0.):
     else:
         _feat = features
         _lab = labels
-    n_cols = _feat.shape[1]
-    return np.linalg.lstsq(_feat.transpose().dot(_feat)\
-            + lamb * np.identity(n_cols, dtype=np.float64),\
+    _n_cols = _feat.shape[1]
+    _weights = np.linalg.lstsq(_feat.transpose().dot(_feat)\
+            + lamb * np.identity(_n_cols, dtype=np.float64),\
             _feat.transpose().dot(_lab))[0]
-
-def predict(features, model):
-    """ Return ndarray of predictions """
-    if isinstance(features, pd.DataFrame):
-        _feat = features.values
-    else:
-        _feat = features
-    return _feat.dot(model)
+    return LinRegModel(weights=_weights)

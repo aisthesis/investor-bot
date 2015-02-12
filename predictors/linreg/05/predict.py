@@ -112,9 +112,11 @@ def evaluate_model(features, labels, partition):
 
 def save_results(results, baseline_growth):
     fname = "RESULTS.md"
-    content = report.errors_by_dist(results, baseline_growth, [2**i for i in range(7)])
+    _distances = [2**i for i in range(7)]
+    _err_report = report.errors_by_dist(results, _distances)
+    _growth_report = report.growth_by_dist(baseline_growth, _distances)
     with open(fname, 'w') as f:
-        f.write(content)
+        f.write(_err_report + _growth_report)
 
 def run():
     print("Retrieving data")
