@@ -1,0 +1,116 @@
+Error Summary
+==
+<table>
+<tr>
+    <th>Metric</th>
+    <th>Forecast Distance</th>
+    <th>Ave.</th>
+    <th>High</th>
+    <th>Low</th>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>1</td>
+    <td>0.0212</td>
+    <td>0.0221</td>
+    <td>0.0199</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>1</td>
+    <td>0.0200</td>
+    <td>0.0202</td>
+    <td>0.0199</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>2</td>
+    <td>0.0296</td>
+    <td>0.0310</td>
+    <td>0.0280</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>2</td>
+    <td>0.0279</td>
+    <td>0.0281</td>
+    <td>0.0278</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>4</td>
+    <td>0.0414</td>
+    <td>0.0427</td>
+    <td>0.0405</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>4</td>
+    <td>0.0390</td>
+    <td>0.0390</td>
+    <td>0.0388</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>8</td>
+    <td>0.0578</td>
+    <td>0.0599</td>
+    <td>0.0555</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>8</td>
+    <td>0.0541</td>
+    <td>0.0543</td>
+    <td>0.0539</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>16</td>
+    <td>0.0806</td>
+    <td>0.0840</td>
+    <td>0.0780</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>16</td>
+    <td>0.0752</td>
+    <td>0.0755</td>
+    <td>0.0749</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>32</td>
+    <td>0.1169</td>
+    <td>0.1210</td>
+    <td>0.1111</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>32</td>
+    <td>0.1067</td>
+    <td>0.1073</td>
+    <td>0.1063</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>64</td>
+    <td>0.1754</td>
+    <td>0.1848</td>
+    <td>0.1631</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>64</td>
+    <td>0.1542</td>
+    <td>0.1555</td>
+    <td>0.1534</td>
+</tr>
+</table>

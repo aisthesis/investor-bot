@@ -118,7 +118,7 @@ def multi_period_growth(n_periods, pricecol, eqdata):
     _cols = map(str, map(lambda n: 2**n, range(n_periods)))
     _all_labs = pd.DataFrame(index=eqdata.index[:-_skipatend], columns=_cols, dtype=np.float64)
     for i in range(n_periods):
-        _df, _ = pn.data.lab.growth(2**i, pricecol, eqdata)
+        _df = pn.data.lab.growth(2**i, pricecol, eqdata)
         _all_labs.iloc[:, i] = _df.iloc[:(_size - _skipatend), 0]
     return _all_labs, _skipatend
 
