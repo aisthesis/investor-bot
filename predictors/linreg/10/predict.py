@@ -28,11 +28,9 @@ import data
 import pylearn as pl
 import report
 
-def get_alldata():
+def get_alldata(n_pred_intervals):
     """ Return features, labels combined for all equities """
     n_feat_sess = 256
-    # powers of 2 from 0 to 6: 1, 2, 4, 8, 16, 32, 64
-    n_pred_intervals = 7
     fname = "../{0}/features/growth/relvol/sma20/ema20/risk20/lngrowth/{1}/labels/multi/{2}/combined.npy".format(settings.DATA_ROOT,
             n_feat_sess, n_pred_intervals) 
     # retrieve from file if it exists
@@ -90,15 +88,15 @@ def _centerandnormalize(feattrain, feattest):
     feattest[:, 1:] *= 1. / _sd_adj
     return feattrain, feattest
 
-def save_results(results):
+def save_results(results, n_pred_intervals):
     fname = "RESULTS.md"
-    content = report.errors_by_dist(results, [2**i for i in range(7)])
+    content = report.errors_by_dist(results, [2**i for i in range(n_pred_intervals)])
     with open(fname, 'w') as f:
         f.write(content)
 
-def run():
+def run(n_pred_intervals):
     print("Retrieving data")
-    _features, _labels = get_alldata()
+    _features, _labels = get_alldata(n_pred_intervals)
     print("Verifying data integrity")
     if pn.has_na(_features):
         raise ValueError("features contain missing data")
@@ -116,5 +114,7 @@ def run():
     return results
 
 if __name__ == "__main__":
-    results = run()
-    save_results(results)
+    # powers of 2 from 0 to 6: 1, 2, 4, 8, 16, 32, 64
+    _n_pred_intervals = 8
+    results = run(_n_pred_intervals)
+    save_results(results, _n_pred_intervals)

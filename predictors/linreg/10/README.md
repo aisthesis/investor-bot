@@ -26,7 +26,7 @@ small as to create additional noise due to rounding.
 
 ### Labels
 Growth for varying forecast intervals incremented in powers of 2.
-Same as for `linreg/05`, which established the baseline
+Same as for `linreg/05`, which established the baseline.
 
 ### Method
 Linear regression with no regularization.
@@ -54,13 +54,11 @@ Cf. RESULTS.md
 Conclusions
 --
 `ln(growth)` also helps. At this point we are a full percentage point
-better than the baseline for forecast interval of 64.
+better than the baseline for forecast interval of 64 and between 3 (eout)
+and 5 (ein) percentage points better for forecast interval 128.
 
 Next Steps
 --
-Since the more distant predictions are more accurate, add 128 session
-forecast interval.
-
 Incrementally try adding the following features:
 -   SMA 50
 -   EMA 50
