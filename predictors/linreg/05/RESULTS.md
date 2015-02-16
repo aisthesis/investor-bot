@@ -12,108 +12,125 @@ Error Summary
 <tr>
     <td>Eout</td>
     <td>1</td>
-    <td>0.0203</td>
-    <td>0.0211</td>
-    <td>0.0197</td>
+    <td>0.0204</td>
+    <td>0.0216</td>
+    <td>0.0195</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>1</td>
-    <td>0.0203</td>
     <td>0.0204</td>
+    <td>0.0205</td>
     <td>0.0203</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>2</td>
-    <td>0.0284</td>
-    <td>0.0296</td>
-    <td>0.0272</td>
+    <td>0.0286</td>
+    <td>0.0308</td>
+    <td>0.0270</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>2</td>
-    <td>0.0284</td>
     <td>0.0286</td>
+    <td>0.0288</td>
     <td>0.0283</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>4</td>
-    <td>0.0397</td>
-    <td>0.0427</td>
-    <td>0.0375</td>
+    <td>0.0399</td>
+    <td>0.0419</td>
+    <td>0.0381</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>4</td>
-    <td>0.0398</td>
-    <td>0.0400</td>
-    <td>0.0394</td>
+    <td>0.0399</td>
+    <td>0.0401</td>
+    <td>0.0397</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>8</td>
+    <td>0.0557</td>
+    <td>0.0586</td>
+    <td>0.0522</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>8</td>
+    <td>0.0557</td>
+    <td>0.0561</td>
     <td>0.0554</td>
-    <td>0.0594</td>
-    <td>0.0519</td>
-</tr>
-<tr>
-    <td>Ein</td>
-    <td>8</td>
-    <td>0.0555</td>
-    <td>0.0558</td>
-    <td>0.0550</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>16</td>
-    <td>0.0771</td>
-    <td>0.0829</td>
-    <td>0.0731</td>
+    <td>0.0774</td>
+    <td>0.0801</td>
+    <td>0.0736</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>16</td>
+    <td>0.0774</td>
+    <td>0.0778</td>
     <td>0.0771</td>
-    <td>0.0776</td>
-    <td>0.0765</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>32</td>
-    <td>0.1100</td>
-    <td>0.1162</td>
-    <td>0.1060</td>
+    <td>0.1104</td>
+    <td>0.1139</td>
+    <td>0.1052</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>32</td>
+    <td>0.1104</td>
+    <td>0.1110</td>
     <td>0.1100</td>
-    <td>0.1105</td>
-    <td>0.1093</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>64</td>
-    <td>0.1558</td>
-    <td>0.1643</td>
-    <td>0.1440</td>
+    <td>0.1564</td>
+    <td>0.1632</td>
+    <td>0.1449</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>64</td>
-    <td>0.1559</td>
-    <td>0.1572</td>
-    <td>0.1550</td>
+    <td>0.1565</td>
+    <td>0.1577</td>
+    <td>0.1557</td>
 </tr>
-</table>Growth
+
+<tr>
+    <td>Eout</td>
+    <td>128</td>
+    <td>0.2317</td>
+    <td>0.2464</td>
+    <td>0.2166</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>128</td>
+    <td>0.2319</td>
+    <td>0.2335</td>
+    <td>0.2302</td>
+</tr>
+</table>
+
+Growth
 ==
 <table>
 <tr>
@@ -138,21 +155,26 @@ Error Summary
 
 <tr>
     <td>8</td>
-    <td>1.0047</td>
+    <td>1.0048</td>
 </tr>
 
 <tr>
     <td>16</td>
-    <td>1.0093</td>
+    <td>1.0096</td>
 </tr>
 
 <tr>
     <td>32</td>
-    <td>1.0186</td>
+    <td>1.0191</td>
 </tr>
 
 <tr>
     <td>64</td>
-    <td>1.0367</td>
+    <td>1.0375</td>
+</tr>
+
+<tr>
+    <td>128</td>
+    <td>1.0740</td>
 </tr>
 </table>
