@@ -33,7 +33,7 @@ def get_alldata():
     n_feat_sess = 256
     # powers of 2 from 0 to 6: 1, 2, 4, 8, 16, 32, 64
     n_pred_intervals = 7
-    fname = "../{0}/features/growth/relvol/sma20/ema20/{1}/labels/multi/{2}/combined.npy".format(settings.DATA_ROOT,
+    fname = "../{0}/features/growth/relvol/sma20/ema20/risk20/{1}/labels/multi/{2}/combined.npy".format(settings.DATA_ROOT,
             n_feat_sess, n_pred_intervals) 
     # retrieve from file if it exists
     if os.path.isfile(fname):
@@ -58,6 +58,7 @@ def get_alldata():
 def _get_featfuncs(pricecol):
     _averaging_interval = 252
     _sma_window = 20
+    _growthrisk_window = 20
     _skipatstart = _averaging_interval
     _funcs = []
     # Growth 
@@ -72,6 +73,9 @@ def _get_featfuncs(pricecol):
             title='SMAGrowth20'))
     # EMA 20 growth
     _funcs.append(pn.decorate(pn.expand(pn.tech.ema_growth, pricecol), title='EMAGrowth20'))
+    # Growth volatility, 20 session window
+    _funcs.append(pn.decorate(partial(pn.tech.growth_volatility, window=_growthrisk_window, 
+            selection=pricecol), title='GrowthRisk20'))
     return _funcs, _skipatstart
 
 def _centerandnormalize(feattrain, feattest):

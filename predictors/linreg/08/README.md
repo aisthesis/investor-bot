@@ -1,4 +1,4 @@
-predictors/linreg/06
+predictors/linreg/08
 ===
 Description
 --

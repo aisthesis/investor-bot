@@ -1,4 +1,4 @@
-predictors/linreg/07
+predictors/linreg/09
 ===
 Description
 --
@@ -14,9 +14,11 @@ intervals (same as `linreg/05`) as labels.
     -   Growth
     -   Relative volume. Measured against average of last 252 sessions.
     -   SMA growth. Last 20 sessions.
+    -   EMA growth. Span of 20 sessions.
+    -   Volatility of growth. Window of 20 sessions.
    
 Note that raw SMA would lead to incomparable data points whenever
-2 equities differ in value. So growth of SMA is used.
+2 equities differ in value. So growth of SMA is used. Similarly for EMA.
 
 Only data since 1995 is used, as adjusted volumes on older data get so
 small as to create additional noise due to rounding.
@@ -29,24 +31,20 @@ Same as for `linreg/05`, which established the baseline
 Linear regression with no regularization.
 
 ### Notes
-In contrast to linreg/00, the baseline produced here tests
-a variety of prediction intervals of size 2<sup>n</sup>: 1, 2, 4, 8, 16, 32, 64.
-The results will then be compared with linear regression over
-the same period.
-
 Only the last 20 years (since 1995-01-01) of data is used. The 
 adjusted close values further back are often so small that actual
 daily returns get lost: With an adjusted close of .10, the minimum
 daily gain or loss is 10%.
 
-I'm switching to *standard error* (sqrt of mean squared error rather
-than raw mean squared error) because it provides a more accurate picture
-of how much the model is normally off. This change amounts to using standard deviation
-rather than variance. Standard deviation is more intuitive.
+I've switched to *standard error* (sqrt of mean squared error) as error measure rather
+than raw mean squared error because standard error provides a more accurate picture
+of how much the model is normally off. This change amounts to using 
+the more intuitive metric of standard deviation
+rather than variance.
 
 Purpose
 ---
--   Determine relevance of SMA
+-   Determine relevance of volatility.
 
 Results
 --
@@ -54,16 +52,16 @@ Cf. RESULTS.md
 
 Conclusions
 --
-While adding SMA20 leads to a noticeable decrease in ein, the additional
-feature also results in similarly increased eout. The additional
-feature is causing some overfitting. This problem is likely
-to increase with the addition of even more features. So, at
-the end we will definitely need to regularize.
+Growth volatility helps noticeably, particularly for predictions at least
+16 sessions out. For forecast distances of 16, 32 and 64, *both* ein
+*and* eout were noticeably improved. For shorter forecast distances, ein improved, but
+eout deteriorated a little. The deterioration of eout was, however,
+less than the improvement in ein.
 
 Next Steps
 --
 Incrementally try adding the following features:
 -   log of growth
 -   SMA 50
--   EMA 20 and 50
--   Volatility 20 and 50
+-   EMA 50
+-   Volatility 50
