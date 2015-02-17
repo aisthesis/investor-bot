@@ -12,121 +12,136 @@ Error Summary
 <tr>
     <td>Eout</td>
     <td>1</td>
-    <td>0.0204</td>
-    <td>0.0216</td>
-    <td>0.0195</td>
+    <td>0.0206</td>
+    <td>0.0218</td>
+    <td>0.0199</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>1</td>
-    <td>0.0204</td>
+    <td>0.0206</td>
+    <td>0.0207</td>
     <td>0.0205</td>
-    <td>0.0203</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>2</td>
-    <td>0.0286</td>
+    <td>0.0289</td>
     <td>0.0308</td>
-    <td>0.0270</td>
+    <td>0.0279</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>2</td>
-    <td>0.0286</td>
-    <td>0.0288</td>
-    <td>0.0283</td>
+    <td>0.0289</td>
+    <td>0.0290</td>
+    <td>0.0287</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>4</td>
-    <td>0.0399</td>
-    <td>0.0419</td>
-    <td>0.0381</td>
+    <td>0.0403</td>
+    <td>0.0423</td>
+    <td>0.0378</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>4</td>
-    <td>0.0399</td>
+    <td>0.0403</td>
+    <td>0.0406</td>
     <td>0.0401</td>
-    <td>0.0397</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>8</td>
-    <td>0.0557</td>
-    <td>0.0586</td>
-    <td>0.0522</td>
+    <td>0.0562</td>
+    <td>0.0579</td>
+    <td>0.0538</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>8</td>
-    <td>0.0557</td>
+    <td>0.0562</td>
+    <td>0.0565</td>
     <td>0.0561</td>
-    <td>0.0554</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>16</td>
-    <td>0.0774</td>
+    <td>0.0782</td>
     <td>0.0801</td>
-    <td>0.0736</td>
-</tr>
-<tr>
-    <td>Ein</td>
-    <td>16</td>
-    <td>0.0774</td>
-    <td>0.0778</td>
     <td>0.0771</td>
 </tr>
+<tr>
+    <td>Ein</td>
+    <td>16</td>
+    <td>0.0782</td>
+    <td>0.0783</td>
+    <td>0.0780</td>
+</tr>
 
 <tr>
     <td>Eout</td>
     <td>32</td>
-    <td>0.1104</td>
-    <td>0.1139</td>
-    <td>0.1052</td>
+    <td>0.1116</td>
+    <td>0.1153</td>
+    <td>0.1080</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>32</td>
-    <td>0.1104</td>
-    <td>0.1110</td>
-    <td>0.1100</td>
+    <td>0.1117</td>
+    <td>0.1121</td>
+    <td>0.1112</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>64</td>
-    <td>0.1564</td>
-    <td>0.1632</td>
-    <td>0.1449</td>
+    <td>0.1583</td>
+    <td>0.1641</td>
+    <td>0.1542</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>64</td>
-    <td>0.1565</td>
-    <td>0.1577</td>
-    <td>0.1557</td>
+    <td>0.1583</td>
+    <td>0.1587</td>
+    <td>0.1576</td>
 </tr>
 
 <tr>
     <td>Eout</td>
     <td>128</td>
-    <td>0.2317</td>
-    <td>0.2464</td>
-    <td>0.2166</td>
+    <td>0.2344</td>
+    <td>0.2419</td>
+    <td>0.2232</td>
 </tr>
 <tr>
     <td>Ein</td>
     <td>128</td>
-    <td>0.2319</td>
-    <td>0.2335</td>
-    <td>0.2302</td>
+    <td>0.2345</td>
+    <td>0.2357</td>
+    <td>0.2336</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>256</td>
+    <td>0.3732</td>
+    <td>0.3898</td>
+    <td>0.3507</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>256</td>
+    <td>0.3734</td>
+    <td>0.3758</td>
+    <td>0.3715</td>
 </tr>
 </table>
 
@@ -170,11 +185,16 @@ Growth
 
 <tr>
     <td>64</td>
-    <td>1.0375</td>
+    <td>1.0376</td>
 </tr>
 
 <tr>
     <td>128</td>
-    <td>1.0740</td>
+    <td>1.0752</td>
+</tr>
+
+<tr>
+    <td>256</td>
+    <td>1.1501</td>
 </tr>
 </table>

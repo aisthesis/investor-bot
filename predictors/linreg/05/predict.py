@@ -29,13 +29,11 @@ from metrics import EinEout
 import pylearn as pl
 import report
 
-def get_alldata():
+def get_alldata(n_pred_intervals):
     """ Return features, labels combined for all equities """
     eqfile = "../{0}/equities.csv".format(settings.DATA_ROOT)
     equities = data.get_equities(eqfile)
     n_feat_sess = 0
-    # powers of 2 from 0 to 6: 1, 2, 4, 8, 16, 32, 64, 128
-    n_pred_intervals = 8
     featurecols = ['Adj Close']
     labelcol = 'Adj Close'
     startdate = '1995-01-01'
@@ -110,17 +108,17 @@ def evaluate_model(features, labels, partition):
     sys.stdout.flush()
     return results, ave_base_growth
 
-def save_results(results, baseline_growth):
+def save_results(n_pred_intervals, results, baseline_growth):
     fname = "RESULTS.md"
-    _distances = [2**i for i in range(8)]
+    _distances = [2**i for i in range(n_pred_intervals)]
     _err_report = report.errors_by_dist(results, _distances)
     _growth_report = report.growth_by_dist(baseline_growth, _distances)
     with open(fname, 'w') as f:
         f.write(_err_report + "\n\n" +  _growth_report)
 
-def run():
+def run(n_pred_intervals):
     print("Retrieving data")
-    features, labels = get_alldata()
+    features, labels = get_alldata(n_pred_intervals)
     pfile = "../{0}/partition.csv".format(settings.DATA_ROOT)
     partition = data.partition(pfile, features.shape[0])
     print("Evaluating model")
@@ -128,5 +126,7 @@ def run():
     return results, baseline_growth
 
 if __name__ == "__main__":
-    results, baseline_growth = run()
-    save_results(results, baseline_growth)
+    # powers of 2 from 0 to 6: 1, 2, 4, 8, 16, 32, 64, 128, 256
+    _n_pred_intervals = 9
+    results, baseline_growth = run(_n_pred_intervals)
+    save_results(_n_pred_intervals, results, baseline_growth)
