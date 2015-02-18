@@ -1,4 +1,4 @@
-predictors/linreg/11
+predictors/linreg/12
 ===
 Description
 --
@@ -14,8 +14,8 @@ intervals (same as `linreg/05`) as labels.
     -   Growth
     -   Natural log of growth.
     -   Relative volume. Measured against average of last 252 sessions.
-    -   SMA growth: 20 and 50 sessions
-    -   EMA growth. Span of 20 sessions.
+    -   SMA growth: 20 sessions (50 appears irrelevant)
+    -   EMA growth: 20 and 50 sessions.
     -   Volatility of growth. Window of 20 sessions.
 
 `ln` of growth is usually used instead of growth. On big moves,
@@ -45,7 +45,7 @@ rather than variance.
 
 Purpose
 ---
--   Assess relevance of SMA 50.
+-   Assess relevance of EMA 50.
 
 Results
 --
@@ -53,9 +53,13 @@ Cf. RESULTS.md
 
 Conclusions
 --
-SMA 50 actually seems to hurt rather than help. While ein goes down
-by around 0.01% for shorter forecast distances, eout goes up by significantly
-more than that. This metric shouldn't be included in future runs.
+EMA 50 again seems to hurt slightly. For both EMA and SMA, this can
+only be due to rounding errors as the matrix on which the inverse is
+figured increases in size. I think the most interesting next step would be
+to see whether decreasing the number of sessions (currently 256) makes.
+That would immediately cut the number of features in half and reduce
+inaccuracies due to floating point precision in inverting a large
+matrix.
 
 The following metrics clearly decreased the standard error:
 -   EMA with span of 20
@@ -72,6 +76,8 @@ Clearly no helpful information:
 
 Next Steps
 --
+Reduce the feature window from 256 to 128.
+
 Incrementally try adding the following features:
 -   EMA 50
 -   Volatility 50
@@ -80,8 +86,6 @@ When finished adding, trying eliminating one at a time:
 -   Growth
 -   Relative volume
 -   SMA
-
-Reduce the feature window from 256 to 128.
 
 Features that don't seem to be helping shouldn't be used, as PCA
 will pick them up, possibly to the detriment of the important
