@@ -1,0 +1,146 @@
+Error Summary
+==
+<table>
+<tr>
+    <th>Metric</th>
+    <th>Forecast Distance</th>
+    <th>Ave.</th>
+    <th>High</th>
+    <th>Low</th>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>1</td>
+    <td>0.0225</td>
+    <td>0.0234</td>
+    <td>0.0212</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>1</td>
+    <td>0.0194</td>
+    <td>0.0195</td>
+    <td>0.0192</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>2</td>
+    <td>0.0313</td>
+    <td>0.0321</td>
+    <td>0.0297</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>2</td>
+    <td>0.0270</td>
+    <td>0.0271</td>
+    <td>0.0269</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>4</td>
+    <td>0.0435</td>
+    <td>0.0445</td>
+    <td>0.0425</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>4</td>
+    <td>0.0374</td>
+    <td>0.0375</td>
+    <td>0.0372</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>8</td>
+    <td>0.0596</td>
+    <td>0.0623</td>
+    <td>0.0575</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>8</td>
+    <td>0.0515</td>
+    <td>0.0518</td>
+    <td>0.0513</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>16</td>
+    <td>0.0798</td>
+    <td>0.0837</td>
+    <td>0.0758</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>16</td>
+    <td>0.0709</td>
+    <td>0.0712</td>
+    <td>0.0706</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>32</td>
+    <td>0.1093</td>
+    <td>0.1125</td>
+    <td>0.1062</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>32</td>
+    <td>0.0981</td>
+    <td>0.0984</td>
+    <td>0.0979</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>64</td>
+    <td>0.1496</td>
+    <td>0.1542</td>
+    <td>0.1438</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>64</td>
+    <td>0.1347</td>
+    <td>0.1352</td>
+    <td>0.1343</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>128</td>
+    <td>0.2104</td>
+    <td>0.2152</td>
+    <td>0.2057</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>128</td>
+    <td>0.1890</td>
+    <td>0.1894</td>
+    <td>0.1884</td>
+</tr>
+
+<tr>
+    <td>Eout</td>
+    <td>256</td>
+    <td>0.2993</td>
+    <td>0.3062</td>
+    <td>0.2902</td>
+</tr>
+<tr>
+    <td>Ein</td>
+    <td>256</td>
+    <td>0.2693</td>
+    <td>0.2701</td>
+    <td>0.2687</td>
+</tr>
+</table>
