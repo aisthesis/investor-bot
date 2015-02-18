@@ -1,4 +1,4 @@
-predictors/linreg/10
+predictors/linreg/11
 ===
 Description
 --
@@ -12,11 +12,11 @@ intervals (same as `linreg/05`) as labels.
 -   Centered and normalized
 -   Content:
     -   Growth
+    -   Natural log of growth.
     -   Relative volume. Measured against average of last 252 sessions.
-    -   SMA growth. Last 20 sessions.
+    -   SMA growth: 20 and 50 sessions
     -   EMA growth. Span of 20 sessions.
     -   Volatility of growth. Window of 20 sessions.
-    -   Natural log of growth.
 
 `ln` of growth is usually used instead of growth. On big moves,
 this will exaggerate downswings and understate upswings.
@@ -53,13 +53,36 @@ Cf. RESULTS.md
 
 Conclusions
 --
-`ln(growth)` also helps. At this point we are a full percentage point
-better than the baseline for forecast interval of 64 and between 3 (eout)
-and 5 (ein) percentage points better for forecast interval 128.
+SMA 50 actually seems to hurt rather than help. While ein goes down
+by around 0.01% for shorter forecast distances, eout goes up by significantly
+more than that. This metric shouldn't be included in future runs.
+
+The following metrics clearly decreased the standard error:
+-   EMA with span of 20
+-   `ln(growth)`
+-   Volatility with window of 20
+
+Others are conceivably providing no information:
+-   Simple growth
+-   Volume
+-   SMA with window of 20
+
+Clearly no helpful information:
+-   SMA with window of 50
 
 Next Steps
 --
 Incrementally try adding the following features:
--   SMA 50
 -   EMA 50
 -   Volatility 50
+
+When finished adding, trying eliminating one at a time:
+-   Growth
+-   Relative volume
+-   SMA
+
+Reduce the feature window from 256 to 128.
+
+Features that don't seem to be helping shouldn't be used, as PCA
+will pick them up, possibly to the detriment of the important
+features.
