@@ -109,17 +109,17 @@ def load(fname, n_labelcols=1):
     data = np.load(fname)
     return data[:, n_labelcols:], data[:, :n_labelcols]
 
-def multi_period_growth(n_periods, pricecol, eqdata):
+def multi_period_growth(n_periods, pricecol, eqdata, range_begin=0):
     """
     Function to be passed using partial to `pn.data.labeledfeatures()`
     """
-    _skipatend = 2**(n_periods - 1)
+    _skipatend = 2**(n_periods + range_begin - 1)
     _size = len(eqdata.index)
-    _cols = map(str, map(lambda n: 2**n, range(n_periods)))
+    _cols = map(str, map(lambda n: 2**n, range(range_begin, range_begin + n_periods)))
     _all_labs = pd.DataFrame(index=eqdata.index[:-_skipatend], columns=_cols, dtype=np.float64)
-    for i in range(n_periods):
+    for i in range(range_begin, n_periods + range_begin):
         _df = pn.data.lab.growth(2**i, pricecol, eqdata)
-        _all_labs.iloc[:, i] = _df.iloc[:(_size - _skipatend), 0]
+        _all_labs.iloc[:, i - range_begin] = _df.iloc[:(_size - _skipatend), 0]
     return _all_labs, _skipatend
 
 def aggregate(equities, startdate, enddate, featurefunc, labelfunc):
