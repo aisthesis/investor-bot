@@ -12,6 +12,56 @@ by
 Marshall Farrier, marshalldfarrier@gmail.com
 """
 
+def make_tbl(header_cells, contents, fmt=None):
+    """
+    Generic function for making a table.
+
+    Parameters
+    --
+    header_cells : list {str}
+        A list of column headers for the table. The number of columns
+        in the table is determined by the length of this list.
+
+    contents : list {list}
+        The rows of the table. Each element in the list
+        corresponds to a row and must have as many elements as
+        the `header_cells` list.
+
+    fmt : list {str}, optional
+        If present, must have the same number of values as
+        `header_cells`. Each column of the table body will be
+        formatted using theses values. For strings in the 
+        body, simply use the empty string as format string.
+        For example: `[':6.4f', '', ':d']`.
+
+    Returns
+    --
+    out : str
+        html string for a table with the given contents, beginning
+        with the `<table>` opening tag and ending with the `</table>`
+        closing tag.
+    """
+    _rows = []
+    _cells = []
+    _n_cols = len(header_cells)
+    _rows.append("<table>\n<tr>")
+    for _cell in header_cells:
+        _cells.append("<th>{}</th>".format(_cell))
+    _rows.append("\n".join(_cells))
+    del _cells[:]
+    _rows.append("</tr>")
+    if fmt is None:
+        fmt = [''] * _n_cols
+    for _row in contents:
+        _rows.append("<tr>")
+        for i in range(_n_cols):
+            _cells.append("<td>{{{}}}</td>".format(fmt[i]).format(_row[i]))
+        _rows.append("\n".join(_cells))
+        del _cells[:]
+        _rows.append("</tr>")
+    _rows.append("</table>")
+    return "\n".join(_rows)
+
 def errors_by_dist(results, distances):
     """
     Error report showing dependency on forecast distance
