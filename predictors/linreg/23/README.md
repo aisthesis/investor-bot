@@ -46,16 +46,15 @@ Cf. `RESULTS.md`
 
 Conclusions
 --
-It takes 192 components to get a reconstruction error of under 10 %.
-However, that would translate to only 10 % of the data being noise,
-and the financial data is clearly very noisy. Possibly as much as 50 %
-is just noise. We drop below 50 % reconstruction error with only
-15 components.
-
-We should try PCA in multiples of 2 from 2 to 256 to see how the reduction
-effects standard error for the various forecast intervals.
+The results are quite disappointing. Even with a reduction to
+a 256 components, where we should have a reconstruction error
+around only 2.6 %, we're not getting at all close to the results
+achieved in `linreg/20` with the full set of features. Only at a compression
+to 512 or 1024 do we get adequately accurate results.
 
 Next Steps
 --
-Apply linear regression on the compressed feature set, reducing dimension
-to 2, 4, 8, 16, 32, 64, 128, 256
+-   Apply the same algorithms to the averages only (as represented by 'SPY').
+    This would allow:
+    -   Representing stocks relative to the average.
+    -   Entering and exiting from a market portfolio as investment strategy.

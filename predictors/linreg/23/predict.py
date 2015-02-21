@@ -16,12 +16,15 @@ Marshall Farrier, marshalldfarrier@gmail.com
 from __future__ import print_function
 import argparse
 from functools import partial
+import math
 import os
 import sys
 
 import numpy as np
 import pandas as pd
 import pynance as pn
+# svd can be faster than the numpy version
+from scipy import linalg
 
 sys.path.append('../')
 import settings
@@ -30,14 +33,22 @@ import data
 import pylearn as pl
 import report
 
-def get_alldata(predrange_begin, predrange_end):
+# global variables
+_predexp_begin = 3
+_predexp_end = 8
+_compexp_begin = 1
+_compexp_end = 11
+_pred_periods = [2**i for i in range(_predexp_begin, _predexp_end)]
+_compressions = None
+
+def get_alldata():
     """ Return features, labels combined for all equities """
     n_feat_sess = 256
     fname = "../{0}/features/lngrowth/sma20/sma50/ema20/ema50/risk20/{1}/labels/multi/{2}/{3}/combined.npy".format(settings.DATA_ROOT,
-            n_feat_sess, predrange_begin, predrange_end)
+            n_feat_sess, _predexp_begin, _predexp_end)
     # retrieve from file if it exists
     if os.path.isfile(fname):
-        return data.load(fname, predrange_end - predrange_begin)
+        return data.load(fname, _predexp_end - _predexp_begin)
     # otherwise build and save to file
     eqfile = "../{0}/equities.csv".format(settings.DATA_ROOT)
     pricecol = 'Adj Close'
@@ -46,7 +57,7 @@ def get_alldata(predrange_begin, predrange_end):
     _featfuncs, _skipatstart = _get_featfuncs(pricecol)
     featurefn = pn.decorate(partial(pn.data.feat.fromfuncs, _featfuncs, n_feat_sess, skipatstart=_skipatstart),
             _skipatstart + n_feat_sess - 1)
-    labelfn = partial(data.multi_period_growth, predrange_end - predrange_begin, pricecol, range_begin=predrange_begin)
+    labelfn = partial(data.multi_period_growth, _predexp_end - _predexp_begin, pricecol, range_begin=_predexp_begin)
     equities = data.get_equities(eqfile)
     directory = os.path.dirname(fname)
     if not os.path.exists(directory):
@@ -55,12 +66,12 @@ def get_alldata(predrange_begin, predrange_end):
     data.save(fname, features, labels)
     return features, labels
 
-def _get_toydata(predrange_begin, predrange_end):
+def _get_toydata():
     _n_rows = 512
     _n_featcols = 40
     _features = np.random.random((_n_rows, _n_featcols))
     _features[:, 0] = 1.
-    _labels = np.random.random((_n_rows, predrange_end - predrange_begin))
+    _labels = np.random.random((_n_rows, _predexp_end - _predexp_begin))
     return _features, _labels
 
 def _get_featfuncs(pricecol):
@@ -100,18 +111,97 @@ def _centerandnormalize(feattrain, feattest):
 def _get_comp_rangemax(release):
     return 9 if release else 6
 
-def save_results(results, predrange_begin, predrange_end):
-    fname = "RESULTS.md"
-    content = report.errors_by_dist(results, [2**i for i in range(predrange_begin, predrange_end)])
-    with open(fname, 'w') as f:
-        f.write(content)
+def _get_empty_res_list():
+    _metrics = ('Eout', 'Ein')
+    _results = []
+    _row = []
+    for _comp in _compressions:
+        for _pred_period in _pred_periods:
+            for _metric in _metrics:
+                _results.append([_metric, _pred_period, _comp, 0., 0., 1.])
+    return _results
 
-def run(predrange_begin, predrange_end, release=False):
+def _get_result_ix(ein, pred_period, compression):
+    _comp_ix = int(round(math.log(compression, 2))) - _compexp_begin
+    _period_ix = int(round(math.log(pred_period, 2))) - _predexp_begin
+    return 2 * (_predexp_end - _predexp_begin) * _comp_ix + 2 * _period_ix + ein
+
+def _update_results(results, ein, eout, compression):
+    for i in range(len(ein)):
+        _ein_ix = _get_result_ix(1, 2**(_predexp_begin + i), compression)
+        _eout_ix = _get_result_ix(0, 2**(_predexp_begin + i), compression)
+        # contributions to average
+        results[_ein_ix][3] += 0.1 * ein[i]
+        results[_eout_ix][3] += 0.1 * eout[i]
+        # highs and lows
+        _update_hi(results[_ein_ix], 4, ein[i])
+        _update_hi(results[_eout_ix], 4, eout[i])
+        _update_lo(results[_ein_ix], 5, ein[i])
+        _update_lo(results[_eout_ix], 5, eout[i])
+
+def _update_hi(row, index, value):
+    if row[index] < value:
+        row[index] = value
+
+def _update_lo(row, index, value):
+    if row[index] > value:
+        row[index] = value
+
+def get_results(features, labels, n_parts, partition, modelfn, errorfn):
+    _results = _get_empty_res_list()
+    # allocate memory for these upfront to save time
+    _ftrain_compressed = np.empty((features.shape[0], _compressions[-1] + 1))
+    _ftest_compressed = np.empty((features.shape[0] // 5, _compressions[-1] + 1))
+    _ftrain_compressed[:, 0] = 1.
+    _ftest_compressed[:, 0] = 1.
+    for i in range(n_parts):
+        _feattrain, _labtrain, _feattest, _labtest = pl.assess._get_partitioned_data(features, 
+                labels, partition, i, _centerandnormalize)
+        print('.', end="")
+        sys.stdout.flush()
+        _lsing, _gamma, _rsingt = linalg.svd(_feattrain[:, 1:], full_matrices=False)
+        _rsing = _rsingt.transpose()
+        print('.', end="")
+        sys.stdout.flush()
+        # reduce view to appropriate rows
+        _ftrain = _ftrain_compressed[:_feattrain.shape[0], :]
+        _ftest = _ftest_compressed[:_feattest.shape[0], :]
+        _ftrain[:, 1:]  = _feattrain[:, 1:].dot(_rsing[:, :_compressions[-1]])
+        _ftest[:, 1:] = _feattest[:, 1:].dot(_rsing[:, :_compressions[-1]])
+        for _compression in _compressions:
+            print('.', end="")
+            sys.stdout.flush()
+            _model = modelfn(_ftrain[:, :_compression + 1], _labtrain)
+            _predtrain = _model.predict(_ftrain[:, :_compression + 1])
+            _ein = errorfn(_predtrain, _labtrain).flatten()
+            _predtest = _model.predict(_ftest[:, :_compression + 1])
+            _eout = errorfn(_predtest, _labtest).flatten()
+            _update_results(_results, _ein, _eout, _compression)
+    print('.')
+    sys.stdout.flush()
+    return _results
+
+def save_results(results, release=False):
+    if release:
+        _fname = "RESULTS.md"
+    else:
+        _fname = "DUMMY.md"
+    _contents = []
+    _contents.append("Error Metrics")
+    _contents.append("==")
+    _header_cells = ["Metric", "Forecast Distance", "Components", "Average", "High", "Low"]
+    _fmt = ['', ':d', ':d', ':6.4f', ':6.4f', ':6.4f']
+    _contents.append(report.make_tbl(_header_cells, results, _fmt))
+    _content = "\n".join(_contents)
+    with open(_fname, 'w') as f:
+        f.write(_content)
+
+def run(release=False):
     print("Retrieving data")
     if release:
-        _features, _labels = get_alldata(predrange_begin, predrange_end)
+        _features, _labels = get_alldata()
     else:
-        _features, _labels = _get_toydata(predrange_begin, predrange_end)
+        _features, _labels = _get_toydata()
     print("Verifying data integrity")
     if pn.has_na(_features):
         raise ValueError("features contain missing data")
@@ -124,11 +214,9 @@ def run(predrange_begin, predrange_end, release=False):
     _modelfn = pl.linreg.get_model
     _errorfn = pl.error.stderr
     _n_components = [2**i for i in range(1, _get_comp_rangemax(release))]
-
     print("Evaluating model")
-    results = pl.assess.multi_xval(_features, _labels, _n_parts, _partition, 
-            _modelfn, _errorfn, _centerandnormalize)
-    return results
+    _results = get_results(_features, _labels, _n_parts, _partition, _modelfn, _errorfn)
+    save_results(_results, release)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -137,8 +225,6 @@ if __name__ == "__main__":
     _release = args.release
     if not _release:
         print("Testing code using toy data")
-    # powers of 2 from 3 to 7: 8, 16, 32, 64, 128
-    _predrange_begin = 3
-    _predrange_end = 8
-    results = run(_predrange_begin, _predrange_end, _release)
-    save_results(results, _predrange_begin, _predrange_end)
+        _compexp_end = 6
+    _compressions = [2**i for i in range(_compexp_begin, _compexp_end)]
+    results = run(_release)
