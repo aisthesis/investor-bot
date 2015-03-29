@@ -3,14 +3,14 @@ Web Visualizers
 
 Installing Node
 ---------------
-- Install Node
+- Install `Node` and `npm`
 - `cd` to `/visualizers/web/node`
 - Enter `npm init` to use a wizard to create the package.
 
-Installing Express
-------------------
+Installing Dependencies
+-----------------------
 - `cd` to `/visualizers/web/node`
-- Enter `npm install express --save`
+- Enter `npm install`
 
 Start Node Web App
 ------------------
