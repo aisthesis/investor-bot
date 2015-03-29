@@ -30,8 +30,10 @@ sys.path.append('../')
 import settings
 sys.path.append('../common')
 import data
-import pylearn as pl
 import report
+
+sys.path.append('../../lib')
+import pylearn as pl
 
 # global variables
 _predexp_begin = 3
