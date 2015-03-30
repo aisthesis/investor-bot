@@ -11,13 +11,13 @@ Installing Node and `npm`
 
 Installing Dependencies
 -----------------------
-- `cd` to `/visualizers/web/node`
+- `cd` to `<project root>/visualizers/web/node`
 - Enter `npm install`
 - This should download any dependency packages into node_modules directory
 
 Start Node Web App
 ------------------
-- `cd` to `/visualizers/web/node`
+- `cd` to `<project root>/visualizers/web/node`
 - Enter `node app.js`
 - Site should now be hosted from local
-- Navigate to main page at `index.html`
+- Navigate to the locally served page from Node at: [http://127.0.0.1:8080/index.html](http://127.0.0.1:8080/index.html)
