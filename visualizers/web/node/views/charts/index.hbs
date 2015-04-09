@@ -1,0 +1,86 @@
+﻿Chart
+
+<div id="chart"></div>
+
+<script type="text/javascript">
+	$(function () {
+		$.ajax({
+			url: "charts/data",
+			success: function (d) {
+				if (d) {
+					var data = new Array(d.length);
+
+					for (var i = 0; i < d.length; i++) {
+						var doc = d[i];
+
+						var quoteTimeMillis = Date.parse(doc.Quote_Time);
+						var quoteTime = new Date();
+						quoteTime.setTime(quoteTimeMillis);
+						var strike = doc.Strike;
+
+						//data[i] = [priceDt, [price, 1], [trade, 0]]; // When "errorBars: true"
+						data[i] = [quoteTime, strike];
+					}
+
+					var graph = new Dygraph(
+						document.getElementById("chart"),
+						data,
+						{
+							labels: ["Quote Time", "Strike"],
+							labelsDivStyles: { "textAlign": "right" }
+							//customBars: true
+						}
+					);
+
+					//graph.ready(function () {
+					//	var updateAnnotations = function (visible) {
+					//		var annotations = [];
+
+					//		if (visible) {
+					//			for (var i = 0; i < tradeData.length; i++) {
+					//				var priceDt = new Date();
+					//				priceDt.setTime(parseInt(tradeData[i][0]) * 1000);
+
+					//				var note = tradeData[i][2] == "0" ? "S" : "B";
+					//				var tradeNote = "[" + tradeData[i][5] + "]";
+					//				if (tradeData[i][6] === "True") {
+					//					tradeNote += "!";
+					//				} else if (tradeData[i][7] === "True") {
+					//					tradeNote += "*";
+					//				}
+
+					//				if (note === "B") {
+					//					tradeNote += " " + tradeData[i][1] + " (-" + tradeData[i][4] + ")";
+					//				} else if (note === "S") {
+					//					tradeNote += " $" + tradeData[i][3];
+					//				}
+
+					//				annotations.push({
+					//					series: "Trade",
+					//					x: parseInt(tradeData[i][0]) * 1000,
+					//					shortText: note,
+					//					text: tradeNote
+					//				});
+					//			}
+					//		}
+
+					//		graph.setAnnotations(annotations);
+
+					//		$("#btnAnnotations").data("annotationsVisible", visible);
+					//	}
+
+					//	updateAnnotations(true);
+
+					//	$("#btnAnnotations").on("click", function () { updateAnnotations(!$(this).data("annotationsVisible")); });
+					//	$("#btn1H").on("click", function () { graph.setVisibility(1, !graph.visibility()[1]); });
+					//	$("#btn3H").on("click", function () { graph.setVisibility(2, !graph.visibility()[2]); });
+					//	$("#btn12H").on("click", function () { graph.setVisibility(3, !graph.visibility()[3]); });
+					//	$("#btn1D").on("click", function () { graph.setVisibility(4, !graph.visibility()[4]); });
+
+					//	$("#controls").show();
+					//});
+				}
+			}
+		});
+	});
+</script>

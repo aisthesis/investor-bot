@@ -1,0 +1,39 @@
+<a href="charts">Charts</a>
+<a href="about">About</a>
+<!--<h2>This data would be retrieved via an AJAX call.</h2>
+<div id="graph" style="width: 640px; height: 480px;"></div>
+
+<script>
+	var plot = function () {
+		var fn = function (x) {
+			return [0.1 * x, 0.1 * x + Math.sin(x), 0.1 * x + Math.cos(x)];
+		};
+
+		var graph = document.getElementById("graph");
+		var width = parseInt(graph.style.width, 10);
+		var x1 = -10;
+		var x2 = 10;
+		var xs = 1.0 * (x2 - x1) / width;
+
+		var data = [];
+		for (var i = 0; i < width; i++) {
+			var x = x1 + i * xs;
+			var y = fn(x);
+			var row = [x];
+			if (y.length > 0) {
+				for (var j = 0; j < y.length; j++) {
+					row.push(y[j]);
+				}
+			} else {
+				row.push(y);
+			}
+			data.push(row);
+		}
+
+		new Dygraph(graph, data);
+	};
+
+	$(function () {
+		plot();
+	});
+</script>-->
