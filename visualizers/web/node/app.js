@@ -1,5 +1,8 @@
+var env = process.env.NODE_ENV || 'development';
+
 var fs = require('fs'),
     path = require('path'),
+    config = require('./config/config.' + env + '.js'),
     express = require('express'),
     exphbs = require('express-handlebars'),
     app = express();
@@ -48,7 +51,7 @@ app.use(function (err, req, res, next) {
 	res.status(500).render('errors/500', { error: err });
 });
 
-var server = app.listen(8080, function () {
+var server = app.listen(config.web.port, config.web.host, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 
