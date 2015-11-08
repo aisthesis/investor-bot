@@ -52,6 +52,11 @@ Cf. RESULTS.md
 
 Conclusions
 --
+### Current
+We are better able to distinguish performance on long-term predictions
+than on short-term. Forecast distances of 128 (6 months) to 512 (2 years)
+are where the algorithm most significantly improves over the baseline.
+
 ### Prior conclusions
 The following metrics clearly decreased the standard error:
 -   EMA: 20, 50
@@ -68,3 +73,15 @@ PCA unfortunately doesn't seem to allow significant data compression.
 
 Next Steps
 --
+We should next set up tools for visualizing the predictions made by the
+regression algorithm vs. actual behavior. It would be useful to see the following:
+
+-   Actual price development vs. predicted price development for the forecast
+    interval. That is, if on 2014-01-01 the algorithm predicts that 256 days out growth of
+    1.2, a visualization of the predicted line (1.2 times current price set in January
+    2015, the time we're trying to predict) vs. the actual line.
+-   Actual price development vs. predicted growth simply as strength indicator.
+    In this case, we could just look at growth as predicted on 2014-01-01
+    as an additional technical indicator for the day on which the prediction
+    is made. We could see if high and low growth predictions correlate
+    with imminent bull or bear markets.
