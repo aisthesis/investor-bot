@@ -31,8 +31,13 @@ def preprocess(features, **kwargs):
     return means, sd_adj
 
 def get_model(features, labels):
-    means, sd_adj = preprocess(features)
-    model = np.linalg.lstsq(features.transpose().dot(features),
+    return np.linalg.lstsq(features.transpose().dot(features),
             features.transpose().dot(labels))[0]
-    return model, means, sd_adj
 
+def get_baseline(features, labels):
+    n_cols = 1
+    if len(labels.shape) > 1:
+        n_cols = labels.shape[1]
+    model = np.zeros((features.shape[1], n_cols))
+    model[0, :] = np.average(labels, axis=0)
+    return model

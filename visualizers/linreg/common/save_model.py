@@ -12,6 +12,8 @@ by
 Marshall Farrier, marshalldfarrier@gmail.com
 """
 
+import os
+
 import numpy as np
 
 import constants
@@ -20,14 +22,20 @@ import learn
 
 def run():
     outfile = constants.MODEL_FILE
+    if os.path.isfile(outfile):
+        print("File '{}' exists. Delete to rebuild.".format(outfile))
+        return
     equities = constants.DOW_LEARN
     print('Getting features and labels')
     features, labels = data.labeled_features(equities)
-    print('Getting model and preprocessing data')
-    model, means, sd_adj = learn.get_model(features, labels)
-    print('Saving model and preprocessing data')
-    np.savez(outfile, model=model, means=means, sd_adj=sd_adj)
-    print('Model and preprocessing data saved as {}'.format(outfile))
+    print('Getting baseline and regression model with preprocessing adjustments')
+    baseline_model = learn.get_baseline(features, labels)
+    means, sd_adj = learn.preprocess(features)
+    linreg_model = learn.get_model(features, labels)
+    print('Saving baseline and regression models with preprocessing adjustments')
+    np.savez(outfile, baseline_model=baseline_model, linreg_model=linreg_model, 
+            means=means, sd_adj=sd_adj)
+    print('Models and preprocessing data saved as {}'.format(outfile))
 
 if __name__ == '__main__':
     run()
