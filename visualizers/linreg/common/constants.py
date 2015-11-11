@@ -40,3 +40,5 @@ PRICE_COL = 'Adj Close'
 # end is one past the last value used
 PRED_RANGE_BEGIN = 5
 PRED_RANGE_END = 10
+
+MODEL_FILE = 'model.npz'
