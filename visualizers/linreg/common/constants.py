@@ -30,3 +30,13 @@ DOW_LEARN = ['AAPL', 'AXP', 'BA', 'CAT', 'DD', 'HD', 'JNJ', 'MSFT',
         'NKE', 'PFE', 'PG', 'V', 'XOM']
 DOW_TEST = ['CSCO', 'CVX', 'DIS', 'GE', 'GS', 'IBM', 'INTC', 'JPM', 
         'KO', 'MCD', 'MMM', 'MRK', 'TRV', 'UNH', 'UTX', 'VZ', 'WMT']
+
+START = '1995'
+END = '2016'
+N_FEAT_SESS = 256
+PRICE_COL = 'Adj Close'
+# the following numbers represent the powers of 2 to be used--
+# i.e., 2**5 to 2**9 (32, 64, 128, 256, 512)
+# end is one past the last value used
+PRED_RANGE_BEGIN = 5
+PRED_RANGE_END = 10
