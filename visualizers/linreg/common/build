@@ -1,0 +1,2 @@
+#! /bin/bash
+python save_model.py
