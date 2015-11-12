@@ -8,6 +8,8 @@ visualization tools.
 
 Build
 ---
+Before running the visualization or validation code, you must
+first build the model.
 To build and save the learned model and preprocessing
 parameters:
 
