@@ -20,12 +20,12 @@ import constants
 import data
 import learn
 
-def run():
-    outfile = constants.MODEL_FILE
+def run(params):
+    outfile = os.path.join(params['path'], constants.MODEL_FILE)
     if os.path.isfile(outfile):
         print("File '{}' exists. Delete to rebuild.".format(outfile))
         return
-    equities = constants.DOW_LEARN
+    equities = params['learn']
     print('Getting features and labels')
     features, labels = data.labeled_features(equities)
     print('Getting baseline and regression model with preprocessing adjustments')
@@ -38,4 +38,4 @@ def run():
     print('Models and preprocessing data saved as {}'.format(outfile))
 
 if __name__ == '__main__':
-    run()
+    run(constants.DOW)

@@ -30,11 +30,12 @@ def stderr(predicted, actual):
     diff = predicted - actual
     return np.sqrt(np.average(diff * diff, axis=0).reshape(1, diff.shape[1]))
 
-def run(equities, outfile):
+def run(equities, path, fname):
+    outfile = os.path.join(path, fname)
     if os.path.isfile(outfile):
         print("File '{}' exists. Delete to rebuild.".format(outfile))
         return
-    modelfile = constants.MODEL_FILE
+    modelfile = os.path.join(path, constants.MODEL_FILE)
     print('Getting features and labels')
     features, labels = data.labeled_features(equities)
     print('Getting models and preprocessing data')
@@ -58,7 +59,13 @@ def run(equities, outfile):
     print('Error summary written to file {}'.format(outfile))
     
 if __name__ == '__main__':
-    print('Getting in-sample error summary')
-    run(constants.DOW_LEARN, 'IN_SAMPLE.md')
-    print('Getting out-of-sample error summary')
-    run(constants.DOW_TEST, 'OUT_OF_SAMPLE.md')
+    # Dow
+    path = constants.DOW['path']
+    equities = constants.DOW['learn']
+    fname = 'IN_SAMPLE.md'
+    print('Getting Dow in-sample error summary')
+    run(equities, path, fname)
+    print('Getting Dow out-of-sample error summary')
+    equities = constants.DOW['test']
+    fname = 'OUT_OF_SAMPLE.md'
+    run(equities, path, fname)
