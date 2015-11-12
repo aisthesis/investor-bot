@@ -7,6 +7,7 @@
 *.mat
 *.pyc
 *.npy
+*.npz
 **/DUMMY.*
 
 # Mac artifacts
