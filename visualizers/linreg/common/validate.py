@@ -17,21 +17,24 @@ linear regression model improves on the baseline, as was
 the case in `predictors/linreg/24`.
 """
 
+import os
+
 import numpy as np
 
 import constants
 import data
 import predict
+import report
 
 def stderr(predicted, actual):
     diff = predicted - actual
     return np.sqrt(np.average(diff * diff, axis=0).reshape(1, diff.shape[1]))
 
-def run():
-    equities = constants.DOW_TEST
+def run(equities, outfile):
+    if os.path.isfile(outfile):
+        print("File '{}' exists. Delete to rebuild.".format(outfile))
+        return
     modelfile = constants.MODEL_FILE
-    #FIXME
-    equities = ['ge', 'cat']
     print('Getting features and labels')
     features, labels = data.labeled_features(equities)
     print('Getting models and preprocessing data')
@@ -46,10 +49,16 @@ def run():
     print('Getting standard errors')
     baseline_err = stderr(baseline_pred, labels)
     linreg_err = stderr(linreg_pred, labels)
-    print('baseline err:')
-    print(baseline_err)
-    print('linreg err:')
-    print(linreg_err)
+    print('Writing summary')
+    distances = [2**i for i in range(constants.PRED_RANGE_BEGIN, constants.PRED_RANGE_END)]
+    err_summary = report.errorsbydistance(baseline_err.flatten(), linreg_err.flatten(),
+            distances, 'Linear Regression')
+    with open(outfile, 'w') as f:
+        f.write(err_summary)
+    print('Error summary written to file {}'.format(outfile))
     
 if __name__ == '__main__':
-    run()
+    print('Getting in-sample error summary')
+    run(constants.DOW_LEARN, 'IN_SAMPLE.md')
+    print('Getting out-of-sample error summary')
+    run(constants.DOW_TEST, 'OUT_OF_SAMPLE.md')

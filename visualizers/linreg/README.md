@@ -15,3 +15,13 @@ parameters:
 
     cd common
     ./build
+
+Notes
+---
+Run on a random sample of the Dow, we see that linear regression
+actually does *worse* than the baseline out of sample.
+
+Next Steps
+---
+Run the algorithm on a random sample of the entire S&P 500, selecting
+half for learning and half for testing.
