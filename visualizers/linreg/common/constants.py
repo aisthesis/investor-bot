@@ -45,3 +45,4 @@ PRED_RANGE_BEGIN = 5
 PRED_RANGE_END = 10
 
 MODEL_FILE = 'model.npz'
+MODEL_FILE_TEMPLATE = 'model{:02d}.npz'
