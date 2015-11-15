@@ -12,8 +12,17 @@ by
 Marshall Farrier, marshalldfarrier@gmail.com
 """
 
+import csv
+
 def get_sp500(fname):
     """
     Return a list of S&P equities from '../sp500/constituents.csv'
     """
-
+    equities = []
+    with open(fname) as infile:
+        reader = csv.reader(infile)
+        # skip header row
+        reader.next()
+        for row in reader:
+            equities.append(row[0])
+    return equities
