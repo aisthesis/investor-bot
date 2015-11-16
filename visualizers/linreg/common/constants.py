@@ -35,6 +35,8 @@ DOW = {
     }
 SP500_SIZES = [{'train': 32, 'test': 32},
         {'train': 64, 'test': 64},
+        {'train': 128, 'test': 64},
+        {'train': 128, 'test': 64},
         {'train': 128, 'test': 64}]
 
 START = '1995'

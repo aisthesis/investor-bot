@@ -24,6 +24,16 @@ as test data, we can then verify that our algorithm achieves
 results similar to those documented in `predictors/linreg/`.
 
 ### S&P 500
+In this experiment, we used multiple random samples from the S&P, first
+32 randomly selected equities for training and testing (`00`), then 64
+for training and testing (`01`) and finally 128 for training and 64 for testing
+(`02).
+
+With the larger selection, we could again improve on the baseline
+consistently. The larger training set also tends to reduce
+overfitting and provides more thorough coverage. However, even with
+a powerful laptop (16GB memory), processing the data took a good while
+and required closing all other applications.
 
 Build
 ---
@@ -34,6 +44,11 @@ parameters:
 
     cd common
     ./build
+    
+To reconstruct the error summaries:
+
+    cd common
+    python validate.py
 
 Notes
 ---
