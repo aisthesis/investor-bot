@@ -14,6 +14,7 @@ Marshall Farrier, marshalldfarrier@gmail.com
 
 import os
 
+import constants
 import eq_sel
 import file_parser as fp
 
@@ -37,7 +38,7 @@ def run():
     infile = 'constituents.csv'
     equities = fp.get_sp500(os.path.join(path, infile))
     # sizes of training and test data sets
-    sizes = [{'train': 32, 'test': 32}]
+    sizes = constants.SP500_SIZES
     selected = {}
     for i in range(len(sizes)):
         selected['train'], selected['test'] = eq_sel.sample(equities, sizes[i]['train'], sizes[i]['test'])

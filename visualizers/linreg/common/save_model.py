@@ -20,8 +20,7 @@ import constants
 import data
 import learn
 
-def run(equities, path):
-    outfile = os.path.join(path, constants.MODEL_FILE)
+def run(equities, outfile):
     if os.path.isfile(outfile):
         print("File '{}' exists. Delete to rebuild.".format(outfile))
         return
@@ -37,5 +36,16 @@ def run(equities, path):
     print('Models and preprocessing data saved as {}'.format(outfile))
 
 if __name__ == '__main__':
-    # Dow selection
-    run(constants.DOW['learn'], constants.DOW['path'])
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    # Dow
+    path = os.path.normpath(os.path.join(cwd, constants.DOW['path']))
+    outfile = os.path.join(path, constants.MODEL_FILE)
+    run(constants.DOW['learn'], outfile)
+    # S&P
+    path = os.path.normpath(os.path.join(cwd, '../sp500'))
+    sizes = constants.SP500_SIZES
+    for i in range(len(sizes)):
+        eqfile = os.path.join(path, 'train{:02d}.csv'.format(i))
+        equities = [line.strip() for line in open(eqfile)]
+        outfile = os.path.join(path, constants.MODEL_FILE_TEMPLATE.format(i))
+        run(equities, outfile)

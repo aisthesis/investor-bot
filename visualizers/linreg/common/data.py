@@ -42,18 +42,35 @@ def _aggregate(equities, startdate, enddate, featurefunc, labelfunc):
     """
     Aggregate data for all of the given equities
     """
-    _eqdata = pn.data.get(equities[0], startdate, enddate)
-    print("{0} records retrieved for equity '{1}'".format(len(_eqdata.index), equities[0]))
+    j = 0
+    while j < len(equities):
+        _eqdata = pn.data.get(equities[j], startdate, enddate)
+        print("{0} records retrieved for equity '{1}'".format(len(_eqdata.index), equities[j]))
+        j += 1
+        if _insufficient_data(_eqdata):
+            print('ignoring equity due to insufficient data')
+        else:
+            break
+    if j >= len(equities):
+        raise ValueError('no equities found with sufficient data')
+
     _featdf, _labdf = pn.data.labeledfeatures(_eqdata, featurefunc, labelfunc)
     _features = _featdf.values
     _labels = _labdf.values
-    for i in range(1, len(equities)):
+    for i in range(j, len(equities)):
         _eqdata = pn.data.get(equities[i], startdate, enddate)
         print("{0} records retrieved for equity '{1}'".format(len(_eqdata.index), equities[i]))
+        if _insufficient_data(_eqdata):
+            print('ignoring equity due to insufficient data')
+            continue
         _featdf, _labdf = pn.data.labeledfeatures(_eqdata, featurefunc, labelfunc)
         _features = np.append(_features, _featdf.values, axis=0)
         _labels = np.append(_labels, _labdf.values, axis=0)
     return _features, _labels
+
+def _insufficient_data(eqdata):
+    min_sessions = constants.N_FEAT_SESS * 12 + 2**(constants.PRED_RANGE_END - 1)
+    return eqdata.values.shape[0] <= min_sessions
 
 def _get_featfuncs(pricecol):
     _ma_wins = (20, 50)
