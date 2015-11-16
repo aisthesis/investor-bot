@@ -27,12 +27,12 @@ results similar to those documented in `predictors/linreg/`.
 In this experiment, we used multiple random samples from the S&P, first
 32 randomly selected equities for training and testing (`00`), then 64
 for training and testing (`01`) and finally 128 for training and 64 for testing
-(`02).
+(`02-04`).
 
-With the larger selection, we could again improve on the baseline
-consistently. The larger training set also tends to reduce
+With the larger selection, we could consistently improve on the baseline.
+The larger training set also tends to reduce
 overfitting and provides more thorough coverage. However, even with
-a powerful laptop (16GB memory), processing the data took a good while
+a powerful laptop (16GB memory), processing the data took around 15 minutes
 and required closing all other applications.
 
 Build
@@ -50,12 +50,15 @@ To reconstruct the error summaries:
     cd common
     python validate.py
 
-Notes
+Conclusions
 ---
-Run on a random sample of the Dow, we see that linear regression
-actually does *worse* than the baseline out of sample.
+Run on a random sample of the Dow, we saw that linear regression
+actually does *worse* than the baseline out of sample. However, a fairly
+large random selection (128 equities) from the S&P 500 allows the regression
+algorithm to improve modestly but consistently over the baseline.
 
 Next Steps
 ---
-Run the algorithm on a random sample of the entire S&P 500, selecting
-half for learning and half for testing.
+Using the model from one of the S&P 500 runs, visualize behavior on 
+individual out-of-sample equities for which the model beats the baseline
+as well as for the index itself.
