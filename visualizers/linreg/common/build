@@ -1,2 +1,3 @@
 #! /bin/bash
+python save_eqs.py
 python save_model.py
