@@ -47,3 +47,4 @@ PRED_RANGE_END = 10
 
 MODEL_FILE = 'model.npz'
 MODEL_FILE_TEMPLATE = 'model{:02d}.npz'
+SUMMARY_FILES = {'train': 'IN_SAMPLE', 'test': 'OUT_OF_SAMPLE'}

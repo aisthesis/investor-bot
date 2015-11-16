@@ -30,12 +30,10 @@ def stderr(predicted, actual):
     diff = predicted - actual
     return np.sqrt(np.average(diff * diff, axis=0).reshape(1, diff.shape[1]))
 
-def run(equities, path, fname):
-    outfile = os.path.join(path, fname)
+def run(equities, modelfile, outfile):
     if os.path.isfile(outfile):
         print("File '{}' exists. Delete to rebuild.".format(outfile))
         return
-    modelfile = os.path.join(path, constants.MODEL_FILE)
     print('Getting features and labels')
     features, labels = data.labeled_features(equities)
     print('Getting models and preprocessing data')
@@ -59,13 +57,31 @@ def run(equities, path, fname):
     print('Error summary written to file {}'.format(outfile))
     
 if __name__ == '__main__':
+    cwd = os.path.dirname(os.path.realpath(__file__))
     # Dow
-    path = constants.DOW['path']
+    print('Processing Dow selection')
+    path = os.path.normpath(os.path.join(cwd, constants.DOW['path']))
     equities = constants.DOW['learn']
-    fname = 'IN_SAMPLE.md'
+    modelfile = os.path.join(path, constants.MODEL_FILE)
+    outfile = os.path.join(path, 'IN_SAMPLE.md')
     print('Getting Dow in-sample error summary')
-    run(equities, path, fname)
+    run(equities, modelfile, outfile)
     print('Getting Dow out-of-sample error summary')
     equities = constants.DOW['test']
-    fname = 'OUT_OF_SAMPLE.md'
-    run(equities, path, fname)
+    outfile = os.path.join(path, 'OUT_OF_SAMPLE.md')
+    run(equities, modelfile, outfile)
+    # S&P 500
+    print('Processing selections from S&P')
+    path = os.path.normpath(os.path.join(cwd, '../sp500'))
+    sizes = constants.SP500_SIZES
+    ofnames = constants.SUMMARY_FILES
+    for i in range(len(sizes)):
+        modelfile = os.path.join(path, constants.MODEL_FILE_TEMPLATE.format(i))
+        for name in ('train', 'test'):
+            print('Generating summary for {}{:02d} on S&P'.format(name, i))
+            eqfile = os.path.join(path, '{}{:02d}.csv'.format(name, i))
+            equities = [line.strip() for line in open(eqfile)]
+            outfile = os.path.join(path, '{}{:02d}.md'.format(ofnames[name], i))
+            run(equities, modelfile, outfile)
+
+            
