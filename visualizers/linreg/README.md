@@ -57,6 +57,10 @@ actually does *worse* than the baseline out of sample. However, a fairly
 large random selection (128 equities) from the S&P 500 allows the regression
 algorithm to improve modestly but consistently over the baseline.
 
+### Best
+Through `sp500/model04` the most promising model is `sp500/model02`. The out
+of sample error is slightly better than in the other models.
+
 Next Steps
 ---
 Using the model from one of the S&P 500 runs, visualize behavior on 
