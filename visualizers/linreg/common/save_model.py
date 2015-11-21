@@ -25,7 +25,7 @@ def run(equities, outfile):
         print("File '{}' exists. Delete to rebuild.".format(outfile))
         return
     print('Getting features and labels')
-    features, labels = data.labeled_features(equities)
+    features, labels = data.labeled_features(equities, constants.START, constants.END)
     print('Getting baseline and regression model with preprocessing adjustments')
     baseline_model = learn.get_baseline(features, labels)
     means, sd_adj = learn.preprocess(features)

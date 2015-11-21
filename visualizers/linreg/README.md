@@ -38,14 +38,41 @@ and required closing all other applications.
 Build
 ---
 Before running the visualization or validation code, you must
-first build the model.
-To build and save the learned model and preprocessing
-parameters:
+first create a model for generating predictions.
+
+### Models
+Building and saving *all* learned models and preprocessing
+parameters will take some time. Expect at least an hour. To do so:
 
     cd common
     ./build
+
+You will need all models if you want to reconstruct all error
+summaries, but if you just want to do visualizations based on
+a particular model, you only need to build one particular model.
+For example, if you wanted to build and save the model for the selection
+of equities listed in `./sp500/train02.csv`, you could run
+the following code:
+
+    cd common
+    python
+    >>> import save_model
+    >>> import os
+    >>> cwd = os.path.dirname(os.path.realpath(__file__))
+    >>> path = os.path.normpath(os.path.join(cwd, '../sp500'))
+    >>> eqfile = os.path.join(path, 'train02.csv')
+    >>> equities = [line.strip() for line in open(eqfile)]
+    >>> outfile = os.path.join(path, 'model02.npz')
+    >>> save_model.run(equities, outfile)
+
+If you create a completely new model (i.e., one using a selection of equities
+not previously tested), it is strongly recommended to run the
+validation code in `validate.py` before using it. Otherwise, you
+may be visualizing a model that happens to work well on some equities
+but which won't reliably generalize.
     
-To reconstruct the error summaries:
+### Error summaries
+To reconstruct *all* error summaries:
 
     cd common
     python validate.py

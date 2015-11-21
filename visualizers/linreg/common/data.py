@@ -96,13 +96,11 @@ def _get_featfuncs(pricecol):
             selection=pricecol), title=('GrowthRisk' + str(_vol_win))))
     return _funcs, _skipatstart
 
-def labeled_features(equities):
+def labeled_features(equities, start, end):
     n_feat_sess = constants.N_FEAT_SESS
     pricecol = constants.PRICE_COL
     predrange_begin = constants.PRED_RANGE_BEGIN
     predrange_end = constants.PRED_RANGE_END
-    start = constants.START
-    end = constants.END
     featfuncs, skipatstart = _get_featfuncs(pricecol)
     featurefn = pn.decorate(partial(pn.data.feat.fromfuncs, featfuncs, n_feat_sess, skipatstart=skipatstart),
             skipatstart + n_feat_sess - 1)

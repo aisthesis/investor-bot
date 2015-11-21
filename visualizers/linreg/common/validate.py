@@ -35,7 +35,7 @@ def run(equities, modelfile, outfile):
         print("File '{}' exists. Delete to rebuild.".format(outfile))
         return
     print('Getting features and labels')
-    features, labels = data.labeled_features(equities)
+    features, labels = data.labeled_features(equities, constants.START, constants.END)
     print('Getting models and preprocessing data')
     models = np.load(modelfile) 
     baseline_model = models['baseline_model']
