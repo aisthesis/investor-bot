@@ -35,6 +35,25 @@ overfitting and provides more thorough coverage. However, even with
 a powerful laptop (16GB memory), processing the data took around 15 minutes
 and required closing all other applications.
 
+Usage
+---
+To use the visualization code, you first have to build an appropriate
+model file, as described [below](#build). Once you have built a model,
+you can visualize its predictions in 2 steps. First, you apply the
+model to data for a particular equity, then you visualize the result.
+For example:
+
+    cd common
+    python
+    >>> import vis_data
+    # Apply model to data for GE from 2000 to 2016
+    >>> vdat = vis_data.get('../sp500/model02.npz', 'ge', '2000', '2016')
+    # Show predicted vs. actual price for a prediction interval of 128
+    >>> import chart
+    >>> chart.price(vdat, 128)
+    # Show predicted growth against actual prices for a prediction interval of 64
+    >>> chart.growth(vdat, 64)
+
 Build
 ---
 Before running the visualization or validation code, you must
@@ -90,6 +109,24 @@ of sample error is slightly better than in the other models.
 
 Next Steps
 ---
-Using the model from one of the S&P 500 runs, visualize behavior on 
-individual out-of-sample equities for which the model beats the baseline
-as well as for the index itself.
+The growth charts show a strong spike in predicted growth at what
+appear to be good times to buy. For the few equities I have charted, I
+don't see a clear pattern as to when one should sell.
+We should next work toward using the predictions as part of a
+portfolio rebalancing algorithm. 
+
+### First draft of rebalancing algorithm
+
+1. Search for equities with growth more than double the baseline.
+1. Of those, buy the top 16 first found.
+1. Hold each equity for some minimum period before selling, perhaps
+   90 days as first guess.
+1. Continue scanning for new equities meeting the criterion. If one is
+   found and more than 16 equities are held, sell the equity with the
+   worst growth factor in order to buy the new equity.
+1. Always buy some fixed dollar amount (e.g. $10k). If the sale
+   as specified above exceeds it, keep the proceeds in cash and look
+   for other meeting the buy criterion.
+
+Note that this first simple rebalancing scheme doesn't yet take volatility or 
+Sharpe ratio into account.
