@@ -28,7 +28,7 @@ def prices(vdat, forecast_interval, title='Prices'):
     plt.show()
     plt.close()
 
-def growth(vdat, forecast_interval, title='Growth'):
+def growth(vdat, forecast_interval, title='Growth', logscale=False):
     distlab = _distance_label(forecast_interval)
     pricecol = 'Price'
     avegrowthcol = 'Ave Growth ' + distlab
@@ -37,6 +37,8 @@ def growth(vdat, forecast_interval, title='Growth'):
     plt.figure()
     ax1 = plt.subplot2grid((3, 6), (0, 0), rowspan=2, colspan=6)
     ax1.grid(True)
+    if logscale:
+        ax1.set_yscale('log')
     plt.ylabel(pricecol)
     plt.setp(plt.gca().get_xticklabels(), visible=False)
     ax1.plot(vdat.index, vdat.loc[:, pricecol], color='blue')
