@@ -21,3 +21,7 @@ PRED_RANGE_END = 10
 
 # path is relative to root of repo
 DATA_PATH = 'data/sp500'
+
+# db
+DB_NAME = 'invbot01'
+DB_COLLECTION = 'lrpred'
