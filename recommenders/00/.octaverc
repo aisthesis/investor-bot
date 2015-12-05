@@ -1,6 +1,0 @@
-PROJECT_ROOT = "../..";
-setenv("PREDICTOR_DATA_ROOT", sprintf("%s/predictors/data/splitadj/closes/", PROJECT_ROOT))
-setenv("PREDICTOR_ALGORITHM_ROOT", sprintf("%s/predictors/logreg/", PROJECT_ROOT))
-
-addpath(sprintf("%s/lib/utils/", PROJECT_ROOT))
-clear PROJECT_ROOT
