@@ -10,8 +10,7 @@ Python
 Use `requirements.txt` to install the necessary packages
 in your virtual environment:
 
-    mkvirtualenv invbot
-    workon invbot
+    mkvirtualenv -p /usr/bin/python2.7 invbot
     pip install -r requirements.txt
 
 MongoDB
