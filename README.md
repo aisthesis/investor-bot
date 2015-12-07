@@ -5,10 +5,6 @@ Description
 Using machine learning and genetic programming to optimize profits
 in stock market investments.
 
-Build
----
-Build the project by running `./build` from the project's root directory.
-
 System Requirements
 ---
 Recent versions of all software listed should work. Specific
@@ -17,7 +13,6 @@ has been tested. Other versions will certainly work and can
 be verified by running unit tests where present.
 
 - C++: any version of gcc with C++11 support
-- [Octave](https://www.gnu.org/software/octave/) 3.8.1
 - [Python](https://www.python.org/) 2.7.8, 3.4.2
 - [matplotlib](http://matplotlib.org/) 1.4.2
 - [NumPy](http://www.numpy.org/) 1.9.1
