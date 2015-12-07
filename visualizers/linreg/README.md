@@ -50,9 +50,10 @@ For example:
     >>> vdat = vis_data.get('../sp500/model02.npz', 'ge', '2000', '2016')
     # Show predicted vs. actual price for a prediction interval of 128
     >>> import chart
+    # prediction interval 128
     >>> chart.price(vdat, 128)
-    # Show predicted growth against actual prices for a prediction interval of 64
-    >>> chart.growth(vdat, 64)
+    # prediction interval 64, custom title, logarithmic scale
+    >>> chart.growth(vdat, 64, title='GE', logscale=True)
 
 Build
 ---
